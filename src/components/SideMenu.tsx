@@ -16,8 +16,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose }) => {
             </div>
             <div className="side-menu-container">
                 <span onClick={onClose} className="side-menu-close-btn"></span>
-                <div className="side-menu-option">Profile</div>
-                <div className="side-menu-option">Rides</div>
+                <Link to="/app/profile" ><div className="side-menu-option">Profile</div></Link>
+                <Link to="/app/rides" ><div className="side-menu-option">Rides</div></Link>
                 <div className="side-menu-option">Create Ride</div>
                 <Link to="/login" ><div className="side-menu-option">Log out</div></Link>
             </div>

@@ -6,6 +6,8 @@ import LandingPage from './routes/LandingPage'
 import LoginPage from './routes/LoginPage'
 import SignupPage from './routes/SignupPage'
 import ProfilePage from './routes/app/ProfilePage'
+import RidesFeed from './routes/app/RidesFeed'
+import CreateRide from './routes/app/CreateRide'
 
 
 const router = createBrowserRouter([
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
   {
     path: "/app/profile",
     element: <ProfilePage />
+  },
+  {
+    path: "/app/rides",
+    element: <RidesFeed />
+  },
+  {
+    path: "/app/create",
+    element: <CreateRide />
   }
 ])
 
