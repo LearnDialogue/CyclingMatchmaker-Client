@@ -8,6 +8,7 @@ interface RideFeedCardProps {
     description: string;
     bikeType: string;
     difficulty: string;
+    distance: number;
     wattsPerKilo: number;
     intensity: string;
     route: null;
@@ -15,7 +16,7 @@ interface RideFeedCardProps {
 }
 
 
-const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, description, match }: RideFeedCardProps) => {
+const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, distance, description, match }: RideFeedCardProps) => {
     return (
         <div className="ride-feed-card-main-container" >
             <div className="ride-feed-card-route-map" >
@@ -27,6 +28,7 @@ const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, descr
                 <p>Starts at <b>{startTime}</b> on <b>{date}</b></p>
                 <p><b>{bikeType}</b> ride</p>
                 <p><b>{difficulty}</b> difficulty</p>
+                <p>{distance} km</p>
                 <p>{description}</p>
             </div>
             <div className="ride-feed-card-matching-score" >

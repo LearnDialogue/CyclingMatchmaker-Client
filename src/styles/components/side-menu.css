@@ -6,6 +6,7 @@
     width: 100vw;
     background-color: rgba(0, 0, 0, 0.274);
     animation: showSideMenuOverlay 0.3s ease-in-out;
+    z-index: 1;
 }
 @keyframes showSideMenuOverlay {
     0% {opacity: 0;}
@@ -22,6 +23,7 @@
     width: 300px;
     padding-top: 120px;
     animation: slideInSideMenu 0.3s ease-in-out;
+    z-index: 2;
 }
 @keyframes slideInSideMenu {
     0% {transform: translateX(100%);}

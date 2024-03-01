@@ -8,8 +8,8 @@
 }
 
 .ride-feed-card-main-container > .ride-feed-card-route-map > img {
-    min-height: 300px;
-    max-height: 300px;
+    min-height: 250px;
+    max-height: 250px;
 }
 
 
@@ -51,4 +51,42 @@
 .ride-feed-card-main-container > .ride-feed-card-matching-score > .poor {
     border: 5px solid rgba(255, 0, 0, 0.609);
     box-shadow: rgba(255, 0, 0, 0.609) 0px 0px 6px;
+}
+
+
+
+
+
+
+@media only screen and (max-width: 800px) {
+    .ride-feed-card-main-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ride-feed-card-main-container > .ride-feed-card-route-map {
+        width: 100%;
+        height: auto;
+    }
+
+    .ride-feed-card-main-container > .ride-feed-card-values {
+        padding: 12px;
+    }
+
+    .ride-feed-card-main-container > .ride-feed-card-route-map > img {
+        padding: 12px;
+        width: 100%;
+        min-height: none;
+        max-height: none;
+        
+    }
+
+    .ride-feed-card-main-container > .ride-feed-card-matching-score {
+        position: relative;
+    }
+
+    .ride-feed-card-main-container > .ride-feed-card-matching-score > div {
+        
+    }
+    
 }

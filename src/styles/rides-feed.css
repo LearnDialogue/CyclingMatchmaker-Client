@@ -35,3 +35,20 @@
     font-size: 0.9em;
     font-weight: 400;
 }
+
+
+
+
+
+
+
+@media only screen and (max-width: 800px) {
+    .rides-feed-grid {
+        padding: 0px;
+    }
+
+    .rides-feed-header {
+        align-items: center;
+    }
+    
+}
