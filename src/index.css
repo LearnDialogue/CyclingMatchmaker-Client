@@ -41,7 +41,7 @@ input:focus, textarea:focus, select:focus {
 *::before,
 *::after {
   -webkit-box-sizing: inherit;
-    box-sizing: inherit;
+    box-sizing: border-box;
 }
 
 textarea {
@@ -50,6 +50,10 @@ textarea {
     padding: 12px;
     box-sizing: border-box !important;
     resize: vertical;
+}
+
+input[type="range"]:focus {
+    outline: none;
 }
 
 @font-face {

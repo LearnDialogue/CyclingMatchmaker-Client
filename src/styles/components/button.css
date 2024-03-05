@@ -1,20 +1,36 @@
-.button-primary {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
+.button {
     padding: 14px 46px;
     border-radius: 8px;
-    width: 100%;
     border: 0px;
-    font-size: 1em;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     letter-spacing: 0.3px;
     font-family: 'Khyay';
     transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.button-primary:hover{
+.button:hover {
     cursor: pointer;
-    background-position: right center;
+}
+
+
+.button-primary {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    font-size: 1em;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+
+.button-secondary {
+    border: 2px solid var(--primary-color);
+    background-color: white;
+    color: var(--primary-color);
+}
+.button-secondary:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 

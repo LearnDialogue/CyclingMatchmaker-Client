@@ -4,7 +4,8 @@
     border: 0.5px solid rgba(0, 0, 0, 0.185);
     border-radius: 12px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+    position: relative;
 }
 
 .ride-feed-card-main-container > .ride-feed-card-route-map > img {
@@ -24,33 +25,36 @@
     margin-top: 6px;
 }
 
+.ride-feed-card-main-container > .ride-feed-card-values > .rsvp-button {
+    margin-top: 12px;
+}
+
 
 .ride-feed-card-main-container > .ride-feed-card-matching-score {
-    padding: 24px;
+    position: absolute;
+    top: 24px;
+    right: 24px;
 }
 .ride-feed-card-main-container > .ride-feed-card-matching-score > div {
-    height: 150px;
-    width: 150px;
-    border-radius: 50%;
-    margin-right: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-transform: capitalize;
-    font-size: 0.9em;
-    font-weight: 300;
+    font-size: 0.8em;
+    font-weight: 700;
+    text-align: center;
 }
-.ride-feed-card-main-container > .ride-feed-card-matching-score > .great {
-    border: 5px solid rgba(0, 128, 0, 0.608);
-    box-shadow: rgba(0, 128, 0, 0.364) 0px 0px 6px;
+.ride-feed-card-main-container > .ride-feed-card-matching-score > div i {
+    margin-left: 6px;
 }
-.ride-feed-card-main-container > .ride-feed-card-matching-score > .good {
-    border: 5px solid rgb(240, 204, 22);
-    box-shadow: rgb(216, 180, 0) 0px 0px 6px;
+.ride-feed-card-main-container > .ride-feed-card-matching-score > .great i {
+    color: rgb(76, 175, 80);
 }
-.ride-feed-card-main-container > .ride-feed-card-matching-score > .poor {
-    border: 5px solid rgba(255, 0, 0, 0.609);
-    box-shadow: rgba(255, 0, 0, 0.609) 0px 0px 6px;
+.ride-feed-card-main-container > .ride-feed-card-matching-score > .good i {
+    color: rgb(255, 235, 59);
+}
+.ride-feed-card-main-container > .ride-feed-card-matching-score > .poor i {
+    color: rgb(244, 67, 54);
 }
 
 

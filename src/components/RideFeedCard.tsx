@@ -1,4 +1,5 @@
 import "../styles/components/ride-feed-card.css";
+import Button from "./Button";
 
 interface RideFeedCardProps {
     host: string;
@@ -17,6 +18,20 @@ interface RideFeedCardProps {
 
 
 const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, distance, description, match }: RideFeedCardProps) => {
+
+
+    const getMatchIcon = () => {
+        if(match == "great"){
+            return <i className="fa-solid fa-circle-check"></i>
+        }
+
+        if(match == "good"){
+            return <i className="fa-solid fa-circle-minus"></i>
+        }
+
+        return <i className="fa-solid fa-circle-xmark"></i>
+    }
+
     return (
         <div className="ride-feed-card-main-container" >
             <div className="ride-feed-card-route-map" >
@@ -29,11 +44,14 @@ const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, dista
                 <p><b>{bikeType}</b> ride</p>
                 <p><b>{difficulty}</b> difficulty</p>
                 <p>{distance} km</p>
-                <p>{description}</p>
+                <div className="rsvp-button" >
+                    <Button type="secondary" >RSVP</Button>
+                </div>
             </div>
             <div className="ride-feed-card-matching-score" >
                 <div className={match} >
-                    {match} match
+                    <span>{match} match</span>
+                    <span>{getMatchIcon()}</span>
                 </div>
             </div>
         </div>
