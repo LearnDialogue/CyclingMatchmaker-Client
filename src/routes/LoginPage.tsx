@@ -17,9 +17,9 @@ const LoginPage = () => {
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    const [loginSuccessful, setLoginSuccessful] = useState<boolean>(false); // true for prototype only
+    const [loginSuccessful, setLoginSuccessful] = useState<boolean>(false);
 
-    //const [loading, setLoading] = useState<boolean>(false);
+    // const [loading, setLoading] = useState<boolean>(false);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const updatedUsername = e.target.value;
@@ -59,12 +59,12 @@ const LoginPage = () => {
             console.log(data)
             if(data) {
                 console.log("helloo")
+
+                const userData = data;
+                localStorage.setItem('userData', JSON.stringify(userData.login));
                 setLoginSuccessful(true);
             }
-            const initialUser = {
-                username: data.login.username,
-                // other properties...
-              };
+            
             //setUser(initialUser);
 
             //updateUserProperty('username', data.username);
@@ -102,8 +102,8 @@ const LoginPage = () => {
     useEffect(() => {
         if (loginSuccessful) {
           // setLoading(true);
-          
-            // navigate to "/app/profile", aka login
+
+        
             navigate("/app/profile");
             console.log("navigated!");
          

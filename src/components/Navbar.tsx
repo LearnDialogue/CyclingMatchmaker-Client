@@ -1,15 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/components/navbar.css";
 import SideMenu from "./SideMenu";
 import { Link } from "react-router-dom";
 
+interface UserData {
+    username: string;
+    email: string;
+    sex: string;
+    weight: number;
+}
+
 const Navbar: React.FC = () => {
+
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileMenu, setProfileMenu] = useState(false);
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     }
+
+    const [userData, setUserData] = useState<UserData>();
+
+    useEffect(() => {
+
+        const storedUser = JSON.parse(localStorage.getItem('userData') ?? "");
+        console.log(storedUser);
+        setUserData(storedUser);
+        
+    }, [])
 
     return (
         <div className="navbar-main-container">
@@ -26,7 +44,9 @@ const Navbar: React.FC = () => {
                 <Link to="/app/rides" >
                     <div className="navbar-main-menu-option" >Explore <i className="fa-solid fa-magnifying-glass"></i></div>
                 </Link>
-                <div onMouseLeave={() => setProfileMenu(false)} onMouseEnter={() => setProfileMenu(true)} className="navbar-main-menu-username" >L</div>
+                <div onMouseLeave={() => setProfileMenu(false)} onMouseEnter={() => setProfileMenu(true)} className="navbar-main-menu-username" >
+                    {userData ? userData.username.slice(0, 1).toLocaleUpperCase() : "-"}
+                </div>
 
                 {profileMenu ? (
                     <div onMouseLeave={() => setProfileMenu(false)} onMouseEnter={() => setProfileMenu(true)}  className="navbar-main-menu-profile-dropdown" >

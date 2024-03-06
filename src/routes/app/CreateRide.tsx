@@ -6,7 +6,7 @@ import "../../styles/create-ride.css";
 const CreateRide = () => {
 
     const [difficulty, setDifficulty] = useState("");
-    const [equipmentType, setEquipmentType] = useState("");
+    const [bicycleType, setBicycleType] = useState("");
 
 
     return (
@@ -38,21 +38,20 @@ const CreateRide = () => {
                     </div>
 
                     <div className="create-ride-form-input">
-                        <label htmlFor="difficulty">Watts/kilo range</label>
+                        <label htmlFor="difficulty">Watts/kilo</label>
                         <select id="difficulty" value={difficulty} onChange={e => setDifficulty(e.target.value)}>
                             <option value="" disabled>-- Select difficulty --</option>
-                            <option value="Very easy">1 - 2.4</option>
-                            <option value="Easy">2.5 - 3.1</option>
-                            <option value="Medium">3.2 - 4</option>
-                            <option value="Hard">4 - 5</option>
-                            <option value="Very hard">5+</option>
+                            <option value="Very hard">A+ - 4.6+</option>
+                            <option value="Hard">A - 4.0 to 4.6</option>
+                            <option value="Medium">B - 3.2 to 4.0</option>
+                            <option value="Easy">C - 2.5 to 3.2</option>
                         </select>
                     </div>
 
                     <div className="create-ride-form-input" >
-                        <label htmlFor="equipment-type" >Equipment type</label>
-                        <select id="equipment-type" value={equipmentType} onChange={e => setEquipmentType(e.target.value)} >
-                            <option value="" disabled >-- Select equipment type --</option>
+                        <label htmlFor="bicycle-type" >Bicycle type</label>
+                        <select id="bicycle-type" value={bicycleType} onChange={e => setBicycleType(e.target.value)} >
+                            <option value="" disabled >-- Select bicycle type --</option>
                             <option value="Mountain bike" >Mountain bike</option>
                             <option value="Road bike" >Road bike</option>
                             <option value="Hybrid bike" >Hybrid bike</option>
@@ -62,8 +61,8 @@ const CreateRide = () => {
                     </div>
 
                     <div className="create-ride-form-input" >
-                        <label htmlFor="ride-name" >Notes</label>
-                        <textarea id="ride-name" onChange={() => null} />
+                        <label htmlFor="ride-name" >Description</label>
+                        <textarea placeholder="Enter details such as number of stops, rules," id="ride-name" onChange={() => null} />
                     </div>
 
                     <Button disabled type="primary" >Create ride</ Button>
