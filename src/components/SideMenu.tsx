@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import "../styles/components/side-menu.css";
-import { Link } from "react-router-dom";
+import { AuthContext } from "../context/auth";
 
 interface SideMenuProps {
     isOpen: boolean;
@@ -8,6 +8,7 @@ interface SideMenuProps {
 }
 
 const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose }) => {
+    const { logout } = useContext(AuthContext);
     if (!isOpen) return null;
 
     return (
@@ -19,7 +20,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose }) => {
                 <div className="side-menu-option">Profile</div>
                 <div className="side-menu-option">Rides</div>
                 <div className="side-menu-option">Create Ride</div>
-                <Link to="/login" ><div className="side-menu-option">Log out</div></Link>
+                <div className="side-menu-option" onClick={logout}>Log out</div>
             </div>
         </>
     );

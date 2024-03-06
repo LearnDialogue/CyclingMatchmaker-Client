@@ -1,10 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import Navbar from "../../components/Navbar";
 import GpxMap from "../GpxMap"; // Replace with the correct path
 import "../../styles/profile-page.css";
 import mockUserData from "../../mockData/userMockUp.json";
+import { AuthContext } from "../../context/auth";
 
 const ProfilePage = () => {
+  
+  const { user } = useContext(AuthContext);
+
+  let username: string | null = null;
+
+  if (user) {
+    username = user.username;
+  }
+
+  console.log(username);
+  
   useEffect(() => {
     console.log(mockUserData);
   }, [])
