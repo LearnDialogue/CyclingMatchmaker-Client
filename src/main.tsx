@@ -67,7 +67,7 @@ return (
   </Router>
 )
 }
-console.log(import.meta.env.VITE_SERVER_URI)
+
 const client = new ApolloClient({
   uri: import.meta.env.VITE_SERVER_URI,
   cache: new InMemoryCache(),
