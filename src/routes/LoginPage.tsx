@@ -4,10 +4,11 @@ import "../styles/login.css"
 import { useState, useContext, useEffect } from "react";
 import LoaderWheel from "../components/LoaderWheel";
 import { gql, useMutation } from '@apollo/client';
+import { AuthContext } from "../context/auth";
 //import { UseUser } from "../context/auth";
 
 const LoginPage = () => {
-
+    const context = useContext(AuthContext);
     const navigate = useNavigate();
 
     //const context = useContext(AuthContext);
@@ -17,7 +18,6 @@ const LoginPage = () => {
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    const [loginSuccessful, setLoginSuccessful] = useState<boolean>(false); // true for prototype only
 
     //const [loading, setLoading] = useState<boolean>(false);
 
@@ -51,23 +51,8 @@ const LoginPage = () => {
 
     const [loginUser, { loading }] = useMutation(LOGIN_USER,  {
         update(_, { data: { login: userData } }) {
-           // context.login(userData);
-            handleLogin
-            
-        },
-        onCompleted(data) {
-            console.log(data)
-            if(data) {
-                console.log("helloo")
-                setLoginSuccessful(true);
-            }
-            const initialUser = {
-                username: data.login.username,
-                // other properties...
-              };
-            //setUser(initialUser);
-
-            //updateUserProperty('username', data.username);
+            context.login(userData);
+            navigate("/app/profile");
         },
         onError(err) {
             console.log(values)
@@ -99,16 +84,6 @@ const LoginPage = () => {
             
         }
     }
-    useEffect(() => {
-        if (loginSuccessful) {
-          // setLoading(true);
-          
-            // navigate to "/app/profile", aka login
-            navigate("/app/profile");
-            console.log("navigated!");
-         
-        }
-      }, [loginSuccessful]);
 
     if(loading){
         return (
@@ -168,7 +143,7 @@ mutation login(
       sex
       password
       email
-
+      loginToken
     }
   }
 `;
