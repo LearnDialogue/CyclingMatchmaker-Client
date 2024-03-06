@@ -36,9 +36,9 @@ return (
   </React.StrictMode>
 )
 }
-
+console.log(import.meta.env.VITE_SERVER_URI)
 const client = new ApolloClient({
-  uri: ' http://localhost:5000/',
+  uri: import.meta.env.VITE_SERVER_URI,
   cache: new InMemoryCache(),
 });
 
