@@ -93,6 +93,7 @@ const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, dista
                 <p>{distance} km</p>
                 <div className="rsvp-button" >
                     <Button type="secondary" >RSVP</Button>
+                    <span>Share <i className="fa-regular fa-paper-plane"></i></span>
                 </div>
             </div>
             <div className="ride-feed-card-matching-score" >
