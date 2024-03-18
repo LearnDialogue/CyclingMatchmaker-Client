@@ -1,0 +1,203 @@
+.ride-feed-card-main-container {
+    padding: 24px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+    border: 0.5px solid rgba(0, 0, 0, 0.185);
+    border-radius: 12px;
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    position: relative;
+}
+.ride-feed-card-main-container:hover {
+    cursor: pointer;
+}
+
+.ride-feed-card-main-container > .ride-feed-card-route-map > img {
+    min-height: 250px;
+    max-height: 250px;
+}
+
+.ride-feed-card-main-container > .ride-feed-card-route-map > span {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    background-color: rgba(0, 0, 0, 0.344);
+    min-height: 250px;
+    min-width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow:0px 0px 5px rgba(0, 0, 0, 0.241),0px 0px 5px #00000058;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+}
+.ride-feed-card-main-container > .ride-feed-card-route-map > span:hover {
+    opacity: 1;
+}
+
+.ride-feed-card-main-container > .ride-feed-card-route-map > span > i {
+    margin-left: 12px;
+}
+
+
+.ride-feed-card-main-container > .ride-feed-card-values {
+    flex-grow: 1;
+    padding: 0px;
+}
+.ride-feed-card-main-container > .ride-feed-card-values > h2 span {
+    font-size: 0.5em;
+    font-weight: 400;
+    opacity: 0.7;
+}
+.ride-feed-card-main-container > .ride-feed-card-values > span {
+    font-size: 0.9em;
+}
+.ride-feed-card-main-container > .ride-feed-card-values > p {
+    color: rgba(0, 0, 0, 0.653);
+    font-size: 0.8em;
+    margin: 0px;
+    margin-top: 6px;
+}
+
+.ride-feed-card-main-container > .ride-feed-card-values > .rsvp-button {
+    margin-top: 12px;
+    display: flex;
+}
+.ride-feed-card-main-container > .ride-feed-card-values > .rsvp-button > span {
+    padding: 12px;
+    padding-right: 0px;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+.ride-feed-card-main-container > .ride-feed-card-values > .rsvp-button > span:hover {
+    cursor: pointer;
+    opacity: 0.4;
+}
+
+
+.ride-feed-card-main-container > .ride-feed-card-matching-score {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+}
+.ride-feed-card-main-container > .ride-feed-card-matching-score > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: capitalize;
+    font-size: 0.8em;
+    font-weight: 700;
+    text-align: center;
+}
+.ride-feed-card-main-container > .ride-feed-card-matching-score > div i {
+    margin-left: 6px;
+}
+
+
+
+
+/* Card Pop over modal */
+
+.ride-card-modal-overlay {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.229);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ride-card-modal-container {
+    background-color: white;
+    padding: 24px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 8px;
+    border: 0.5px solid rgba(0, 0, 0, 0.185);
+    border-radius: 12px;
+    position: relative;
+    max-width: 80vw;
+    max-height: 90vh;
+    overflow: scroll;
+}
+
+.ride-card-modal-container > img {
+    background-color: green;
+    width: 100%;
+}
+
+.ride-card-modal-values {
+    padding: 12px;
+}
+.ride-card-modal-values > p {
+    color: rgba(0, 0, 0, 0.653);
+    font-size: 0.85em;
+    margin: 0px;
+    margin-top: 6px;
+}
+.ride-card-modal-values > .rsvp-button {
+    margin-top: 12px;
+}
+
+
+.rode-card-close-modal {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: white;
+    font-size: 1.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.rode-card-close-modal:hover {
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.381);
+}
+
+
+
+
+
+
+@media only screen and (max-width: 800px) {
+    .ride-feed-card-main-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ride-feed-card-main-container > .ride-feed-card-route-map {
+        width: 100%;
+        height: auto;
+    }
+
+    .ride-feed-card-main-container > .ride-feed-card-values {
+        padding: 12px;
+    }
+
+    .ride-feed-card-main-container > .ride-feed-card-route-map > img {
+        padding: 12px;
+        width: 100%;
+        min-height: none;
+        max-height: none;
+        
+    }
+
+    .ride-feed-card-main-container > .ride-feed-card-matching-score {
+        position: absolute;
+        right: 24px;
+        top: calc(100% - 70px);
+        padding: 12px;
+    }
+    
+}

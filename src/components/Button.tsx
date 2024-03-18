@@ -6,16 +6,15 @@ interface ButtonProps {
     disabled?: boolean;
     width?: number;
     children: React.ReactNode;
+    onClick?: () => void;
 }
 
-const Button: React.FC<ButtonProps> = ({ type, disabled, children }) => {
-    // Determine the button's className based on the `type` prop
-    let className = "button " + (type === 'primary' ? 'button-primary' : 'button-secondary');
+const Button: React.FC<ButtonProps> = ({ type, width, disabled, children, onClick }) => {
 
-    className += (disabled ? " button-disabled" : "");
+    let disabledStyle = (disabled ? " button-disabled" : "");
 
     return (
-        <button className={className} >
+        <button onClick={onClick} className={"button button-" + type + disabledStyle} style={{width: `${width ?? 100}%`}} >
             {children}
         </button>
     );

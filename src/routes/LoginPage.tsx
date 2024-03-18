@@ -18,8 +18,9 @@ const LoginPage = () => {
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
+    const [loginSuccessful, setLoginSuccessful] = useState<boolean>(false);
 
-    //const [loading, setLoading] = useState<boolean>(false);
+    // const [loading, setLoading] = useState<boolean>(false);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const updatedUsername = e.target.value;
@@ -51,8 +52,23 @@ const LoginPage = () => {
 
     const [loginUser, { loading }] = useMutation(LOGIN_USER,  {
         update(_, { data: { login: userData } }) {
-            context.login(userData);
-            navigate("/app/profile");
+           // context.login(userData);
+            handleLogin
+            
+        },
+        onCompleted(data) {
+            console.log(data)
+            if(data) {
+                console.log("helloo")
+
+                const userData = data;
+                localStorage.setItem('userData', JSON.stringify(userData.login));
+                setLoginSuccessful(true);
+            }
+            
+            //setUser(initialUser);
+
+            //updateUserProperty('username', data.username);
         },
         onError(err) {
             console.log(values)
@@ -84,6 +100,16 @@ const LoginPage = () => {
             
         }
     }
+    useEffect(() => {
+        if (loginSuccessful) {
+          // setLoading(true);
+
+        
+            navigate("/app/profile");
+            console.log("navigated!");
+         
+        }
+      }, [loginSuccessful]);
 
     if(loading){
         return (

@@ -1,6 +1,7 @@
 .profile-page-main-container {
     min-height: 100vh;
     max-height: 100vh;
+    overflow-y: auto;
 }
 
 .profile-page-grid {
@@ -74,4 +75,28 @@
     font-weight: 200;
     font-size: 0.9em;
     opacity: 0.6;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media only screen and (max-width: 800px) {
+    .profile-page-user-events {
+        flex-direction: column;
+    }
+
+    .profile-page-user-stats-data {
+        flex-direction: column;
+    }
+    
 }
