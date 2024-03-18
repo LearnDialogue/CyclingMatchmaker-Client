@@ -4,10 +4,11 @@ import "../styles/login.css"
 import { useState, useContext, useEffect } from "react";
 import LoaderWheel from "../components/LoaderWheel";
 import { gql, useMutation } from '@apollo/client';
+import { AuthContext } from "../context/auth";
 //import { UseUser } from "../context/auth";
 
 const LoginPage = () => {
-
+    const context = useContext(AuthContext);
     const navigate = useNavigate();
 
     //const context = useContext(AuthContext);
@@ -168,7 +169,7 @@ mutation login(
       sex
       password
       email
-
+      loginToken
     }
   }
 `;
