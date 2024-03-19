@@ -2,10 +2,9 @@ import React, { useReducer, createContext, ReactNode } from "react";
 import { jwtDecode } from "jwt-decode";
 import { NavLink, useNavigate } from "react-router-dom";
 
-interface User {
+export interface User {
     username: string;
     loginToken: string;
-    permission: string;
 }
 
 interface State {
@@ -25,7 +24,6 @@ const token: string | null = localStorage.getItem("jwtToken");
 
 if (token) {
   const decodedToken: any = jwtDecode(token);
-  localStorage.setItem('permission', decodedToken.permission);
 
   if (decodedToken.exp*1000 < Date.now()) {
     localStorage.removeItem("jwtToken");
@@ -68,7 +66,6 @@ function AuthProvider({ children }: { children: ReactNode }) {
     
     function login(userData: User) {
       localStorage.setItem("jwtToken", userData.loginToken);
-      localStorage.setItem("permission", userData.permission);
       dispatch({
         type: "LOGIN",
         payload: userData
@@ -77,7 +74,6 @@ function AuthProvider({ children }: { children: ReactNode }) {
   
     function logout() {
       localStorage.removeItem("jwtToken");
-      localStorage.removeItem('permission');
       dispatch({
         type: "LOGOUT"
       });

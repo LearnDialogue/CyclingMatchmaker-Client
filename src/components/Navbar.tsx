@@ -1,32 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../styles/components/navbar.css";
 import SideMenu from "./SideMenu";
 import { Link } from "react-router-dom";
-
-interface UserData {
-    username: string;
-    email: string;
-    sex: string;
-    weight: number;
-}
+import { AuthContext } from "../context/auth";
+import { User } from "../context/auth";
 
 const Navbar: React.FC = () => {
 
+    const context = useContext(AuthContext);
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileMenu, setProfileMenu] = useState(false);
+    const [userData, setUserData] = useState<User | null | undefined>();
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     }
 
-    const [userData, setUserData] = useState<UserData>();
-
     useEffect(() => {
-
-        const storedUser = JSON.parse(localStorage.getItem('userData') ?? "");
+        const storedUser = context.user;
         console.log(storedUser);
         setUserData(storedUser);
-        
     }, [])
 
     return (
@@ -53,8 +46,8 @@ const Navbar: React.FC = () => {
                         <Link to="/app/profile" >
                             <ul>Profile</ul>
                         </Link>
-                        <Link to="/login" >
-                            <ul className="log-out-btn" >Log out</ul>
+                        <Link to="/" >
+                            <ul className="log-out-btn" onClick={context.logout}>Log out</ul>
                         </Link>
                     </div>
                 ) : null}
