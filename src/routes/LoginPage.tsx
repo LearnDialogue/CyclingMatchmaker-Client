@@ -1,25 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import "../styles/login.css"
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import LoaderWheel from "../components/LoaderWheel";
 import { gql, useMutation } from '@apollo/client';
-//import { UseUser } from "../context/auth";
+import { AuthContext } from "../context/auth";
 
 const LoginPage = () => {
-
+    const context = useContext(AuthContext);
     const navigate = useNavigate();
-
-    //const context = useContext(AuthContext);
-    //const { user, setUser, updateUserProperty } = UseUser();
-    
     
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-
-    const [loginSuccessful, setLoginSuccessful] = useState<boolean>(false);
-
-    // const [loading, setLoading] = useState<boolean>(false);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const updatedUsername = e.target.value;
@@ -51,23 +43,8 @@ const LoginPage = () => {
 
     const [loginUser, { loading }] = useMutation(LOGIN_USER,  {
         update(_, { data: { login: userData } }) {
-           // context.login(userData);
-            handleLogin
-            
-        },
-        onCompleted(data) {
-            console.log(data)
-            if(data) {
-                console.log("helloo")
-
-                const userData = data;
-                localStorage.setItem('userData', JSON.stringify(userData.login));
-                setLoginSuccessful(true);
-            }
-            
-            //setUser(initialUser);
-
-            //updateUserProperty('username', data.username);
+            context.login(userData);
+            navigate("/app/profile");
         },
         onError(err) {
             console.log(values)
@@ -99,16 +76,6 @@ const LoginPage = () => {
             
         }
     }
-    useEffect(() => {
-        if (loginSuccessful) {
-          // setLoading(true);
-
-        
-            navigate("/app/profile");
-            console.log("navigated!");
-         
-        }
-      }, [loginSuccessful]);
 
     if(loading){
         return (
@@ -164,11 +131,7 @@ mutation login(
       }
     ) {
       username
-      weight
-      sex
-      password
-      email
-
+      loginToken
     }
   }
 `;
