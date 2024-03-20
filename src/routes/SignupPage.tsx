@@ -319,7 +319,7 @@ const SignupPage = () => {
                 </div>
 
                 <div className="signup-form-input" >
-                    <label>Weight</label>
+                    <label>Weight (kg)</label>
                     <input onChange={handleWeightChange} type="text" value={weight} />
                 </div>
 
