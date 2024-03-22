@@ -5,6 +5,11 @@ import "../../styles/create-ride.css";
 import { gql, useMutation } from "@apollo/client";
 import { extractRouteInfo } from "../../util/GpxHandler";
 import { AuthContext } from "../../context/auth";
+import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const CreateRide = () => {
     const context = useContext(AuthContext);
@@ -83,6 +88,7 @@ const CreateRide = () => {
         setRideTime(e.target.value);
     }
 
+
     function refreshDate() {
         if(rideDate && rideTime) {
             const mergedDate: string = `${rideDate}T${rideTime}:00.000Z`;
@@ -123,6 +129,16 @@ const CreateRide = () => {
         }
     };
 
+    const handleButtonClick = () => {
+        addEvent();
+        notify(); // Call notify function here
+
+        // Adding 2 second delay before redirecting to the profile page
+        setTimeout(() => {
+            window.location.href = "/app/profile";
+        }, 1500);
+    };
+
     const [addEvent, { loading }] = useMutation(CREATE_EVENT_MUTATION, {
         onError(err) {
             setErrors(err.graphQLErrors);
@@ -145,8 +161,21 @@ const CreateRide = () => {
         return rideName != "" && rideDate != "" && rideTime != "" && bicycleType != "" && difficulty != "" && rideAverageSpeed != "";
     }
 
+    const toastStyle = {
+        background: 'lightgreen', // Change background color to light green
+        color: 'black', // Change text color
+    };
+
+    // Custom toast container style
+    const toastContainerStyle = {
+        width: 'auto', // Adjust width as needed
+        textAlign: 'center', // Center the toast
+    };
+    const notify = () => toast("Ride Created!");
+
 
     return (
+        
         <>
             <Navbar />
             <div className="create-ride-main-container" >
@@ -218,14 +247,20 @@ const CreateRide = () => {
                             <input type="file" onChange={handleFileSelect} />
                         </div>
                     </div>
-
                     <Button
                         disabled={!enableButton()}
-                        onClick={addEvent}
+                        onClick={handleButtonClick}
                         type="primary"
                     >
                         Create ride
                     </ Button>
+                    <ToastContainer
+                    
+                toastStyle={toastStyle}
+                autoClose={1000} 
+
+            />
+               
                 </div>
             </div>
         </>
