@@ -5,13 +5,14 @@ import "../../styles/create-ride.css";
 import { gql, useMutation } from "@apollo/client";
 import { extractRouteInfo } from "../../util/GpxHandler";
 import { AuthContext } from "../../context/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 
 const CreateRide = () => {
+    const navigate = useNavigate();
     const context = useContext(AuthContext);
     const [errors, setErrors] = useState({});
 
@@ -135,7 +136,7 @@ const CreateRide = () => {
 
         // Adding 2 second delay before redirecting to the profile page
         setTimeout(() => {
-            window.location.href = "/app/profile";
+            navigate("/app/profile");
         }, 1500);
     };
 
