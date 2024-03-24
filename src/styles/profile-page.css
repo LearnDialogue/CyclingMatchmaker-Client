@@ -9,6 +9,9 @@
     max-width: 1200px;
     margin: auto;
     padding: 48px;
+    gap: 12px;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -17,18 +20,22 @@
     padding: 24px 0px;
 }
 
-
-.profile-page-user-events {
-    display: flex;
-    gap: 24px;
-}
-
-.profile-page-user-event {
+.profile-page-user-upcoming-rides {
     background-color: white;
-    flex-grow: 1;
     padding: 24px;
     border-radius: 12px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.profile-page-user-upcoming-rides-data {
+    display: flex;
+    margin-top: 24px;
+    gap: 24px;
+}
+
+.profile-page-user-upcoming-rides-data > .profile-page-user-rides-hosted, .profile-page-user-upcoming-rides-data > .profile-page-user-rides-joined {
+    background-color: rgba(128, 128, 128, 0.055);
+    flex-grow: 1;
+    padding: 24px;
 }
 
 .profile-page-user-event-no-rides-text {

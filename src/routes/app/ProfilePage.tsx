@@ -33,23 +33,42 @@ const ProfilePage = () => {
       <Navbar />
       <div className="profile-page-grid">
         <h3 className="profile-page-welcome-message">Welcome back, <b>{userData?.getUser.firstName}</b>!</h3>
-        <div className="profile-page-user-events">
-          <div className="profile-page-user-event">
-            <h4>Your rides</h4>
-            {eventData && eventData.getEvents && eventData.getEvents.map((event: any, index: number) => (
-            <div key={index}>
-              <div>{event.name}</div>
-              <div>{event.startTime}</div>
-            </div>
-          ))}
+        
+        <div className="profile-page-user-upcoming-rides">
+            <h4>Your upcoming rides</h4>
+
+              <div className="profile-page-user-upcoming-rides-data" >
+
+                <div className="profile-page-user-rides-hosted" >
+                  <h5>Rides you are hosting</h5>
+                  <div>
+                    {eventData && eventData.getEvents ? eventData.getEvents.map((event: any, index: number) => (
+                      <div key={index}>
+                        <div>{event.name}</div>
+                        <div>{event.startTime}</div>
+                      </div>
+                    )) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
+                  </div>
+                </div>
+
+                <div className="profile-page-user-rides-joined" >
+                  <h5>Rides you are joining</h5>
+                  <div>
+                    {eventData && eventData.getEvents ? eventData.getEvents.map((event: any, index: number) => (
+                        <div key={index}>
+                          <div>{event.name}</div>
+                          <div>{event.startTime}</div>
+                        </div>
+                      )) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
+                  </div>
+                </div>
+
+              </div>
           </div>
-          <div className="profile-page-user-event">
-            <h4>Rides you joined</h4>
-            <div>
-              {mockUserData.eventsJoined.length > 0 ? mockUserData.eventsJoined.map((e) => <div key={e}>{e}</div>) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
-            </div>
-          </div>
-        </div>
+
+
+
+
         <div className="profile-page-user-stats">
           <h4>Your stats</h4>
           <div className="profile-page-user-stats-data">
@@ -74,6 +93,8 @@ const ProfilePage = () => {
               <div>Advanced</div>
             </div>
           </div>
+
+          
         </div>
       </div>
     </div>

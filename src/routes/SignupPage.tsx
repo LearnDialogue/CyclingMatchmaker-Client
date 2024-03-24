@@ -314,8 +314,14 @@ const SignupPage = () => {
                 </div>
 
                 <div className="signup-form-input" >
-                    <label>Sex</label>
-                    <input onChange={handleSexChange} type="text" value={sex} />
+                    <label>Gender</label>
+                    <select onChange={handleSexChange} value={sex} >
+                        <option value="" disabled>-- Select gender --</option>
+                        <option value="gender-man">Man</option>
+                        <option value="gender-woman">Woman</option>
+                        <option value="gender-non-binary">Non-binary</option>
+                        <option value="gender-prefer-not-to-say">Prefer not to say</option>
+                    </select>
                 </div>
 
                 <div className="signup-form-input" >
@@ -324,8 +330,8 @@ const SignupPage = () => {
                 </div>
 
                 <div className="signup-form-input" >
-                    <label>Date of Birth (YYYY-MM-DD)</label>
-                    <input onChange={handleBirthdayChange} type="text" value={birthday} />
+                    <label htmlFor="ride-date" >Date of birth</label>
+                    <input id="ride-date" onChange={handleBirthdayChange} type="date" value={birthday} max={new Date().toISOString().split('T')[0]} />
                 </div>
 
                 <div className="signup-form-signup-btn" >
