@@ -47,7 +47,7 @@
     margin: 8px 0px;
     font-weight: bold;
 }
-.signup-form-input > input {
+.signup-form-input > input, .signup-form-input > select {
     padding: 12px;
     border: 1px solid rgba(14, 30, 37, 0.186);
     border-radius: 4px;
