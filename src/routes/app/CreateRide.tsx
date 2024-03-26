@@ -245,7 +245,7 @@ const CreateRide = () => {
 
                     <div className="create-ride-form-input" >
                         <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                            <input type="file" onChange={handleFileSelect} />
+                        <input type="file" onChange={handleFileSelect} accept=".gpx" />
                         </div>
                     </div>
                     <Button
