@@ -1,18 +1,21 @@
-import Navbar from "../../components/Navbar";
-import RideFeedCard from "../../components/RideFeedCard";
-import "../../styles/rides-feed.css";
-import dummyData from "../../mockData/ridesFeedMockUp.json";
-import { useContext, useState } from "react";
-import Button from "../../components/Button";
+import { useContext, useEffect, useState } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { RideFeedCardProps } from "../../components/RideFeedCard";
 import { AuthContext } from "../../context/auth";
+
+import RideFeedCard from "../../components/RideFeedCard";
+import Navbar from "../../components/Navbar";
+import Button from "../../components/Button";
+
+import "../../styles/rides-feed.css";
 
 const RidesFeed = () => {
     const { user } = useContext(AuthContext);
+    const [reload, setReload] = useState<boolean | null>(null);
     const [searchName, setSearchName] = useState("");
     const [radius, setRadius] = useState(0);
 
-    const { data: userData} = useQuery(FETCH_USER_QUERY, {
+    const { data: userData } = useQuery(FETCH_USER_QUERY, {
         onCompleted() {
             setSearchName(userData.getUser.locationName);
             setRadius(userData.getUser.radius);
@@ -27,10 +30,6 @@ const RidesFeed = () => {
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked, value } = event.target;
 
-        console.log("name " + name);
-        console.log("checked " + checked);
-        console.log("value " + value);
-    
         setAppliedFilters(prev => {
             if (checked) {
                 return [...prev, name];
@@ -45,7 +44,7 @@ const RidesFeed = () => {
         setRadius(parseInt(newRadius));
     };  
 
-    const [setRegionUser, { loading, error, data }] = useMutation(SET_REGION_MUTATION);
+    const [setRegionUser, { loading: regionLoading, error, data }] = useMutation(SET_REGION_MUTATION);
 
     const setRegion = async () => {
         const searchStr = searchName.trim().toLowerCase();
@@ -78,10 +77,21 @@ const RidesFeed = () => {
             sessionStorage.setItem(searchStr, JSON.stringify(storedObj));
         }
     } 
-    
+
+    const { data: rideData, loading: rideLoading, refetch: ridesRefetch } = useQuery(FETCH_RIDES, {
+        variables: {
+            username: user?.username,
+        }
+    });
+
     const handleSubmit = async () => {
         await setRegion();
+        await setReload(prevReload => !prevReload);
     };
+
+    useEffect(() => {
+        if (reload !== null){ridesRefetch()}
+    }, [reload]);
 
     return (
         
@@ -177,8 +187,11 @@ const RidesFeed = () => {
 
                     <div className="rides-feed-results" >
                         <div className="rides-feed-header" >
-                            <h4>Showing {dummyData.length} rides:</h4>
-                            <div>
+                            {rideData ? (
+                                    <h4>Showing {rideData.getEvents.length} rides:</h4>
+                                ) : (
+                                    <></>
+                        )}<div>
                                 <span>Sort by: </span>
                                 <select>
                                     <option>-- Select option --</option>
@@ -193,11 +206,19 @@ const RidesFeed = () => {
                         </div>
 
                         <div className="rides-feed-rides" >
-                            {dummyData.map((event, index) => {
-                                return (
-                                    <RideFeedCard key={index} {...event} ></RideFeedCard>
-                                );
-                            })}
+                            {regionLoading || rideLoading ? (
+                                <p>Loading...</p>
+                            ) : (
+                                rideData ? (
+                                    rideData.getEvents.map((event: RideFeedCardProps, index: number) => {
+                                        return (
+                                            <RideFeedCard key={index} {...event} ></RideFeedCard>
+                                        );
+                                    })
+                                ) : (
+                                    <></>
+                                )
+                            )}
                         </div>
                     </div>
                 </div>
@@ -234,6 +255,24 @@ const SET_REGION_MUTATION = gql`
             locationName
             locationCoords
             radius
+        }
+    }
+`
+const FETCH_RIDES = gql`
+    query getEvents($username: String!) {
+        getEvents(username: $username) {
+            id
+            host
+            name
+            locationCoords
+            startTime
+            description
+            bikeType
+            difficulty
+            wattsPerKilo
+            intensity
+            route
+            participants
         }
     }
 `
