@@ -17,10 +17,22 @@ const ProfilePage = () => {
   }
   const token: string | null = localStorage.getItem("jwtToken");
 
-  const {loading: eventLoading, error: eventErr, data: eventData } = useQuery(GET_EVENTS, {variables: {
-    username: user?.username,
-  },
+  const {loading: hostedLoading, error: hostedErr, data: hostedEvents } = useQuery(GET_HOSTED_EVENTS, {
+    context: {
+      headers: {
+          Authorization: `Bearer ${token}`,
+      },
+    },
   });
+
+  const {loading: joinedLoading, error: joinedErr, data: joinedEvents } = useQuery(GET_JOINED_EVENTS, {
+    context: {
+      headers: {
+          Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
 
   const { loading: userLoading, error, data: userData} = useQuery(FETCH_USER_QUERY, {
     variables: {
@@ -42,9 +54,10 @@ const ProfilePage = () => {
                 <div className="profile-page-user-rides-hosted" >
                   <h5>Rides you are hosting</h5>
                   <div>
-                    {eventData && eventData.getEvents ? eventData.getEvents.map((event: any, index: number) => (
+                    {hostedEvents ? hostedEvents.getHostedEvents.map((event: any, index: number) => (
                       <div key={index}>
                         <div>{event.name}</div>
+                        <div>{event.locationName}</div>
                         <div>{event.startTime}</div>
                       </div>
                     )) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
@@ -54,9 +67,10 @@ const ProfilePage = () => {
                 <div className="profile-page-user-rides-joined" >
                   <h5>Rides you are joining</h5>
                   <div>
-                    {eventData && eventData.getEvents ? eventData.getEvents.map((event: any, index: number) => (
+                    {joinedEvents ? joinedEvents.getJoinedEvents.map((event: any, index: number) => (
                         <div key={index}>
                           <div>{event.name}</div>
+                          <div>{event.locationName}</div>
                           <div>{event.startTime}</div>
                         </div>
                       )) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
@@ -114,10 +128,23 @@ const FETCH_USER_QUERY = gql`
   }
 `;
 
-const GET_EVENTS = gql`
-  query getEvents($username: String!) {
-    getEvents(username: $username) {
+const GET_HOSTED_EVENTS = gql`
+  query getHostedEvents {
+    getHostedEvents {
         name
+        locationName
+        host
+        startTime
+    }
+  }
+`;
+
+const GET_JOINED_EVENTS = gql`
+  query getJoinedEvents {
+    getJoinedEvents {
+        name
+        locationName
+        host
         startTime
     }
   }
