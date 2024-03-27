@@ -34,7 +34,8 @@
 
 .profile-page-user-upcoming-rides-data > .profile-page-user-rides-hosted, .profile-page-user-upcoming-rides-data > .profile-page-user-rides-joined {
     background-color: rgba(128, 128, 128, 0.055);
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    width: 50%;
     padding: 24px;
 }
 
