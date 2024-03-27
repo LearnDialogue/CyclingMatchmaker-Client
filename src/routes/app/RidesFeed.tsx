@@ -14,6 +14,9 @@ const RidesFeed = () => {
     const [reload, setReload] = useState<boolean | null>(null);
     const [searchName, setSearchName] = useState("");
     const [radius, setRadius] = useState(0);
+    const [bikeType, setBikeType] = useState<string[] | never[]>([]);
+    const [wkg, setWkg] = useState<string[] | never[]>([]);
+    const [match, setMatch] = useState([""]);
 
     const [eventParams, setEventParams] = useState({
         startDate: new Date().toISOString(),
@@ -32,7 +35,21 @@ const RidesFeed = () => {
     const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, checked, value } = event.target;
+        const { name, checked, id } = event.target;
+
+        if (id == "bike") {
+            if (checked) {
+                setBikeType(prevArray => [...prevArray, name]);
+            } else {
+                setBikeType(prevArray => prevArray.filter(item => item !== name));
+            }
+        } else if (id == "wkg") {
+            if (checked) {
+                setWkg(prevArray => [...prevArray, name]);
+            } else {
+                setWkg(prevArray => prevArray.filter(item => item !== name));
+            }
+        }
 
         setAppliedFilters(prev => {
             if (checked) {
@@ -99,6 +116,8 @@ const RidesFeed = () => {
             ...prevVals,
             location: searchName.trim().toLowerCase(),
             radius: radius,
+            bikeType: bikeType,
+            wkg: wkg,
         }));
 
         await setReload(prevReload => !prevReload);
@@ -146,29 +165,53 @@ const RidesFeed = () => {
                         <div className="rides-feed-filter-options" >
                             <h5>Bike type</h5>
                             <label htmlFor="mountain-bike" >
-                                <input name="mountain bike" onChange={handleCheckboxChange} id="mountain-bike" type="checkbox" /> Mountain
+                                <input name="Mountain bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Mountain
                             </label>
-                            <label htmlFor="cycling-bike" >
-                                <input name="cycling bike" onChange={handleCheckboxChange} id="cycling-bike" type="checkbox" /> Cycling
+                            <label htmlFor="road-bike" >
+                                <input name="Road bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Road
                             </label>
-                            <label htmlFor="other-bike" >
-                                <input name="other bike" onChange={handleCheckboxChange} id="other-bike" type="checkbox" /> Other
+                            <label htmlFor="hybrid-bike" >
+                                <input name="Hybrid bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Hybrid
+                            </label>
+                            <label htmlFor="touring-bike" >
+                                <input name="Touring bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Touring
+                            </label>
+                            <label htmlFor="gravel-bike" >
+                                <input name="Gravel bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Gravel
                             </label>
                         </div>
 
                         <div className="rides-feed-filter-options" >
                             <h5>Watts/kilo range</h5>
-                            <label htmlFor="wkg-range-a+" >
-                                <input name="4.6+" onChange={handleCheckboxChange} id="wkg-range-a+" type="checkbox" />4.6+
+                            <label htmlFor="wkg-range-1" >
+                                <input name="Above 4.5" onChange={handleCheckboxChange} id="wkg" type="checkbox" />Above 4.5
                             </label>
-                            <label htmlFor="wkg-range-a" >
-                                <input name="4.0 to 4.6" onChange={handleCheckboxChange} id="wkg-range-a" type="checkbox" /> 4.0 to 4.6
+                            <label htmlFor="wkg-range-2" >
+                                <input name="4.1 to 4.5" onChange={handleCheckboxChange} id="wkg" type="checkbox" />4.1 to 4.5
                             </label>
-                            <label htmlFor="wkg-range-b" >
-                                <input name="3.2 to 4.0" onChange={handleCheckboxChange} id="wkg-range-b" type="checkbox" />3.2 to 4.0
+                            <label htmlFor="wkg-range-3" >
+                                <input name="3.8 to 4.1" onChange={handleCheckboxChange} id="wkg" type="checkbox" />3.8 to 4.1
                             </label>
-                            <label htmlFor="wkg-range-c" >
-                                <input name="2.5 to 3.2" onChange={handleCheckboxChange} id="wkg-range-c" type="checkbox" />2.5 to 3.2
+                            <label htmlFor="wkg-range-4" >
+                                <input name="3.5 to 3.8" onChange={handleCheckboxChange} id="wkg" type="checkbox" />3.5 to 3.8
+                            </label>
+                            <label htmlFor="wkg-range-5" >
+                                <input name="3.2 to 3.5" onChange={handleCheckboxChange} id="wkg" type="checkbox" />3.2 to 3.5
+                            </label>
+                            <label htmlFor="wkg-range-6" >
+                                <input name="2.9 to 3.2" onChange={handleCheckboxChange} id="wkg" type="checkbox" />2.9 to 3.2
+                            </label>
+                            <label htmlFor="wkg-range-7" >
+                                <input name="2.6 to 2.9" onChange={handleCheckboxChange} id="wkg" type="checkbox" />2.6 to 2.9
+                            </label>
+                            <label htmlFor="wkg-range-8" >
+                                <input name="2.3 to 2.6" onChange={handleCheckboxChange} id="wkg" type="checkbox" />2.3 to 2.6
+                            </label>
+                            <label htmlFor="wkg-range-9" >
+                                <input name="2.0 to 2.3" onChange={handleCheckboxChange} id="wkg" type="checkbox" />2.0 to 2.3
+                            </label>
+                            <label htmlFor="wkg-range-10" >
+                                <input name="Below 2.0" onChange={handleCheckboxChange} id="wkg" type="checkbox" />Below 2.0
                             </label>
                         </div>
 
@@ -280,6 +323,7 @@ const FETCH_RIDES = gql`
         $startDate: Date!
         $endDate: Date
         $bikeType: [String!]
+        $wkg: [String!]
         $location: String
         $radius: Int
         $match: [String]
@@ -291,6 +335,7 @@ const FETCH_RIDES = gql`
                 startDate: $startDate
                 endDate: $endDate
                 bikeType: $bikeType
+                wkg: $wkg
                 location: $location
                 radius: $radius
                 match: $match
