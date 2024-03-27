@@ -15,6 +15,10 @@ const RidesFeed = () => {
     const [searchName, setSearchName] = useState("");
     const [radius, setRadius] = useState(0);
 
+    const [eventParams, setEventParams] = useState({
+        startDate: new Date().toISOString(),
+    });
+
     const { data: userData } = useQuery(FETCH_USER_QUERY, {
         onCompleted() {
             setSearchName(userData.getUser.locationName);
@@ -78,14 +82,25 @@ const RidesFeed = () => {
         }
     } 
 
+    const token: string | null = localStorage.getItem("jwtToken");
+
     const { data: rideData, loading: rideLoading, refetch: ridesRefetch } = useQuery(FETCH_RIDES, {
-        variables: {
-            username: user?.username,
-        }
+        context: {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+        variables: eventParams,
     });
 
     const handleSubmit = async () => {
-        await setRegion();
+        // await setRegion();
+        setEventParams((prevVals) => ({
+            ...prevVals,
+            location: searchName.trim().toLowerCase(),
+            radius: radius,
+        }));
+
         await setReload(prevReload => !prevReload);
     };
 
@@ -259,9 +274,28 @@ const SET_REGION_MUTATION = gql`
     }
 `
 const FETCH_RIDES = gql`
-    query getEvents($username: String!) {
-        getEvents(username: $username) {
-            id
+    query getEvents(
+        $page: Int
+        $pageSize: Int
+        $startDate: Date!
+        $endDate: Date
+        $bikeType: [String!]
+        $location: String
+        $radius: Int
+        $match: [String]
+    ) {
+        getEvents(
+            getEventsInput: {
+                page: $page
+                pageSize: $pageSize
+                startDate: $startDate
+                endDate: $endDate
+                bikeType: $bikeType
+                location: $location
+                radius: $radius
+                match: $match
+            }
+        ) {
             host
             name
             locationCoords
