@@ -1,27 +1,57 @@
 import { useState } from "react";
-import "../styles/components/ride-feed-card.css";
+import { gql, useQuery } from "@apollo/client";
+import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
 import Button from "./Button";
+import "../styles/components/ride-feed-card.css";
 
-interface RideFeedCardProps {
+export interface RideFeedCardProps {
     host: string;
     name: string;
     startTime: string;
-    date: string;
     description: string;
     bikeType: string;
     difficulty: string;
-    distance: number;
     wattsPerKilo: number;
     intensity: string;
-    route: null;
+    route: string
     match: string;
 }
 
+const formatDistance = (meters: number): number => {
+    const kilometers = meters / 1000;
+    const roundedDis = Math.round(kilometers * 10) / 10;
+    return roundedDis;
+};
 
-const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, distance, description, match }: RideFeedCardProps) => {
+const formatDate = (dateStr: string): string => {
+    const date = new Date(dateStr);
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'long',
+    });
+    return formatter.format(date);
+}
+
+function formatTime(isoString: string): string {
+    const date: Date = new Date(isoString);
+    const hours: number = date.getUTCHours();
+    const minutes: number | string = date.getUTCMinutes();
+    const ampm: string = hours >= 12 ? 'pm' : 'am';
+    const formattedHours: number = hours % 12 || 12;
+    const formattedMinutes: string = minutes < 10 ? '0' + minutes : minutes.toString();
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+}
+
+const RideFeedCard = ({ host, name, startTime, description, bikeType, difficulty, wattsPerKilo, intensity, route, match }: RideFeedCardProps) => {
 
     const [modalWithDetails, showModalWithDetails] = useState<boolean>(false);
 
+    const { data: routeData } = useQuery(FETCH_ROUTE, {
+        variables: {
+            routeID: route,
+        },
+    })
 
     const getMatchIcon = () => {
         if(match == "great"){
@@ -35,21 +65,53 @@ const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, dista
         return <i className="fa-solid fa-circle-xmark"></i>
     }
 
-    const formatDate = (dateStr: string): string => {
-        // Create a Date object directly from the date string
-        const date = new Date(dateStr);
-      
-        // Use Intl.DateTimeFormat to format the date
-        const formatter = new Intl.DateTimeFormat('en-US', {
-          weekday: 'short', // "short" for abbreviated, "long" for the full name
-          day: 'numeric',
-          month: 'long',  // "short" for abbreviated month, "long" for the full month name
-        });
-      
-        return formatter.format(date);
-    }
-
-
+    const modalMap = () => {
+        return(
+            <MapContainer
+                key={`modalMap`}
+                style={{ height: '400px', width: '400px', zIndex: 1}}
+                center={routeData.getRoute.startCoordinates}
+                zoom={9}
+                dragging={true}
+                zoomControl={true}
+                doubleClickZoom={true}
+                scrollWheelZoom={true}
+                touchZoom={true}
+                boxZoom={true}
+                tap={true}
+            >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <Polyline
+                pathOptions={{ fillColor: 'red', color: 'blue' }}
+                positions={routeData.getRoute.points}
+                />
+            </MapContainer>
+        );
+    };
+    
+    const cardMap = () => {
+        return(
+            <MapContainer
+                key={`cardMap`}
+                style={{ height: '250px', width: '250px', zIndex: -1}}
+                center={routeData.getRoute.startCoordinates}
+                zoom={9}
+                dragging={false}
+                zoomControl={false}
+                doubleClickZoom={false}
+                scrollWheelZoom={false}
+                touchZoom={false}
+                boxZoom={false}
+                tap={false}
+            >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <Polyline
+                pathOptions={{ fillColor: 'red', color: 'blue' }}
+                positions={routeData.getRoute.points}
+                />
+            </MapContainer>
+        );
+    };
 
     if(modalWithDetails){
         return (
@@ -57,14 +119,23 @@ const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, dista
             
                 <div className="ride-card-modal-container" >
                     <span className="rode-card-close-modal" onClick={() => showModalWithDetails(false)} >X</span>
-                    <img src="https://media.bikemap.net/routes/13446259/staticmaps/in_3527ab18-901d-49ae-84ce-b85bf6b58132_400x400_bikemap-2021-3D-static.png" />
+                    <div style={{ textAlign: 'center' }}>{
+                        routeData ? (
+                                <div>{modalMap()}</div>
+                            ) : (
+                                <div style={{ width: '400px', height: '400px', backgroundColor: '#f2f2f2' }}></div>
+                    )}</div>
                     <div className="ride-card-modal-values" >
                         <h2>{name}</h2>
                         <p>Created by <b>{host}</b></p>
-                        <p>Starts at <b>{startTime}</b> on <b>{formatDate(date)}</b></p>
+                        <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
                         <p><b>{bikeType}</b> ride</p>
                         <p><b>{difficulty}</b> difficulty</p>
-                        <p>{distance} km</p>
+                        {routeData ? (
+                            <p>{formatDistance(routeData.getRoute.distance)} km</p>
+                        ) : (
+                            <></>
+                        )}
                         <p>{description}</p>
                         <div className="rsvp-button" >
                             <Button type="secondary" >RSVP</Button>
@@ -75,22 +146,28 @@ const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, dista
         )
     }
 
-
-
-
     return (
         <div className="ride-feed-card-main-container" >
             <div onClick={() => showModalWithDetails(true)} className="ride-feed-card-route-map" >
                 <span>View details <i className="fa-solid fa-eye"></i></span>
-                <img src="https://media.bikemap.net/routes/13446259/staticmaps/in_3527ab18-901d-49ae-84ce-b85bf6b58132_400x400_bikemap-2021-3D-static.png" />
+                <div style={{ textAlign: 'center' }}>{
+                    routeData ? (
+                            <div>{cardMap()}</div>
+                        ) : (
+                            <div style={{ width: '250px', height: '250px', backgroundColor: '#f2f2f2' }}></div>
+                )}</div>
             </div>
             <div className="ride-feed-card-values" >
                 <h2>{name}</h2>
                 <p>Created by <b>{host}</b></p>
-                <p>Starts at <b>{startTime}</b> on <b>{formatDate(date)}</b></p>
+                <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
                 <p><b>{bikeType}</b> ride</p>
                 <p><b>{difficulty}</b> difficulty</p>
-                <p>{distance} km</p>
+                {routeData ? (
+                    <p>{formatDistance(routeData.getRoute.distance)} km</p>
+                ) : (
+                    <></>
+                )}
                 <div className="rsvp-button" >
                     <Button type="secondary" >RSVP</Button>
                     <span>Share <i className="fa-regular fa-paper-plane"></i></span>
@@ -105,5 +182,15 @@ const RideFeedCard = ({ host, name, startTime, date, bikeType, difficulty, dista
         </div>
     )
 };
+
+const FETCH_ROUTE = gql`
+  query getRoute($routeID: String!) {
+    getRoute(routeID: $routeID) {
+        points
+        distance
+        startCoordinates
+    }
+  }
+`
 
 export default RideFeedCard;
