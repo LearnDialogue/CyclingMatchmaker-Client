@@ -78,7 +78,7 @@ const ProfilePage = () => {
             </div>
             <div>
               <div>Last FTP</div>
-              <div>{userData?.getUser.FTPdate}</div>
+              <div>{userData?.getUser.FTPdate.slice(0, 10)}</div>
             </div>
             <div>
               <div>Weight</div>
@@ -86,7 +86,7 @@ const ProfilePage = () => {
             </div>
             <div>
               <div>Birthday</div>
-              <div>{userData?.getUser.birthday}</div>
+              <div>{userData?.getUser.birthday.slice(0, 10)}</div>
             </div>
             <div>
               <div>Experience level</div>
