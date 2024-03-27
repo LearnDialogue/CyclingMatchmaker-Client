@@ -86,7 +86,7 @@ const GpxMap: React.FC = () => {
   if (!routeData) {
     return (
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <input type="file" onChange={handleFileSelect} />
+        <input type="file" onChange={handleFileSelect} accept=".gpx" />
       </div>
     );
   }
