@@ -27,7 +27,7 @@ const ProfilePage = () => {
   }
   const token: string | null = localStorage.getItem("jwtToken");
 
-  const {loading: hostedLoading, error: hostedErr, data: hostedEvents } = useQuery(GET_HOSTED_EVENTS, {
+  const {loading: hostedLoading, data: hostedEvents, refetch: hostRefetch } = useQuery(GET_HOSTED_EVENTS, {
     context: {
       headers: {
           Authorization: `Bearer ${token}`,
@@ -35,7 +35,7 @@ const ProfilePage = () => {
     },
   });
 
-  const {loading: joinedLoading, error: joinedErr, data: joinedEvents } = useQuery(GET_JOINED_EVENTS, {
+  const {loading: joinedLoading, data: joinedEvents, refetch: joinRefetch } = useQuery(GET_JOINED_EVENTS, {
     context: {
       headers: {
           Authorization: `Bearer ${token}`,
@@ -48,7 +48,12 @@ const ProfilePage = () => {
     variables: {
         username: user?.username,
     },
-    });
+  });
+
+  useEffect(() => {
+    hostRefetch();
+    joinRefetch();
+  }, []);
 
   return (
     <div className="profile-page-main-container">
