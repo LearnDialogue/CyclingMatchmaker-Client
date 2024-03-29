@@ -341,6 +341,7 @@ const FETCH_RIDES = gql`
                 match: $match
             }
         ) {
+            _id
             host
             name
             locationCoords
