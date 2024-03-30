@@ -14,6 +14,7 @@
     border: 0.5px solid rgba(14, 30, 37, 0.12);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
     min-width: 450px;
+    max-width: 450px;
     opacity: 0; /* Start with the form invisible */
     animation: fadeInAnimation ease 1s; /* Adjust the duration (1s here) as needed */
     animation-fill-mode: forwards; /* Ensures the form stays visible after animation */
@@ -33,7 +34,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 48px;
+    margin: 24px 0px;
 }
 
 .signup-form-input {
@@ -47,14 +48,35 @@
     margin: 8px 0px;
     font-weight: bold;
 }
-.signup-form-input > input, .signup-form-input > select {
+.signup-form-input > label > span > i {
+    margin-left: 8px;
+    transform: scale(1);
+    animation: 0.2s cubic-bezier(.47,1.64,.41,.8) showPasswordsMatchIcons;
+}
+@keyframes showPasswordsMatchIcons {
+    0% {transform: scale(0);}
+    100% {transform: scale(1);}
+}
+.signup-form-input  input, .signup-form-input > select {
     padding: 12px;
     border: 1px solid rgba(14, 30, 37, 0.186);
     border-radius: 4px;
     font-size: 0.9em;
     font-weight: 400;
+    width: 100%;
 }
 
+.signup-form-input > .signup-form-input-password {
+    position: relative;
+}
+.signup-form-input > .signup-form-input-password > span {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 12px;
+    z-index: 2;
+    cursor: pointer;
+}
 
 .signup-form-signup-btn {
     padding-top: 24px;
@@ -69,4 +91,70 @@
 .signup-form-to-signup > span {
     margin-left: 4px;
     color: rgb(71, 136, 255);
+}
+
+
+
+/* Signup back button */
+
+.signup-back-btn {
+    top: 0;
+    left: 0;
+    padding: 8px;
+    display: flex;
+    width: 100px;
+    gap: 6px;
+    align-items: center;
+    cursor: pointer;
+    transform: translate(-24px, -12px);
+    font-size: 0.9em;
+}
+.signup-back-btn:hover {
+    opacity: 0.8;
+}
+
+
+
+
+/* Sign up errors */
+
+.signup-errors {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 300px;
+    width: auto;
+    padding: 12px;
+    padding-right: 24px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 28, 28, 0.338);
+    background-color: rgb(255, 231, 231);
+    font-size: 0.8em;
+    animation: 0.3s cubic-bezier(.47,1.64,.41,.8) showSignupErrors;
+    z-index: 3;
+}
+@keyframes showSignupErrors {
+    0% {
+        transform: translate(-50%, -100%);
+    }
+    100% {
+        transform: translate(-50%, 0%);
+    }
+}
+
+
+.signup-errors-close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.signup-errors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }

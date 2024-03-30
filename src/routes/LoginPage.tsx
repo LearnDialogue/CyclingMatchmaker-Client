@@ -13,6 +13,8 @@ const LoginPage = () => {
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
+    const [showErrorsList, setShowErrorsList] = useState<string[]>([]);
+
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const updatedUsername = e.target.value;
         setValues((prevValues) => ({
@@ -54,7 +56,8 @@ const LoginPage = () => {
             const errorObject = (err.graphQLErrors[0] as any)?.extensions?.exception?.errors
             const errorMessage = Object.values(errorObject).flat().join(', ');
             setErrorMessage(errorMessage);
-                },
+            setShowErrorsList((prevErrorsList) => [...prevErrorsList, errorMessage]);
+        },
     
         variables: values,
         });
@@ -65,6 +68,7 @@ const LoginPage = () => {
         }
 
     const handleLogin = (e: any) => {
+        setShowErrorsList([]);
         console.log("Variables before mutation:", values);
         if(userName == "" || password == ""){
             return null;
@@ -77,6 +81,17 @@ const LoginPage = () => {
         }
     }
 
+    const displayErrors = () => {
+        return (
+            <div className="signup-errors" >
+                <div className="signup-errors-close-button" onClick={() => setShowErrorsList([])}>✕</div>
+                <div className="signup-errors-list" >
+                    {showErrorsList.map((err, index) => <div key={index} >* {err}</div>)}
+                </div>
+            </div>
+        )
+    }
+
     if(loading){
         return (
             <div>
@@ -87,16 +102,14 @@ const LoginPage = () => {
 
     return (
         <div className="login-main-container" >
+
+            {showErrorsList.length > 0 ? displayErrors() : null}
+
             <form onSubmit={handleLogin} className="login-form-container" >
                 
                 <h1 className="login-form-brand" >
                     <Link to="/" >Cycling matchmaker</Link>
                 </h1>
-
-                {errorMessage !== "" && 
-                <div className="signup-form-input" >
-                    <label>Incorrect Username or Password</label>
-                </div>}
 
                 <div className="login-form-input" >
                     <label htmlFor="username" >Username or email</label>

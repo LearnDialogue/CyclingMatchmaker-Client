@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({ type, width, disabled, children, onClic
     let disabledStyle = (disabled ? " button-disabled" : "");
 
     return (
-        <button onClick={onClick} className={"button button-" + type + disabledStyle} style={{width: `${width ?? 100}%`}} >
+        <button disabled={disabled} onClick={onClick} className={"button button-" + type + disabledStyle} style={{width: `${width ?? 100}%`}} >
             {children}
         </button>
     );
