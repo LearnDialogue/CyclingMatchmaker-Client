@@ -10,7 +10,11 @@ const SignupPage = () => {
     const context = useContext(AuthContext);
 
     const passwordValidator = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/;
-    const [passwordError, setPasswordError] = useState<string>("");
+    
+    const [showErrorsList, setShowErrorsList] = useState<string[]>([]);
+
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
     const [username, setUserName] = useState<string>("");
     const [email, setEmailAddress] = useState<string>("");
@@ -56,6 +60,7 @@ const SignupPage = () => {
             const errorObject = (err.graphQLErrors[0] as any)?.extensions?.exception?.errors
             const errorMessage = Object.values(errorObject).flat().join(', ');
             setRegisterErrorMessage(errorMessage);
+            setShowErrorsList((prevErrorsList) => [...prevErrorsList, errorMessage]);
         },
     
         variables: values,
@@ -79,6 +84,7 @@ const SignupPage = () => {
             const errorObject = (error.graphQLErrors[0] as any)?.extensions?.exception?.errors
             const errorMessage = Object.values(errorObject).flat().join(', ');
             setUsernameErrorMessage(errorMessage);
+            setShowErrorsList((prevErrorsList) => [...prevErrorsList, errorMessage]);
           },
       });
 
@@ -92,6 +98,7 @@ const SignupPage = () => {
             const errorObject = (error.graphQLErrors[0] as any)?.extensions?.exception?.errors
             const errorMessage = Object.values(errorObject).flat().join(', ');
             setEmailErrorMessage(errorMessage);
+            setShowErrorsList((prevErrorsList) => [...prevErrorsList, errorMessage]);
           },
       });
 
@@ -182,43 +189,72 @@ const SignupPage = () => {
         registerUser();
     }
 
+    const enableSignupButton: () => boolean = () => {
+        return values.firstName != "" && values.lastName != "" && values.sex != "" && values.birthday != "" && weight != "";
+    }
+
+    const enableContinueButton: () => boolean = () => {
+        return values.username != "" && values.email != "" && values.password != "" && values.confirmPassword != "" && values.password == values.confirmPassword;
+    }
+
     // Check username and email are valid to continue registering
     const handleContinue = async () => {
+
+        setShowErrorsList([]);
+
         const [usernameResult, emailResult] = await Promise.all([
             validateUsername({ variables: { username } }),
             validateEmail({ variables: { email } }),
           ]);
 
+        console.log("here: " + usernameResult.data.validUsername);
+
         if (!usernameResult.error && usernameResult.data.validUsername === false) {
             setIsUsernameValid(false);
+            setShowErrorsList((prevErrorsList) => [...prevErrorsList, "Username already exists."]);
         } 
         else {
             setIsUsernameValid(true);
         }
-    
-           // setIsUsernameValid(usernameResult.data.validUsername);
         
         if(!emailResult.error && emailResult.data.validEmail === false) {
             setIsEmailValid(false);
+            setShowErrorsList((prevErrorsList) => [...prevErrorsList, "Email address is already in use."]);
         }
         else{
             setIsEmailValid(true);
         }
         
         if (password === "") {
-            setPasswordError("Password is required.");
+            setShowErrorsList((prevErrorsList) => [...prevErrorsList, "Password is required"]);
         } else if (!password.match(passwordValidator)) {
-            setPasswordError(
-            "Passwords must be at least 8 characters, must contain at least one lowercase character, one uppercase character, one number, and one special character.");
+            setShowErrorsList((prevErrorsList) => [...prevErrorsList, "Passwords must be at least 8 characters, must contain at least one lowercase character, one uppercase character, one number, and one special character."]);
         } else if (password !== reTypedPassword) {
-            setPasswordError("Password and Confirm Password must match.");
-        }
-        else {
+            setShowErrorsList((prevErrorsList) => [...prevErrorsList, "Password and Confirm Password must match."]);
+        } else {
             if(usernameResult.data.validUsername && emailResult.data.validEmail &&  !emailResult.error && !usernameResult.error) {
                 setCurrentRegisterPage('Page2');
             }
         }
      }
+
+
+    const displayErrors = () => {
+        return (
+            <div className="signup-errors" >
+                <div className="signup-errors-close-button" onClick={() => setShowErrorsList([])}>✕</div>
+                <div className="signup-errors-list" >
+                    {showErrorsList.map((err, index) => <div key={index} >* {err}</div>)}
+                </div>
+            </div>
+        )
+    }
+
+    const checkPasswordsMatch = () => {
+        if(values.password == "" || values.confirmPassword == "") return null;
+        if(values.password != values.confirmPassword) return <span><i className="fa-solid fa-circle-xmark"></i></span>;
+        return <span><i className="fa-solid fa-circle-check"></i></span>;
+    }
 
     if(loading){
         return(
@@ -231,6 +267,9 @@ const SignupPage = () => {
     return (
         // Page 1
         <div>
+
+        {showErrorsList.length > 0 ? displayErrors() : null}
+
         {currentRegisterPage === 'Page1' && (
 
             <div className="signup-main-container" >
@@ -238,29 +277,6 @@ const SignupPage = () => {
                 <h1 className="signup-form-brand" >
                     <Link to="/" >Cycling matchmaker</Link>
                 </h1>
-
-                {Object.keys(usernameError).length !== 0 && 
-                <div className="signup-form-input" >
-                    <label>{usernameErrorMessage}</label>
-                </div>}
-                {!isUsernameValid && 
-                <div className="signup-form-input" >
-                    <label>Username Exists</label>
-                </div>}
-                {Object.keys(emailError).length !== 0 && 
-                <div className="signup-form-input" >
-                    <label>{emailErrorMessage}</label>
-                </div>}
-                {!isEmailValid && 
-                <div className="signup-form-input" >
-                    <label>Email Exists</label>
-                </div>}
-                {passwordError !== "" && 
-                <div className="signup-form-input" >
-                    <label>{passwordError}</label>
-                </div>}
-
-
                 <div className="signup-form-input" >
                     <label>Username</label>
                     <input onChange={handleUsernameChange} type="text" value={username} />
@@ -272,18 +288,24 @@ const SignupPage = () => {
                 </div>
 
                 <div className="signup-form-input" >
-                    <label>Password</label>
-                    <input onChange={handlePasswordChange} type="password" value={password} />
+                    <label>Password {checkPasswordsMatch()}</label>
+                    <div className="signup-form-input-password" >
+                        <input onChange={handlePasswordChange} type={showPassword ? "text" : "password"} value={password} />
+                        <span onClick={() => setShowPassword(!showPassword)} >{showPassword ? <i className="fa-solid fa-eye"></i> : <i className="fa-solid fa-eye-slash"></i>}</span >
+                    </div>
                 </div>
 
                 <div className="signup-form-input" >
-                    <label>Re-type Password</label>
-                    <input onChange={handleReTypedPasswordChange} type="password" value={reTypedPassword} />
+                    <label>Re-type Password {checkPasswordsMatch()}</label>
+                    <div className="signup-form-input-password" >
+                        <input onChange={handleReTypedPasswordChange} type={showConfirmPassword ? "text" : "password"} value={reTypedPassword} />
+                        <span onClick={() => setShowConfirmPassword(!showConfirmPassword)} >{showConfirmPassword ? <i className="fa-solid fa-eye"></i> : <i className="fa-solid fa-eye-slash"></i>}</span >
+                    </div>
                 </div>
 
                 <div className="signup-form-signup-btn" >
                     <div onClick={handleContinue} >
-                        <Button type="primary" >Continue</Button>
+                        <Button disabled={!enableContinueButton()} type="primary" >Continue</Button>
                     </div>
                     <span className="signup-form-to-signup" >Already have an account?<span><Link to="/login" >Login</Link></span></span>
                 </div>
@@ -293,54 +315,63 @@ const SignupPage = () => {
         {currentRegisterPage === 'Page2' && (
 
             <div className="signup-main-container" >
-            <div className="signup-form-container" >
-                <h1 className="signup-form-brand" >
-                    <Link to="/" >Cycling matchmaker</Link>
-                </h1>
 
-                {registerErrorMessage !== "" && 
-                <div className="signup-form-input" >
-                    <label>{registerErrorMessage}</label>
-                </div>}
+                {showErrorsList.length > 0 ? displayErrors() : null}
 
-                <div className="signup-form-input" >
-                    <label>First Name</label>
-                    <input onChange={handleFirstNameChange} type="text" value={firstName} />
-                </div>
+                <div className="signup-form-container" >
 
-                <div className="signup-form-input" >
-                    <label>Last Name</label>
-                    <input onChange={handleLastNameChange} type="text" value={lastName} />
-                </div>
-
-                <div className="signup-form-input" >
-                    <label>Gender</label>
-                    <select onChange={handleSexChange} value={sex} >
-                        <option value="" disabled>-- Select gender --</option>
-                        <option value="gender-man">Man</option>
-                        <option value="gender-woman">Woman</option>
-                        <option value="gender-non-binary">Non-binary</option>
-                        <option value="gender-prefer-not-to-say">Prefer not to say</option>
-                    </select>
-                </div>
-
-                <div className="signup-form-input" >
-                    <label>Weight (kg)</label>
-                    <input onChange={handleWeightChange} type="text" value={weight} />
-                </div>
-
-                <div className="signup-form-input" >
-                    <label htmlFor="ride-date" >Date of birth</label>
-                    <input id="ride-date" onChange={handleBirthdayChange} type="date" value={birthday} max={new Date().toISOString().split('T')[0]} />
-                </div>
-
-                <div className="signup-form-signup-btn" >
-                    <div onClick={handleSignUp} >
-                        <Button type="primary" >Sign Up</Button>
+                    <div className="signup-back-btn" onClick={() => setCurrentRegisterPage("Page1")} >
+                        <i className="fa-solid fa-arrow-left"></i>
+                        <span>Back</span>
                     </div>
-                    <span className="signup-form-to-signup" >Already have an account?<span><Link to="/login" >Login</Link></span></span>
+         
+                    <h1 className="signup-form-brand" >
+                        <Link to="/" >Cycling matchmaker</Link>
+                    </h1>
+
+                    {registerErrorMessage !== "" && 
+                    <div className="signup-form-input" >
+                        <label>{registerErrorMessage}</label>
+                    </div>}
+
+                    <div className="signup-form-input" >
+                        <label>First Name</label>
+                        <input onChange={handleFirstNameChange} type="text" value={firstName} />
+                    </div>
+
+                    <div className="signup-form-input" >
+                        <label>Last Name</label>
+                        <input onChange={handleLastNameChange} type="text" value={lastName} />
+                    </div>
+
+                    <div className="signup-form-input" >
+                        <label>Gender</label>
+                        <select onChange={handleSexChange} value={sex} >
+                            <option value="" disabled>-- Select gender --</option>
+                            <option value="gender-man">Man</option>
+                            <option value="gender-woman">Woman</option>
+                            <option value="gender-non-binary">Non-binary</option>
+                            <option value="gender-prefer-not-to-say">Prefer not to say</option>
+                        </select>
+                    </div>
+
+                    <div className="signup-form-input" >
+                        <label>Weight (kg)</label>
+                        <input onChange={handleWeightChange} type="number" value={weight} />
+                    </div>
+
+                    <div className="signup-form-input" >
+                        <label htmlFor="ride-date" >Date of birth</label>
+                        <input id="ride-date" onChange={handleBirthdayChange} type="date" value={birthday} max={new Date().toISOString().split('T')[0]} />
+                    </div>
+
+                    <div className="signup-form-signup-btn" >
+                        <div onClick={handleSignUp} >
+                            <Button disabled={!enableSignupButton()} type="primary" >Sign Up</Button>
+                        </div>
+                        <span className="signup-form-to-signup" >Already have an account?<span><Link to="/login" >Login</Link></span></span>
+                    </div>
                 </div>
-            </div>
             </div>
             )}
         </div>
