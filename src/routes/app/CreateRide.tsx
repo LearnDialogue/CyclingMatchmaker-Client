@@ -140,12 +140,19 @@ const CreateRide = () => {
         }, 1500);
     };
 
+    const token: string | null = localStorage.getItem("jwtToken");
+
     const [addEvent, { loading }] = useMutation(CREATE_EVENT_MUTATION, {
         onError(err) {
             setErrors(err.graphQLErrors);
             const errorObject = (err.graphQLErrors[0] as any)?.extensions?.exception?.errors
             const errorMessage = Object.values(errorObject).flat().join(', ');
             setErrors(errorMessage);
+        },
+        context: {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         },
         variables: values,
     });
@@ -245,7 +252,7 @@ const CreateRide = () => {
 
                     <div className="create-ride-form-input" >
                         <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                            <input type="file" onChange={handleFileSelect} />
+                        <input type="file" onChange={handleFileSelect} accept=".gpx" />
                         </div>
                     </div>
                     <Button
@@ -272,7 +279,7 @@ const CREATE_EVENT_MUTATION = gql`
   mutation createEvent(
     $host: String!
     $name: String!
-    $startTime: String!
+    $startTime: Date!
     $description: String!
     $bikeType: String!
     $difficulty: String!

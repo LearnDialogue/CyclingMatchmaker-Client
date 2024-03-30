@@ -1,10 +1,13 @@
-import { useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useContext, useState } from "react";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
 import Button from "./Button";
 import "../styles/components/ride-feed-card.css";
+import RsvpButton from "./RsvpButton";
+import { AuthContext } from "../context/auth";
 
 export interface RideFeedCardProps {
+    _id: string;
     host: string;
     name: string;
     startTime: string;
@@ -15,6 +18,7 @@ export interface RideFeedCardProps {
     intensity: string;
     route: string
     match: string;
+    participants: string[];
 }
 
 const formatDistance = (meters: number): number => {
@@ -43,9 +47,16 @@ function formatTime(isoString: string): string {
     return `${formattedHours}:${formattedMinutes} ${ampm}`;
 }
 
-const RideFeedCard = ({ host, name, startTime, description, bikeType, difficulty, wattsPerKilo, intensity, route, match }: RideFeedCardProps) => {
+const RideFeedCard = ({ 
+        _id, host, name, startTime, 
+        description, bikeType, difficulty, 
+        wattsPerKilo, intensity, route, 
+        match, participants 
+    }: RideFeedCardProps) => {
 
+    const { user } = useContext(AuthContext);
     const [modalWithDetails, showModalWithDetails] = useState<boolean>(false);
+    const [isJoined, setIsJoined] = useState(user?.username && participants.includes(user?.username));
 
     const { data: routeData } = useQuery(FETCH_ROUTE, {
         variables: {
@@ -113,6 +124,10 @@ const RideFeedCard = ({ host, name, startTime, description, bikeType, difficulty
         );
     };
 
+    const toggleJoinedStatus = (status: boolean) => {
+        setIsJoined(status);
+    };
+
     if(modalWithDetails){
         return (
             <div className="ride-card-modal-overlay" >
@@ -125,22 +140,26 @@ const RideFeedCard = ({ host, name, startTime, description, bikeType, difficulty
                             ) : (
                                 <div style={{ width: '400px', height: '400px', backgroundColor: '#f2f2f2' }}></div>
                     )}</div>
-                    <div className="ride-card-modal-values" >
-                        <h2>{name}</h2>
-                        <p>Created by <b>{host}</b></p>
-                        <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
-                        <p><b>{bikeType}</b> ride</p>
-                        <p><b>{difficulty}</b> difficulty</p>
-                        {routeData ? (
+                    {routeData ? (
+                        <div className="ride-card-modal-values" >
+                            <h2>{name}</h2>
+                            <p>Created by <b>{host}</b></p>
+                            <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
+                            <p><b>{bikeType}</b> ride</p>
+                            <p><b>{difficulty}</b> difficulty</p>
                             <p>{formatDistance(routeData.getRoute.distance)} km</p>
-                        ) : (
-                            <></>
-                        )}
-                        <p>{description}</p>
-                        <div className="rsvp-button" >
-                            <Button type="secondary" >RSVP</Button>
-                        </div>
-                    </div>
+                            <p>{description}</p>
+                            <div className="rsvp-button" >
+                                <RsvpButton 
+                                    eventID={_id}
+                                    isJoined={isJoined}
+                                    setJoinedStatus={toggleJoinedStatus}
+                                    type="secondary"/>
+                            </div>
+                        </div>  
+                    ) : (
+                        <></>
+                    )}
                 </div>
             </div>
         )
@@ -157,22 +176,26 @@ const RideFeedCard = ({ host, name, startTime, description, bikeType, difficulty
                             <div style={{ width: '250px', height: '250px', backgroundColor: '#f2f2f2' }}></div>
                 )}</div>
             </div>
-            <div className="ride-feed-card-values" >
-                <h2>{name}</h2>
-                <p>Created by <b>{host}</b></p>
-                <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
-                <p><b>{bikeType}</b> ride</p>
-                <p><b>{difficulty}</b> difficulty</p>
-                {routeData ? (
+            {routeData ? (
+                <div className="ride-feed-card-values" >
+                    <h2>{name}</h2>
+                    <p>Created by <b>{host}</b></p>
+                    <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
+                    <p><b>{bikeType}</b> ride</p>
+                    <p><b>{difficulty}</b> difficulty</p>
                     <p>{formatDistance(routeData.getRoute.distance)} km</p>
-                ) : (
-                    <></>
-                )}
-                <div className="rsvp-button" >
-                    <Button type="secondary" >RSVP</Button>
-                    <span>Share <i className="fa-regular fa-paper-plane"></i></span>
+                    <div className="rsvp-button" >
+                        <RsvpButton 
+                            eventID={_id}
+                            isJoined={isJoined}
+                            setJoinedStatus={toggleJoinedStatus}
+                            type="secondary"/>
+                        <span>Share <i className="fa-regular fa-paper-plane"></i></span>
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <></>
+            )}
             <div className="ride-feed-card-matching-score" >
                 <div className={match} >
                     <span>{match} match</span>
