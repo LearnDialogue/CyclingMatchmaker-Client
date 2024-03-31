@@ -14,6 +14,7 @@ import { jwtDecode } from "jwt-decode";
 import { AuthProvider } from "./context/auth";
 import AuthRoute from "./util/AuthRoute";
 import UserRoute from "./util/UserRoute";
+import EditProfile from './routes/app/EditProfilePage';
 
 function App() {
 
@@ -49,6 +50,13 @@ return (
               element={
                 <UserRoute>
                   <ProfilePage />
+                </UserRoute>
+              }
+            />
+      <Route path="/app/profile/edit"
+              element={
+                <UserRoute>
+                  <EditProfile />
                 </UserRoute>
               }
             />

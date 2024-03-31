@@ -4,7 +4,7 @@ import GpxMap from "../../util/GpxHandler";
 import "../../styles/profile-page.css";
 import mockUserData from "../../mockData/userMockUp.json";
 import { AuthContext } from "../../context/auth";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client';
 
 const formatDate = (dateStr: string): string => {
@@ -61,6 +61,12 @@ const ProfilePage = () => {
       <div className="profile-page-grid">
         <h3 className="profile-page-welcome-message">Welcome back, <b>{userData?.getUser.firstName}</b>!</h3>
         
+        <div className="landing-page-auth-btns">
+              <Link to="/app/profile/edit" >
+                  <div className="landing-page-login-btn" >Edit Profile</div>
+              </Link>
+              </div>
+              
         <div className="profile-page-user-upcoming-rides">
             <h4>Your upcoming rides</h4>
 
