@@ -103,35 +103,36 @@ const ProfilePage = () => {
               </div>
           </div>
 
-
-
-
-        <div className="profile-page-user-stats">
-          <h4>Your stats</h4>
-          <div className="profile-page-user-stats-data">
-            <div>
-              <div>FTP</div>
-              <div>{userData?.getUser.FTP}</div>
+        <div>
+          {userData ? (
+            <div className="profile-page-user-stats">
+              <h4>Your stats</h4>
+              <div className="profile-page-user-stats-data">
+                <div>
+                  <div>FTP</div>
+                  <div>{userData?.getUser.FTP}</div>
+                </div>
+                <div>
+                  <div>Last FTP</div>
+                  <div>{userData?.getUser.FTPdate.slice(0, 10)}</div>
+                </div>
+                <div>
+                  <div>Weight</div>
+                  <div>{userData?.getUser.weight} kg</div>
+                </div>
+                <div>
+                  <div>Birthday</div>
+                  <div>{new Date(userData?.getUser.birthday).toISOString().split('T')[0]}</div>
+                </div>
+                <div>
+                  <div>Experience level</div>
+                  <div>Advanced</div>
+                </div>
+              </div>
             </div>
-            <div>
-              <div>Last FTP</div>
-              <div>{userData?.getUser.FTPdate.slice(0, 10)}</div>
-            </div>
-            <div>
-              <div>Weight</div>
-              <div>{userData?.getUser.weight} kg</div>
-            </div>
-            <div>
-              <div>Birthday</div>
-              <div>{new Date(userData?.getUser.birthday).toISOString().split('T')[0]}</div>
-            </div>
-            <div>
-              <div>Experience level</div>
-              <div>Advanced</div>
-            </div>
-          </div>
-
-          
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>
