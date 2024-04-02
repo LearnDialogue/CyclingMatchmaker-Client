@@ -66,7 +66,7 @@ const ProfilePage = () => {
                   <div className="landing-page-login-btn" >Edit Profile</div>
               </Link>
               </div>
-              
+
         <div className="profile-page-user-upcoming-rides">
             <h4>Your upcoming rides</h4>
 
@@ -123,7 +123,7 @@ const ProfilePage = () => {
             </div>
             <div>
               <div>Birthday</div>
-              <div>{userData?.getUser.birthday.slice(0, 10)}</div>
+              <div>{new Date(userData?.getUser.birthday).toISOString().split('T')[0]}</div>
             </div>
             <div>
               <div>Experience level</div>
