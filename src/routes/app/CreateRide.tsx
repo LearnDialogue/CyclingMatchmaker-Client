@@ -318,7 +318,7 @@ const CREATE_EVENT_MUTATION = gql`
         endCoordinates: $endCoordinates
       }
     ) {
-      id
+      _id
     }
   }
 `;
