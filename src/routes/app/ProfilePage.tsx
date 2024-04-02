@@ -4,7 +4,7 @@ import GpxMap from "../../util/GpxHandler";
 import "../../styles/profile-page.css";
 import mockUserData from "../../mockData/userMockUp.json";
 import { AuthContext } from "../../context/auth";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client';
 
 const formatDate = (dateStr: string): string => {
@@ -61,6 +61,12 @@ const ProfilePage = () => {
       <div className="profile-page-grid">
         <h3 className="profile-page-welcome-message">Welcome back, <b>{userData?.getUser.firstName}</b>!</h3>
         
+        <div className="landing-page-auth-btns">
+              <Link to="/app/profile/edit" >
+                  <div className="landing-page-login-btn" >Edit Profile</div>
+              </Link>
+              </div>
+
         <div className="profile-page-user-upcoming-rides">
             <h4>Your upcoming rides</h4>
 
@@ -97,35 +103,36 @@ const ProfilePage = () => {
               </div>
           </div>
 
-
-
-
-        <div className="profile-page-user-stats">
-          <h4>Your stats</h4>
-          <div className="profile-page-user-stats-data">
-            <div>
-              <div>FTP</div>
-              <div>{userData?.getUser.FTP}</div>
+        <div>
+          {userData ? (
+            <div className="profile-page-user-stats">
+              <h4>Your stats</h4>
+              <div className="profile-page-user-stats-data">
+                <div>
+                  <div>FTP</div>
+                  <div>{userData?.getUser.FTP}</div>
+                </div>
+                <div>
+                  <div>Last FTP</div>
+                  <div>{userData?.getUser.FTPdate.slice(0, 10)}</div>
+                </div>
+                <div>
+                  <div>Weight</div>
+                  <div>{userData?.getUser.weight} kg</div>
+                </div>
+                <div>
+                  <div>Birthday</div>
+                  <div>{new Date(userData?.getUser.birthday).toISOString().split('T')[0]}</div>
+                </div>
+                <div>
+                  <div>Experience level</div>
+                  <div>Advanced</div>
+                </div>
+              </div>
             </div>
-            <div>
-              <div>Last FTP</div>
-              <div>{userData?.getUser.FTPdate.slice(0, 10)}</div>
-            </div>
-            <div>
-              <div>Weight</div>
-              <div>{userData?.getUser.weight} kg</div>
-            </div>
-            <div>
-              <div>Birthday</div>
-              <div>{userData?.getUser.birthday.slice(0, 10)}</div>
-            </div>
-            <div>
-              <div>Experience level</div>
-              <div>Advanced</div>
-            </div>
-          </div>
-
-          
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>
