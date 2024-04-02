@@ -1,11 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import Button from "../../components/Button";
 import Navbar from "../../components/Navbar";
-import { gql, setLogVerbosity, useMutation, useQuery } from "@apollo/client";
-import { extractRouteInfo } from "../../util/GpxHandler";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { AuthContext } from "../../context/auth";
-import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import "../../styles/edit-profile.css";
 
