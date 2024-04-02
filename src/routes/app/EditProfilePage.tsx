@@ -11,7 +11,7 @@ import "../../styles/edit-profile.css";
 
     const { user } = useContext(AuthContext);
     const context = useContext(AuthContext);
-    const { loading: userLoading, error, data: userData, refetch} = useQuery(FETCH_USER_QUERY, {
+    const { data: userData, refetch} = useQuery(FETCH_USER_QUERY, {
         variables: {
             username: user?.username,
         },
@@ -113,7 +113,7 @@ import "../../styles/edit-profile.css";
 
     const token: string | null = localStorage.getItem("jwtToken");
 
-    const [editUser, { loading }] = useMutation(EDIT_USER, {
+    const [editUser] = useMutation(EDIT_USER, {
         onCompleted(data) {
             if(data.editProfile.loginToken) {
                 context.login(data.editProfile);
@@ -124,9 +124,8 @@ import "../../styles/edit-profile.css";
         onError(err) {
             setErrors(err.graphQLErrors);
             console.log(err.graphQLErrors);
-            const errorObject = (err.graphQLErrors[0] as any)?.locations?.message
-            const errorMessage = Object.values(errorObject).flat().join(', ');
-            setErrors(errorMessage);
+            const errorMessages = err.graphQLErrors.map(error => error.message);
+            setErrors(errorMessages);
         },
         context: {
             headers: {
