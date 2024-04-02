@@ -152,8 +152,8 @@ import "../../styles/edit-profile.css";
     
     useEffect(() => {
         if (userData) {
-            const indexOfT = userData.getUser.birthday.indexOf('T'); // Find the position of the "T" character
-            const datePart = indexOfT !== -1 ? userData.getUser.birthday.substring(0, indexOfT) : userData.getUser.birthday;        
+            const datePart = new Date(userData.getUser.birthday).toISOString().split('T')[0];
+
             setEmailAddress(userData.getUser.email);
             setFirstName(userData.getUser.firstName);
             setLastName(userData.getUser.lastName);
@@ -163,7 +163,6 @@ import "../../styles/edit-profile.css";
             setLocation(userData.getUser.locationName);
             setRadius(userData.getUser.radius);
 
-            console.log(userData.getUser.username)
             setValues({
                 firstName: userData.getUser.firstName,
                 lastName: userData.getUser.lastName,
