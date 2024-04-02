@@ -24,8 +24,6 @@ import "../../styles/edit-profile.css";
     const [errors, setErrors] = useState({});
 
 
-    
-    const [email, setEmailAddress] = useState<string>("");
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
     const [sex, setSex] = useState<string>("");
@@ -47,16 +45,6 @@ import "../../styles/edit-profile.css";
         location: "",
         radius: 0,
       });
-
-    const handleEmailAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const updatedEmail = e.target.value;
-        setValues((prevValues) => ({
-        ...prevValues,
-        email: updatedEmail,
-        }));
-        setEmailAddress(e.target.value);
-    
-    }
 
     const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const updatedFirstName = e.target.value;
@@ -129,8 +117,8 @@ import "../../styles/edit-profile.css";
 
     const [editUser, { loading }] = useMutation(EDIT_USER, {
         onCompleted(data) {
-            if(data.loginToken) {
-                context.login(data);
+            if(data.editProfile.loginToken) {
+                context.login(data.editProfile);
             }
             refetch();
         },
@@ -154,7 +142,6 @@ import "../../styles/edit-profile.css";
         if (userData) {
             const datePart = new Date(userData.getUser.birthday).toISOString().split('T')[0];
 
-            setEmailAddress(userData.getUser.email);
             setFirstName(userData.getUser.firstName);
             setLastName(userData.getUser.lastName);
             setSex(userData.getUser.sex);
@@ -187,10 +174,6 @@ import "../../styles/edit-profile.css";
                 <div className="create-editprofile-form-container" >
                     
                     <h2>Edit Profile</h2>
-                     <div className="create-editprofile-form-input" >
-                        <label htmlFor="editprofile-email" >Email</label>
-                        <input id="editprofile-email" onChange={handleEmailAddressChange} type="text" value={email} />
-                    </div>
 
                     <div className="create-editprofile-form-input" >
                         <label htmlFor="editprofile-firstname" >First Name</label>
@@ -273,9 +256,6 @@ import "../../styles/edit-profile.css";
    ) {
      username
      loginToken
-     email
-     firstName
-     lastName
    }
  }
 `;
