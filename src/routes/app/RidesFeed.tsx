@@ -18,6 +18,9 @@ const RidesFeed = () => {
     const [wkg, setWkg] = useState<string[] | never[]>([]);
     const [match, setMatch] = useState([""]);
 
+    const [sortingOrder, setSortingOrder] = useState<string>("date_asc");
+    const [sortedRideData, setSortedRideData] = useState<any>([]);
+
     const [eventParams, setEventParams] = useState({
         startDate: new Date().toISOString(),
     });
@@ -126,6 +129,29 @@ const RidesFeed = () => {
     useEffect(() => {
         if (reload !== null){ridesRefetch()}
     }, [reload]);
+
+
+    useEffect(() => {
+        // Logic to sort rides based on sortingOrder
+        let sortedRides = [];
+    
+        if (rideData && rideData.getEvents) {
+            sortedRides = [...rideData.getEvents]; // Create a copy to avoid mutating the original state
+            console.log("SORTING!")
+            if (sortingOrder === "date_asc") {
+                sortedRides.sort((a, b) => Number(new Date(a.startTime)) - Number(new Date(b.startTime)));
+            } else if (sortingOrder === "date_desc") {
+                sortedRides.sort((a, b) => Number(new Date(b.startTime)) - Number(new Date(a.startTime)));
+            } else if(sortingOrder == "wpkg_asc"){
+                sortedRides.sort((a, b) => Number(b.difficulty.slice(0, 3)) - Number(a.difficulty.slice(0, 3)));
+            } else if(sortingOrder == "wpkg_desc"){
+                sortedRides.sort((a, b) => Number(a.difficulty.slice(0, 3)) - Number(b.difficulty.slice(0, 3)));
+            }
+    
+            setSortedRideData(sortedRides);
+        }
+    
+    }, [rideData, sortingOrder]); // Re-run this effect when either rideData or sortingOrder changes
 
     return (
         
@@ -251,14 +277,16 @@ const RidesFeed = () => {
                                     <></>
                         )}<div>
                                 <span>Sort by: </span>
-                                <select>
-                                    <option>-- Select option --</option>
-                                    <option>Match: best to worst</option>
-                                    <option>Match: worst to best</option>
-                                    <option>Distance: Long to short</option>
-                                    <option>Distance: Short to long</option>
-                                    <option>Difficulty: Easy to hard</option>
-                                    <option>Difficulty: Hard to easy</option>
+                                <select value={sortingOrder} onChange={e => setSortingOrder(e.target.value)} >
+                                    <option value="" >-- Select option --</option>
+                                    <option value="date_asc">Date: Newest to Oldest</option>
+                                    <option value="date_desc">Date: Oldest to Newest</option>
+                                    <option value="wpkg_asc">Watts per kilo: High to Low</option>
+                                    <option value="wpkg_desc">Watts per kilo: Low to High</option>
+                                    <option disabled value="distance-asc" >Distance: Long to short</option>
+                                    <option disabled value="distance-desc" >Distance: Short to long</option>
+                                    <option disabled value="match-asc" >Match: best to worst</option>
+                                    <option disabled value="match-desc" >Match: worst to best</option>
                                 </select>
                             </div>
                         </div>
@@ -267,8 +295,8 @@ const RidesFeed = () => {
                             {regionLoading || rideLoading ? (
                                 <p>Loading...</p>
                             ) : (
-                                rideData ? (
-                                    rideData.getEvents.map((event: RideFeedCardProps, index: number) => {
+                                rideData && sortedRideData ? (
+                                    sortedRideData.map((event: RideFeedCardProps, index: number) => {
                                         return (
                                             <RideFeedCard key={index} {...event} ></RideFeedCard>
                                         );
