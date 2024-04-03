@@ -165,7 +165,13 @@ import "../../styles/edit-profile.css";
     useEffect(() => {
         if (userData) {
             const datePart = new Date(userData.getUser.birthday).toISOString().split('T')[0];
-            const FTPstring = userData.getUser.FTP.toFixed(1);
+            let FTPstring = "";
+            if(userData.getUser.FTP === 1.9) {
+                FTPstring = "I am not sure";
+            }
+            else {
+                FTPstring = userData.getUser.FTP.toFixed(1);
+            }
         
             setFirstName(userData.getUser.firstName);
             setLastName(userData.getUser.lastName);
@@ -177,7 +183,6 @@ import "../../styles/edit-profile.css";
             setFTP(FTPstring);
             setExperience(userData.getUser.experience);
 
-            console.log(userData.getUser.FTP)
             setValues({
                 firstName: userData.getUser.firstName,
                 lastName: userData.getUser.lastName,
