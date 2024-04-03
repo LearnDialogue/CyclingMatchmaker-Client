@@ -4,7 +4,7 @@ import GpxMap from "../../util/GpxHandler";
 import "../../styles/profile-page.css";
 import mockUserData from "../../mockData/userMockUp.json";
 import { AuthContext } from "../../context/auth";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import Button from '../../components/Button';
 
@@ -83,7 +83,7 @@ const ProfilePage = () => {
       </div>
     )
   }
-
+  console.log(userData)
   return (
     <div className="profile-page-main-container">
       <Navbar />
@@ -95,29 +95,40 @@ const ProfilePage = () => {
         <div className="profile-page-user-info" >
           
           <div className="user-name-and-image-container" >
+            
             <div className="user-image" >
               {user?.username.slice(0, 1).toLocaleUpperCase()}
             </div>
-            <div className="user-name"><b>{userData?.getUser.firstName}, {getUserAge(userData?.getUser.birthday)}</b></div>
+            
+            <div className="user-name"><b>{userData ? userData?.getUser.firstName + ", " + getUserAge(userData.getUser.birthday) : null}</b></div>
+            
+            <div className="profile-page-edit-profile-btn">
+              <Button type="secondary" >
+                <Link to="/app/profile/edit" >
+                  <i className="fa-solid fa-pen"></i> &nbsp; &nbsp; Edit Profile
+                </Link>
+              </Button>
+            </div>
+
           </div>
 
-
+          
           <div className="profile-page-user-stats-data">
             <div>
               <div>FTP</div>
-              <div>{userData?.getUser.FTP}</div>
+              <div>{userData?.getUser.FTP ?? "-"}</div>
             </div>
             <div>
               <div>Last FTP</div>
-              <div>{userData?.getUser.FTPdate.slice(0, 10)}</div>
+              <div>{userData?.getUser.FTPdate.slice(0, 10) ?? "-"}</div>
             </div>
             <div>
               <div>Weight</div>
-              <div>{userData?.getUser.weight} kg</div>
+              <div>{userData?.getUser.weight ?? "-"} kg</div>
             </div>
             <div>
               <div>Experience level</div>
-              <div>Advanced</div>
+              <div>{userData?.getUser.experience ?? "-"}</div>
             </div>
             <div>
               <div>Rides hosted</div>
@@ -226,6 +237,7 @@ const FETCH_USER_QUERY = gql`
         FTPdate
         birthday
         firstName
+        experience
     }
   }
 `;

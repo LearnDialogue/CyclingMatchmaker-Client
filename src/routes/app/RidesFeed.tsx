@@ -191,19 +191,19 @@ const RidesFeed = () => {
                         <div className="rides-feed-filter-options" >
                             <h5>Bike type</h5>
                             <label htmlFor="mountain-bike" >
-                                <input name="Mountain bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Mountain
+                                <input name="Mountain" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Mountain
                             </label>
                             <label htmlFor="road-bike" >
-                                <input name="Road bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Road
+                                <input name="Road" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Road
                             </label>
                             <label htmlFor="hybrid-bike" >
-                                <input name="Hybrid bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Hybrid
+                                <input name="Hybrid" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Hybrid
                             </label>
                             <label htmlFor="touring-bike" >
-                                <input name="Touring bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Touring
+                                <input name="Touring" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Touring
                             </label>
                             <label htmlFor="gravel-bike" >
-                                <input name="Gravel bike" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Gravel
+                                <input name="Gravel" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Gravel
                             </label>
                         </div>
 

@@ -12,7 +12,7 @@ export interface RideFeedCardProps {
     name: string;
     startTime: string;
     description: string;
-    bikeType: string;
+    bikeType: string[];
     difficulty: string;
     wattsPerKilo: number;
     intensity: string;
@@ -123,6 +123,44 @@ const RideFeedCard = ({
             </MapContainer>
         );
     };
+    const generateGPXFile = () => {
+        if (!routeData || !routeData.getRoute) return;
+    
+        const now = new Date().toISOString();
+    
+        let gpxContent = `<?xml version="1.0" encoding="UTF-8"?>
+    <gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.cluetrust.com/XML/GPXDATA/1/0 http://www.cluetrust.com/Schemas/gpxdata10.xsd" version="1.1" creator="http://ridewithgps.com/">
+      <metadata>
+        <name>${name}</name>
+        <link href="https://ridewithgps.com/routes/${route}">
+          <text>${name}</text>
+        </link>
+        <time>${now}</time>
+      </metadata>
+      <trk>
+        <name>${name}</name>
+        <trkseg>`;
+    
+        for (let i = 0; i < routeData.getRoute.points.length; i++) {
+            const [lat, lon] = routeData.getRoute.points[i];
+            const ele = routeData.getRoute.elevation[i];
+            gpxContent += `
+          <trkpt lat="${lat}" lon="${lon}">
+            <ele>${ele}</ele>
+          </trkpt>`;
+        }
+    
+        gpxContent += `
+        </trkseg>
+      </trk>
+    </gpx>`;
+    
+        const blob = new Blob([gpxContent], { type: 'application/gpx+xml' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${name}.gpx`;
+        link.click();
+    };
 
     const toggleJoinedStatus = (status: boolean) => {
         setIsJoined(status);
@@ -145,7 +183,7 @@ const RideFeedCard = ({
                             <h2>{name}</h2>
                             <p>Created by <b>{host}</b></p>
                             <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
-                            <p><b>{bikeType}</b> ride</p>
+                            <p>Bike Type: <b>{bikeType.join(', ')}</b></p>
                             <p><b>{difficulty}</b> difficulty</p>
                             <p>{formatDistance(routeData.getRoute.distance)} km</p>
                             <p>{description}</p>
@@ -155,6 +193,8 @@ const RideFeedCard = ({
                                     isJoined={isJoined}
                                     setJoinedStatus={toggleJoinedStatus}
                                     type="secondary"/>
+                                    <Button type="secondary" onClick={generateGPXFile}>Download</Button>
+
                             </div>
                         </div>  
                     ) : (
@@ -181,7 +221,7 @@ const RideFeedCard = ({
                     <h2>{name}</h2>
                     <p>Created by <b>{host}</b></p>
                     <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
-                    <p><b>{bikeType}</b> ride</p>
+                    <p>Bike Type: <b>{bikeType.join(', ')}</b></p>
                     <p><b>{difficulty}</b> difficulty</p>
                     <p>{formatDistance(routeData.getRoute.distance)} km</p>
                     <div className="rsvp-button" >
@@ -211,6 +251,7 @@ const FETCH_ROUTE = gql`
     getRoute(routeID: $routeID) {
         points
         distance
+        elevation
         startCoordinates
     }
   }
