@@ -235,18 +235,8 @@ import "../../styles/edit-profile.css";
                         <label htmlFor="editprofile-date" >Date of birth</label>
                         <input id="editprofile-date" onChange={handleBirthdayChange} type="date" value={birthday} max={new Date().toISOString().split('T')[0]} />
                     </div>
-                    
-                    <div className="editprofile-form-input" >
-                        <label htmlFor="editprofile-location" >Location</label>
-                        <input id="editprofile-location" onChange={handleLocationChange} type="text" value={location} />
-                    </div>
 
-                    <div className="editprofile-form-input" >
-                        <label htmlFor="editprofile-radius" >Radius</label>
-                        <input id="editprofile-radius" onChange={handleRadiusChange} type="text" value={radius} />
-                    </div>
-
-                    <div className="signup-form-input">
+                    <div className="editprofile-form-input">
                     <label>FTP</label>
                     <select onChange={handleFTPChange} value={FTP}>
                         <option value="" disabled>-- Select FTP --</option>
@@ -261,7 +251,7 @@ import "../../styles/edit-profile.css";
                         <option value = "I am not sure">I am not sure</option>
                     </select>
                     </div>
-                    <div className="signup-form-input" >
+                    <div className="editprofile-form-input" >
                         <label>Experience</label>
                         <select onChange={handleExperienceChange} value={experience} >
                             <option value="" disabled>-- Select Experience --</option>
@@ -271,6 +261,17 @@ import "../../styles/edit-profile.css";
                             <option value="Expert">Expert</option>
                         </select>
                     </div>
+                    
+                    <div className="editprofile-form-input" >
+                        <label htmlFor="editprofile-location" >Location</label>
+                        <input id="editprofile-location" onChange={handleLocationChange} type="text" value={location} />
+                    </div>
+
+                    <div className="editprofile-form-input" >
+                        <label htmlFor="editprofile-radius" >Radius</label>
+                        <input id="editprofile-radius" onChange={handleRadiusChange} type="text" value={radius} />
+                    </div>
+
                     <Button
                         onClick={handleButtonClick}
                         type="primary"
