@@ -3,5 +3,5 @@
   to = "/index.html"
   status = 200
   conditions = [
-    { Field = "Host", Type = "NotEquals", Value = "www.strava.com" }
+    { Field = "Host", Type = "NotEquals", Value = "https://www.strava.com/oauth/*" }
   ]
