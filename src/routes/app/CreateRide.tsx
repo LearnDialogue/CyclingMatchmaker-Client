@@ -20,7 +20,7 @@ const CreateRide = () => {
     const [rideDate, setRideDate] = useState<string>("");
     const [rideTime, setRideTime] = useState<string>("");
     const [desc, setDesc] = useState<string>("");
-    const [bicycleType, setBicycleType] = useState<string>("");
+    const [bikeType, setBikeType] = useState<string[] | never[]>([]);
     const [difficulty, setDifficulty] = useState<string>("");
     const [rideAverageSpeed, setRideAverageSpeed] = useState<string>("");
 
@@ -31,7 +31,7 @@ const CreateRide = () => {
         name: "",
         startTime: "",
         description: "",
-        bikeType: "",
+        bikeType: [""],
         difficulty: "",
         wattsPerKilo: 0,
         intensity: "n/a",
@@ -65,13 +65,23 @@ const CreateRide = () => {
         setDesc(e.target.value);
     }
 
-    const handleBikeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, checked, id } = event.target;
+        var newBikes = [...bikeType];
+        if (id == "bike") {
+            if (checked) {
+                newBikes.push(name);
+                setBikeType(newBikes);
+            } else {
+                newBikes = newBikes.filter(item => item !== name);
+                setBikeType(newBikes);
+            }
+        }
         setValues((prevValues) => ({
-        ...prevValues,
-        bikeType: e.target.value,
+            ...prevValues,
+            bikeType: newBikes,
         }));
-        setBicycleType(e.target.value);
-    }
+    };
 
     const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setValues((prevValues) => ({
@@ -166,7 +176,7 @@ const CreateRide = () => {
     }, [rideDate, rideTime]);
 
     const enableButton = () => {
-        return rideName != "" && rideDate != "" && rideTime != "" && bicycleType != "" && difficulty != "" && rideAverageSpeed != "";
+        return rideName != "" && rideDate != "" && rideTime != "" && bikeType.length !== 0 && difficulty != "" && rideAverageSpeed != "";
     }
 
     const toastStyle = {
@@ -228,16 +238,23 @@ const CreateRide = () => {
                         <input id="ride-average-speed" onChange={e => setRideAverageSpeed(e.target.value)} type="number" />
                     </div>
 
-                    <div className="create-ride-form-input" >
-                        <label htmlFor="ride-bicycle-type" >Bicycle type</label>
-                        <select id="ride-bicycle-type" value={bicycleType} onChange={handleBikeChange} >
-                            <option value="" disabled >-- Select bicycle type --</option>
-                            <option value="Mountain bike" >Mountain bike</option>
-                            <option value="Road bike" >Road bike</option>
-                            <option value="Hybrid bike" >Hybrid bike</option>
-                            <option value="Touring bike" >Touring bike</option>
-                            <option value="Gravel bike" >Gravel bike</option>
-                        </select>
+                    <div className="rides-feed-filter-options" >
+                            <h5>Bike type</h5>
+                            <label htmlFor="mountain-bike" >
+                                <input name="Mountain" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Mountain
+                            </label>
+                            <label htmlFor="road-bike" >
+                                <input name="Road" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Road
+                            </label>
+                            <label htmlFor="hybrid-bike" >
+                                <input name="Hybrid" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Hybrid
+                            </label>
+                            <label htmlFor="touring-bike" >
+                                <input name="Touring" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Touring
+                            </label>
+                            <label htmlFor="gravel-bike" >
+                                <input name="Gravel" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Gravel
+                            </label>
                     </div>
 
                     <div className="create-ride-form-input" >
@@ -281,7 +298,7 @@ const CREATE_EVENT_MUTATION = gql`
     $name: String!
     $startTime: Date!
     $description: String!
-    $bikeType: String!
+    $bikeType: [String!]
     $difficulty: String!
     $wattsPerKilo: Float!
     $intensity: String!
