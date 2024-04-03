@@ -25,6 +25,8 @@ const SignupPage = () => {
     const [sex, setSex] = useState<string>("");
     const [birthday, setBirthday] = useState<string>("");
     const [weight, setWeight] = useState<string>("");
+    const [FTP, setFTP] = useState<string>("");
+    const [experience, setExperience] = useState<string>("");
 
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
@@ -42,6 +44,8 @@ const SignupPage = () => {
         birthday: "",
         metric: false,
         weight: 0,
+        FTP: 0.0,
+        experience: ""
       });
 
       // Register mutation
@@ -182,6 +186,31 @@ const SignupPage = () => {
         birthday: updatedBirthday,
         }));
         setBirthday(e.target.value);
+    }
+
+    const handleFTPChange = (e: any) => {
+        let updatedFTP = 0.0;
+        if(e.target.value === "I am not sure") {
+            updatedFTP = 1.9
+        }
+        else {
+            updatedFTP = parseFloat(e.target.value); 
+        }
+        console.log(updatedFTP)
+        setValues((prevValues) => ({
+        ...prevValues,
+        FTP: updatedFTP,
+        }));
+        setFTP(e.target.value);
+    }
+
+    const handleExperienceChange = (e: any) => {
+        const updatedExperience = e.target.value;
+        setValues((prevValues) => ({
+        ...prevValues,
+        experience: updatedExperience,
+        }));
+        setExperience(e.target.value);
     }
 
     // Try to register user
@@ -365,6 +394,33 @@ const SignupPage = () => {
                         <input id="ride-date" onChange={handleBirthdayChange} type="date" value={birthday} max={new Date().toISOString().split('T')[0]} />
                     </div>
 
+                    
+                    <div className="signup-form-input">
+                    <label>FTP</label>
+                    <select onChange={handleFTPChange} value={FTP}>
+                        <option value="" disabled>-- Select FTP --</option>
+                        {Array.from({ length: 26 }, (_, index) => {
+                            const value = (4.5 - index * 0.1).toFixed(1);
+                            return (
+                                <option key={value} value={value}>
+                                    {value}
+                                </option>
+                            );
+                        })}
+                        <option value = "I am not sure">I am not sure</option>
+                    </select>
+                    </div>
+                    <div className="signup-form-input" >
+                        <label>Experience</label>
+                        <select onChange={handleExperienceChange} value={experience} >
+                            <option value="" disabled>-- Select Experience --</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="Expert">Expert</option>
+                        </select>
+                    </div>
+
                     <div className="signup-form-signup-btn" >
                         <div onClick={handleSignUp} >
                             <Button disabled={!enableSignupButton()} type="primary" >Sign Up</Button>
@@ -389,6 +445,8 @@ const REGISTER_USER = gql`
     $password: String!
     $confirmPassword: String!
     $birthday: String!
+    $FTP: Float!
+    $experience: String!
   ) {
     register(
       registerInput: {
@@ -402,6 +460,8 @@ const REGISTER_USER = gql`
         sex: $sex
         username: $username
         weight: $weight
+        FTP: $FTP
+        experience: $experience
       }
     ) {
       username

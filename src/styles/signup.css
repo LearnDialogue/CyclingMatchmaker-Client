@@ -18,6 +18,8 @@
     opacity: 0; /* Start with the form invisible */
     animation: fadeInAnimation ease 1s; /* Adjust the duration (1s here) as needed */
     animation-fill-mode: forwards; /* Ensures the form stays visible after animation */
+    overflow-y: auto;
+    max-height: 100vh;
 }
 @keyframes fadeInAnimation {
     from { opacity: 0; }
