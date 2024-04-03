@@ -29,7 +29,8 @@ import "../../styles/edit-profile.css";
     const [weight, setWeight] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [radius, setRadius] = useState<string>("");
-
+    const [FTP, setFTP] = useState<string>("");
+    const [experience, setExperience] = useState<string>("");
 
     const [values, setValues] = useState({
         firstName:"",
@@ -42,6 +43,8 @@ import "../../styles/edit-profile.css";
         weight: 0,
         location: "",
         radius: 0,
+        FTP: 0.0,
+        experience: ""
       });
 
     const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,6 +105,30 @@ import "../../styles/edit-profile.css";
         setRadius(e.target.value);
     }
 
+    const handleFTPChange = (e: any) => {
+        let updatedFTP = 0.0;
+        if(e.target.value === "I am not sure") {
+            updatedFTP = 1.9
+        }
+        else {
+            updatedFTP = parseFloat(e.target.value); 
+        }
+        console.log(updatedFTP)
+        setValues((prevValues) => ({
+        ...prevValues,
+        FTP: updatedFTP,
+        }));
+        setFTP(e.target.value);
+    }
+
+    const handleExperienceChange = (e: any) => {
+        const updatedExperience = e.target.value;
+        setValues((prevValues) => ({
+        ...prevValues,
+        experience: updatedExperience,
+        }));
+        setExperience(e.target.value);
+    }
     const handleButtonClick = () => {
         editUser();
 
@@ -138,7 +165,8 @@ import "../../styles/edit-profile.css";
     useEffect(() => {
         if (userData) {
             const datePart = new Date(userData.getUser.birthday).toISOString().split('T')[0];
-
+            const FTPstring = userData.getUser.FTP.toFixed(1);
+        
             setFirstName(userData.getUser.firstName);
             setLastName(userData.getUser.lastName);
             setSex(userData.getUser.sex);
@@ -146,7 +174,10 @@ import "../../styles/edit-profile.css";
             setWeight(userData.getUser.weight);
             setLocation(userData.getUser.locationName);
             setRadius(userData.getUser.radius);
+            setFTP(FTPstring);
+            setExperience(userData.getUser.experience);
 
+            console.log(userData.getUser.FTP)
             setValues({
                 firstName: userData.getUser.firstName,
                 lastName: userData.getUser.lastName,
@@ -158,6 +189,8 @@ import "../../styles/edit-profile.css";
                 weight: userData.getUser.weight,
                 location: userData.getUser.locationName,
                 radius: userData.getUser.radius,
+                FTP: userData.getUser.FTP,
+                experience: userData.getUser.experience,
             }
             )
         }
@@ -167,27 +200,27 @@ import "../../styles/edit-profile.css";
         
         <>
             <Navbar />
-            <div className="create-editprofile-main-container" >
-                <div className="create-editprofile-form-container" >
+            <div className="editprofile-main-container" >
+                <div className="editprofile-form-container" >
                     
                     <h2>Edit Profile</h2>
 
-                    <div className="create-editprofile-form-input" >
+                    <div className="editprofile-form-input" >
                         <label htmlFor="editprofile-firstname" >First Name</label>
                         <input id="editprofile-firstname" onChange={handleFirstNameChange} type="text" value={firstName} />
                     </div>
 
-                    <div className="create-editprofile-form-input" >
+                    <div className="editprofile-form-input" >
                         <label htmlFor="editprofile-lastname" >Last Name</label>
                         <input id="editprofile-lastname" onChange={handleLastNameChange} type="text" value={lastName} />
                     </div>
 
-                    <div className="create-editprofile-form-input" >
+                    <div className="editprofile-form-input" >
                         <label htmlFor="editprofile-weight" >Weight (kg)</label>
                         <input id="editprofile-weight" onChange={handleWeightChange} type="text" value={weight} />
                     </div>
 
-                    <div className="create-editprofile-form-input">
+                    <div className="editprofile-form-input">
                         <label htmlFor="editprofile-gender" >Gender</label>
                         <select id="editprofile-gender" value={sex} onChange={handleSexChange} >
                             <option value="" disabled>-- Select gender --</option>
@@ -202,16 +235,43 @@ import "../../styles/edit-profile.css";
                         <label htmlFor="editprofile-date" >Date of birth</label>
                         <input id="editprofile-date" onChange={handleBirthdayChange} type="date" value={birthday} max={new Date().toISOString().split('T')[0]} />
                     </div>
+
+                    <div className="editprofile-form-input">
+                    <label>FTP</label>
+                    <select onChange={handleFTPChange} value={FTP}>
+                        <option value="" disabled>-- Select FTP --</option>
+                        {Array.from({ length: 26 }, (_, index) => {
+                            const value = (4.5 - index * 0.1).toFixed(1);
+                            return (
+                                <option key={value} value={value}>
+                                    {value}
+                                </option>
+                            );
+                        })}
+                        <option value = "I am not sure">I am not sure</option>
+                    </select>
+                    </div>
+                    <div className="editprofile-form-input" >
+                        <label>Experience</label>
+                        <select onChange={handleExperienceChange} value={experience} >
+                            <option value="" disabled>-- Select Experience --</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="Expert">Expert</option>
+                        </select>
+                    </div>
                     
-                    <div className="create-editprofile-form-input" >
+                    <div className="editprofile-form-input" >
                         <label htmlFor="editprofile-location" >Location</label>
                         <input id="editprofile-location" onChange={handleLocationChange} type="text" value={location} />
                     </div>
 
-                    <div className="create-editprofile-form-input" >
+                    <div className="editprofile-form-input" >
                         <label htmlFor="editprofile-radius" >Radius</label>
                         <input id="editprofile-radius" onChange={handleRadiusChange} type="text" value={radius} />
                     </div>
+
                     <Button
                         onClick={handleButtonClick}
                         type="primary"
@@ -236,6 +296,8 @@ import "../../styles/edit-profile.css";
    $birthday: String!
    $location: String!
    $radius: Int!
+   $FTP: Float!
+   $experience: String!
  ) {
    editProfile(
      editProfileInput: {
@@ -249,6 +311,8 @@ import "../../styles/edit-profile.css";
        weight: $weight
        location: $location
        radius: $radius
+       FTP: $FTP
+       experience: $experience
      }
    ) {
      username
@@ -270,6 +334,7 @@ const FETCH_USER_QUERY = gql`
         username
         locationName
         radius
+        experience
     }
   }
 `;

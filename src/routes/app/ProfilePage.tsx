@@ -110,7 +110,14 @@ const ProfilePage = () => {
               <div className="profile-page-user-stats-data">
                 <div>
                   <div>FTP</div>
-                  <div>{userData?.getUser.FTP}</div>
+                  
+                  {userData.getUser.FTP && userData.getUser.FTP > 2.0 && 
+                  
+                    <div>{userData?.getUser.FTP}</div>
+                  }
+                  {userData.getUser.FTP && userData.getUser.FTP < 2.0 && 
+                    <div>Below 2.0</div>
+                  }
                 </div>
                 <div>
                   <div>Last FTP</div>
@@ -126,7 +133,7 @@ const ProfilePage = () => {
                 </div>
                 <div>
                   <div>Experience level</div>
-                  <div>Advanced</div>
+                  <div>{userData?.getUser.experience}</div>
                 </div>
               </div>
             </div>
@@ -148,6 +155,7 @@ const FETCH_USER_QUERY = gql`
         FTPdate
         birthday
         firstName
+        experience
     }
   }
 `;
