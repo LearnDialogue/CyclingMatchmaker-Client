@@ -12,7 +12,7 @@ export interface RideFeedCardProps {
     name: string;
     startTime: string;
     description: string;
-    bikeType: string;
+    bikeType: string[];
     difficulty: string;
     wattsPerKilo: number;
     intensity: string;
@@ -183,7 +183,7 @@ const RideFeedCard = ({
                             <h2>{name}</h2>
                             <p>Created by <b>{host}</b></p>
                             <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
-                            <p><b>{bikeType}</b> ride</p>
+                            <p>Bike Type: <b>{bikeType.join(', ')}</b></p>
                             <p><b>{difficulty}</b> difficulty</p>
                             <p>{formatDistance(routeData.getRoute.distance)} km</p>
                             <p>{description}</p>
@@ -221,7 +221,7 @@ const RideFeedCard = ({
                     <h2>{name}</h2>
                     <p>Created by <b>{host}</b></p>
                     <p>Starts at <b>{formatTime(startTime)}</b> on <b>{formatDate(startTime)}</b></p>
-                    <p><b>{bikeType}</b> ride</p>
+                    <p>Bike Type: <b>{bikeType.join(', ')}</b></p>
                     <p><b>{difficulty}</b> difficulty</p>
                     <p>{formatDistance(routeData.getRoute.distance)} km</p>
                     <div className="rsvp-button" >
