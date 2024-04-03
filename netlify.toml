@@ -1,4 +1,9 @@
 [[redirects]]
+  from = "https://www.strava.com/oauth/*"
+  to = "/redirect"
+  status = 302
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
