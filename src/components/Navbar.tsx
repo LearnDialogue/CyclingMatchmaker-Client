@@ -46,6 +46,9 @@ const Navbar: React.FC = () => {
                         <Link to="/app/profile" >
                             <ul>Profile</ul>
                         </Link>
+                        <Link to="/app/profile/edit" >
+                            <ul>Edit profile</ul>
+                        </Link>
                         <Link to="/" >
                             <ul className="log-out-btn" onClick={context.logout}>Log out</ul>
                         </Link>
