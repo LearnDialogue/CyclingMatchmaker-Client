@@ -79,20 +79,30 @@ const getMatchIcon = () => {
         }
     }, [userData]);
 
-    const [minFTPStr, maxFTPStr] = difficulty.split(' to ');
-    const minFTP = parseFloat(minFTPStr);
-    const maxFTP = parseFloat(maxFTPStr);
-
     //Hopefully this shouldn't happen
     if (!FTP){
         FTP = 0;
     }
 
+    
+    var ftpDifference = 0;
+    
+
+    if (difficulty === "Above 4.5" || difficulty === "Below 2.0"){
+        const rideFTP = parseFloat(difficulty.slice(-3))
+        ftpDifference = Math.abs(rideFTP - FTP);
+    }
+    else{
+    const [minFTPStr, maxFTPStr] = difficulty.split(' to ');
+    const minFTP = parseFloat(minFTPStr);
+    const maxFTP = parseFloat(maxFTPStr);
+
+    
     const diffFromMinFTP = Math.abs(FTP - minFTP);
     const diffFromMaxFTP = Math.abs(FTP - maxFTP);
 
-    const ftpDifference = Math.min(diffFromMinFTP, diffFromMaxFTP);
-
+    ftpDifference = Math.min(diffFromMinFTP, diffFromMaxFTP);
+    }
     if (ftpDifference <= .3) {
         return <i className="fa-solid fa-circle-check"></i>;
     } else if (ftpDifference <= .6) {
