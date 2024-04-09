@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
 import Button from "./Button";
@@ -63,18 +63,44 @@ const RideFeedCard = ({
             routeID: route,
         },
     })
+//
+const getMatchIcon = () => {
+    var [FTP, setFTP] = useState<number | null>(null);
 
-    const getMatchIcon = () => {
-        if(match == "great"){
-            return <i className="fa-solid fa-circle-check"></i>
+    const { data: userData } = useQuery(FETCH_USER_QUERY, {
+        variables: {
+            username: user?.username,
+        },
+    });
+
+    useEffect(() => {
+        if (userData && userData.getUser) {
+            setFTP(userData.getUser.FTP);
         }
+    }, [userData]);
 
-        if(match == "good"){
-            return <i className="fa-solid fa-circle-minus"></i>
-        }
+    const [minFTPStr, maxFTPStr] = difficulty.split(' to ');
+    const minFTP = parseFloat(minFTPStr);
+    const maxFTP = parseFloat(maxFTPStr);
 
-        return <i className="fa-solid fa-circle-xmark"></i>
+    //Hopefully this shouldn't happen
+    if (!FTP){
+        FTP = 0;
     }
+
+    const diffFromMinFTP = Math.abs(FTP - minFTP);
+    const diffFromMaxFTP = Math.abs(FTP - maxFTP);
+
+    const ftpDifference = Math.min(diffFromMinFTP, diffFromMaxFTP);
+
+    if (ftpDifference <= .3) {
+        return <i className="fa-solid fa-circle-check"></i>;
+    } else if (ftpDifference <= .6) {
+        return <i className="fa-solid fa-circle-minus"></i>;
+    } else {
+        return <i className="fa-solid fa-circle-xmark"></i>;
+    }
+}
 
     const modalMap = () => {
         return(
@@ -245,6 +271,15 @@ const RideFeedCard = ({
         </div>
     )
 };
+
+const FETCH_USER_QUERY = gql`
+  query getUser($username: String!) {
+    getUser(username: $username) {
+        FTP
+    }
+  }
+`;
+
 
 const FETCH_ROUTE = gql`
   query getRoute($routeID: String!) {
