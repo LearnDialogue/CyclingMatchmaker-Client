@@ -68,6 +68,10 @@
     width: 100%;
 }
 
+.signup-form-input-checkbox input[type="checkbox"] {
+    width: auto;
+}
+
 .signup-form-input > .signup-form-input-password {
     position: relative;
 }
