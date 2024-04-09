@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import "../styles/components/button.css"
 import { gql, useMutation } from '@apollo/client';
+import { GET_JOINED_EVENTS } from '../routes/app/ProfilePage';
 
 interface RsvpButtonProps {
     isJoined: boolean | "" | undefined;
@@ -21,6 +22,19 @@ const RsvpButton: React.FC<RsvpButtonProps> = ({ isJoined, eventID, type, width,
                 Authorization: `Bearer ${token}`,
             },
         },
+        update(cache, { data: { joinEvent } }) {
+            console.log(joinEvent);
+            const joinedEvents : any = cache.readQuery({query: GET_JOINED_EVENTS});
+            cache.writeQuery({
+                query: GET_JOINED_EVENTS,
+                data: {
+                    getJoinedEvents: {
+                        ...joinedEvents,
+                        joinEvent
+                    }
+                }
+            })
+        },
         variables: { eventID: eventID }
     });
 
@@ -29,6 +43,18 @@ const RsvpButton: React.FC<RsvpButtonProps> = ({ isJoined, eventID, type, width,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
+        },
+        update(cache, { data: { leaveEvent } }) {
+            console.log(leaveEvent);
+            const joinedEvents : any = cache.readQuery({query: GET_JOINED_EVENTS});
+            const updatedEvents = joinedEvents.getJoinedEvents.filter((event: { _id: any; }) => event._id !== leaveEvent._id);
+
+            cache.writeQuery({
+                query: GET_JOINED_EVENTS,
+                data: {
+                    getJoinedEvents: updatedEvents
+                }
+            })
         },
         variables: { eventID: eventID }
     });
@@ -62,6 +88,18 @@ const JOIN_RIDE = gql`
     mutation joinEvent($eventID: String!) {
         joinEvent(eventID: $eventID) {
             _id
+            host
+            name
+            locationName
+            locationCoords
+            startTime
+            description
+            bikeType
+            difficulty
+            wattsPerKilo
+            intensity
+            route
+            participants
         }
     }
 `
@@ -70,6 +108,18 @@ const LEAVE_RIDE = gql`
     mutation leaveEvent($eventID: String!) {
         leaveEvent(eventID: $eventID) {
             _id
+            host
+            name
+            locationName
+            locationCoords
+            startTime
+            description
+            bikeType
+            difficulty
+            wattsPerKilo
+            intensity
+            route
+            participants
         }
     }
 `
