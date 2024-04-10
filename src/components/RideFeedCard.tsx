@@ -30,7 +30,7 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
         }
     }, [userData]);
 
-    const getMatchIcon = () => {
+    const getMatchScore = () => {
         if (!FTP){
             FTP = 0;
         }
@@ -52,11 +52,11 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
         }
 
         if (ftpDifference <= 0.3) {
-            return <i className="fa-solid fa-circle-check"></i>;
+            return <span>Great match <i className="fa-solid fa-circle-check"></i></span>;
         } else if (ftpDifference <= 0.6) {
-            return <i className="fa-solid fa-circle-minus"></i>;
+            return <span>Good match <i className="fa-solid fa-circle-minus"></i></span>;
         } else {
-            return <i className="fa-solid fa-circle-xmark"></i>;
+            return <span>Poor match <i className="fa-solid fa-circle-xmark"></i></span>;
         }
     }
 
@@ -123,8 +123,7 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
             )}
             <div className="ride-feed-card-matching-score" >
                 <div className={event.match} >
-                    <span>{event.match} match</span>
-                    <span>{getMatchIcon()}</span>
+                    <span>{getMatchScore()}</span>
                 </div>
             </div>
         </div>
