@@ -14,7 +14,7 @@
     border: 0.5px solid rgba(14, 30, 37, 0.12);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
     width: 100%;
-    max-width: 95vw;
+    max-width: 480px;
     opacity: 0; /* Start with the form invisible */
     animation: fadeInAnimation ease 1s; /* Adjust the duration (1s here) as needed */
     animation-fill-mode: forwards; /* Ensures the form stays visible after animation */
@@ -76,5 +76,7 @@
 @media only screen and (max-width: 800px) {
     .login-form-container {
         padding: 48px 24px;
+        width: 100%;
+        max-width: 95vw;
     }
 }
