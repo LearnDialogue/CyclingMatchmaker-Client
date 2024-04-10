@@ -65,36 +65,12 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
             routeID: event.route,
         },
     });
-
-    const modalMap = () => {
-        return(
-            <MapContainer
-                key={`modalMap`}
-                style={{ height: '400px', width: '400px', zIndex: 1}}
-                center={routeData.getRoute.startCoordinates}
-                zoom={9}
-                dragging={true}
-                zoomControl={true}
-                doubleClickZoom={true}
-                scrollWheelZoom={true}
-                touchZoom={true}
-                boxZoom={true}
-                tap={true}
-            >
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <Polyline
-                pathOptions={{ fillColor: 'red', color: 'blue' }}
-                positions={routeData.getRoute.points}
-                />
-            </MapContainer>
-        );
-    };
     
     const cardMap = () => {
         return(
             <MapContainer
                 key={`cardMap`}
-                style={{ height: '250px', width: '250px', zIndex: -1}}
+                style={{ height: '250px', width: '100%', minWidth: '250px' , maxWidth: '80vw', zIndex: -1}}
                 center={routeData.getRoute.startCoordinates}
                 zoom={9}
                 dragging={false}
@@ -117,13 +93,10 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
     return (
         <div className="ride-feed-card-main-container" >
             <div onClick={() => setEvent(event)} className="ride-feed-card-route-map" >
-                <span>View details <i className="fa-solid fa-eye"></i></span>
-                <div style={{ textAlign: 'center' }}>{
-                    routeData ? (
-                            <div>{cardMap()}</div>
-                        ) : (
-                            <div style={{ width: '250px', height: '250px', backgroundColor: '#f2f2f2' }}></div>
-                )}</div>
+                {
+                    routeData ? <div className="card-map-view" >{cardMap()}</div> : 
+                    <div style={{ width: '250px', height: '250px', backgroundColor: '#f2f2f2' }}></div>
+                }
             </div>
             {routeData ? (
                 <div className="ride-feed-card-values" >

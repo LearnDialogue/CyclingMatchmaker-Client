@@ -256,7 +256,7 @@ const RidesFeed = () => {
                                     <h4>Showing {rideData.getEvents.length} rides:</h4>
                                 ) : (
                                     <></>
-                        )}<div>
+                        )}<div className="sort-rides" >
                                 <span>Sort by: </span>
                                 <select value={sortingOrder} onChange={e => setSortingOrder(e.target.value)} >
                                     <option value="" >-- Select option --</option>

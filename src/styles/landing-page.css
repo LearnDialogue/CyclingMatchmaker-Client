@@ -13,13 +13,14 @@
 
 /* HEADER */
 .landing-page-header {
-    
+    z-index: 3;
     height: 120px;
     padding: 0px 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-family: 'Khyay';
+    z-index: 3;
 }
 
 .landing-page-brand {
@@ -61,6 +62,7 @@
     border-radius: 50%;
     height: 100%;
     max-height: 600px;
+    z-index: 0;
 }
 
 .landing-page-intro-text {
@@ -80,4 +82,47 @@
 
 .landing-page-get-started {
     max-width: 240px;
+}
+
+
+@media only screen and (max-width: 800px) {
+    .landing-page-header {
+        padding-top: 24px;
+        flex-direction: column;
+        gap: 20px;
+        color: white !important;
+        text-shadow: 2px 2px 30px rgba(0, 0, 0, 0.512), 2px 2px 5px #00000058;
+        z-index: 10;
+        position: relative;
+        height: auto;
+        transform: translateY(20%);
+    }
+    
+
+    .landing-page-login-btn {
+        background-color: white;
+        padding: 12px 48px;
+        border-radius: 8px;
+        text-shadow: none;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .landing-page-intro {
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 24px;
+    }
+
+    .landing-page-intro > img {
+        transform: translateY(-3%);
+    }
+
+    .landing-page-intro-text {
+        margin: 0px;
+    }
+
+    .landing-page-get-started {
+        max-width: 100%;
+    }
 }
