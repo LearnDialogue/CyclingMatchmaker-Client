@@ -190,19 +190,37 @@ const SignupPage = () => {
 
     const handleFTPChange = (e: any) => {
         let updatedFTP = 0.0;
-        if(e.target.value === "I am not sure") {
-            updatedFTP = 1.9
+        updatedFTP = parseFloat(e.target.value); 
+        if(!isNaN(updatedFTP) && updatedFTP >= 0) {
+            setValues((prevValues) => ({
+            ...prevValues,
+            FTP: updatedFTP,
+            }));
+            setFTP(e.target.value);
         }
-        else {
-            updatedFTP = parseFloat(e.target.value); 
+        if(ftpToggle) {
+            setFTP("0");
         }
-        console.log(updatedFTP)
-        setValues((prevValues) => ({
-        ...prevValues,
-        FTP: updatedFTP,
-        }));
-        setFTP(e.target.value);
     }
+
+    const [ftpToggle, setFTPToggle] = useState<boolean>(false);
+
+    const handleFTPToggle = (e: any) => {
+        if(e.target.id === "ftp-toggle") {
+            if(ftpToggle) {
+                setFTPToggle(false);
+            }
+            else {
+                setFTPToggle(true);
+                setValues((prevValues) => ({
+                    ...prevValues,
+                    FTP: 0,
+                    }));
+                setFTP("0");
+            }
+        }
+    }
+
 
     const handleExperienceChange = (e: any) => {
         const updatedExperience = e.target.value;
@@ -395,20 +413,12 @@ const SignupPage = () => {
                     </div>
 
                     
-                    <div className="signup-form-input">
-                    <label>FTP</label>
-                    <select onChange={handleFTPChange} value={FTP}>
-                        <option value="" disabled>-- Select FTP --</option>
-                        {Array.from({ length: 26 }, (_, index) => {
-                            const value = (4.5 - index * 0.1).toFixed(1);
-                            return (
-                                <option key={value} value={value}>
-                                    {value}
-                                </option>
-                            );
-                        })}
-                        <option value = "I am not sure">I am not sure</option>
-                    </select>
+                    <div className="signup-form-input signup-form-input-checkbox" >
+                        <label htmlFor="signup-form-ftp" >FTP</label>
+                        <input id="signup-ftp" onChange={handleFTPChange} type="number" value={FTP} readOnly={ftpToggle}/>
+                        <label htmlFor="ftp-not-sure" >
+                            <input name="ftp-toggle" onChange={handleFTPToggle} id="ftp-toggle" type="checkbox" checked={ftpToggle}/> I'm not sure
+                        </label>
                     </div>
                     <div className="signup-form-input" >
                         <label>Experience</label>

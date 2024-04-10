@@ -29,7 +29,7 @@ import "../../styles/edit-profile.css";
     const [weight, setWeight] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [radius, setRadius] = useState<string>("");
-    const [FTP, setFTP] = useState<string>("");
+    const [FTP, setFTP] = useState<number>(0);
     const [experience, setExperience] = useState<string>("");
 
     const [values, setValues] = useState({
@@ -107,18 +107,35 @@ import "../../styles/edit-profile.css";
 
     const handleFTPChange = (e: any) => {
         let updatedFTP = 0.0;
-        if(e.target.value === "I am not sure") {
-            updatedFTP = 1.9
+        updatedFTP = parseFloat(e.target.value); 
+        if(!isNaN(updatedFTP) && updatedFTP >= 0) {
+            setValues((prevValues) => ({
+            ...prevValues,
+            FTP: updatedFTP,
+            }));
+            setFTP(e.target.value);
         }
-        else {
-            updatedFTP = parseFloat(e.target.value); 
+        if(ftpToggle) {
+            setFTP(0);
         }
-        console.log(updatedFTP)
-        setValues((prevValues) => ({
-        ...prevValues,
-        FTP: updatedFTP,
-        }));
-        setFTP(e.target.value);
+    }
+
+    const [ftpToggle, setFTPToggle] = useState<boolean>(false);
+
+    const handleFTPToggle = (e: any) => {
+        if(e.target.id === "not-sure") {
+            if(ftpToggle) {
+                setFTPToggle(false);
+            }
+            else {
+                setFTPToggle(true);
+                setValues((prevValues) => ({
+                    ...prevValues,
+                    FTP: 0,
+                    }));
+                setFTP(0);
+            }
+        }
     }
 
     const handleExperienceChange = (e: any) => {
@@ -165,14 +182,11 @@ import "../../styles/edit-profile.css";
     useEffect(() => {
         if (userData) {
             const datePart = new Date(userData.getUser.birthday).toISOString().split('T')[0];
-            let FTPstring = "";
-            if(userData.getUser.FTP === 1.9) {
-                FTPstring = "I am not sure";
+
+            if(userData.getUser.FTP === 0) {
+                setFTPToggle(true);
             }
-            else {
-                FTPstring = userData.getUser.FTP.toFixed(1);
-            }
-        
+
             setFirstName(userData.getUser.firstName);
             setLastName(userData.getUser.lastName);
             setSex(userData.getUser.sex);
@@ -180,7 +194,7 @@ import "../../styles/edit-profile.css";
             setWeight(userData.getUser.weight);
             setLocation(userData.getUser.locationName);
             setRadius(userData.getUser.radius);
-            setFTP(FTPstring);
+            setFTP(userData.getUser.FTP);
             setExperience(userData.getUser.experience);
 
             setValues({
@@ -222,7 +236,7 @@ import "../../styles/edit-profile.css";
 
                     <div className="editprofile-form-input" >
                         <label htmlFor="editprofile-weight" >Weight (kg)</label>
-                        <input id="editprofile-weight" onChange={handleWeightChange} type="text" value={weight} />
+                        <input id="editprofile-weight" onChange={handleWeightChange} type="number" value={weight} />
                     </div>
 
                     <div className="editprofile-form-input">
@@ -241,21 +255,14 @@ import "../../styles/edit-profile.css";
                         <input id="editprofile-date" onChange={handleBirthdayChange} type="date" value={birthday} max={new Date().toISOString().split('T')[0]} />
                     </div>
 
-                    <div className="editprofile-form-input">
-                    <label>FTP</label>
-                    <select onChange={handleFTPChange} value={FTP}>
-                        <option value="" disabled>-- Select FTP --</option>
-                        {Array.from({ length: 26 }, (_, index) => {
-                            const value = (4.5 - index * 0.1).toFixed(1);
-                            return (
-                                <option key={value} value={value}>
-                                    {value}
-                                </option>
-                            );
-                        })}
-                        <option value = "I am not sure">I am not sure</option>
-                    </select>
+                    <div className="editprofile-form-input" >
+                        <label htmlFor="editprofile-ftp" >FTP</label>
+                        <input id="editprofile-ftp" onChange={handleFTPChange} type="number" value={FTP} readOnly={ftpToggle}/>
+                        <label htmlFor="ftp-not-sure" >
+                                <input name="not-sure" onChange={handleFTPToggle} id="not-sure" type="checkbox" checked={ftpToggle} /> I'm not sure
+                        </label>
                     </div>
+
                     <div className="editprofile-form-input" >
                         <label>Experience</label>
                         <select onChange={handleExperienceChange} value={experience} >
