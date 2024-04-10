@@ -277,6 +277,7 @@ import "../../styles/edit-profile.css";
                         <input id="editprofile-radius" onChange={handleRadiusChange} type="text" value={radius} />
                     </div>
 
+                    <br></br>
                     <Button
                         onClick={handleButtonClick}
                         type="primary"

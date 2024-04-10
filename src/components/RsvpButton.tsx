@@ -44,7 +44,7 @@ const RsvpButton: React.FC<RsvpButtonProps> = ({ isJoined, eventID, type, width,
     };
 
     return (
-        <div>
+        <div style={{ width: '100%' }} >
             {isJoined ? (
                 <button onClick={handleLeaveClick} className={"button button-" + type + disabledStyle} style={{width: `${width ?? 100}%`}} >
                 Leave Ride

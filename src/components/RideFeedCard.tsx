@@ -104,7 +104,7 @@ const RideFeedCard = ({
         return(
             <MapContainer
                 key={`cardMap`}
-                style={{ height: '250px', width: '250px', zIndex: -1}}
+                style={{ height: '250px', width: '100%', minWidth: '250px', zIndex: -1}}
                 center={routeData.getRoute.startCoordinates}
                 zoom={9}
                 dragging={false}
@@ -208,13 +208,10 @@ const RideFeedCard = ({
     return (
         <div className="ride-feed-card-main-container" >
             <div onClick={() => showModalWithDetails(true)} className="ride-feed-card-route-map" >
-                <span>View details <i className="fa-solid fa-eye"></i></span>
-                <div style={{ textAlign: 'center' }}>{
-                    routeData ? (
-                            <div>{cardMap()}</div>
-                        ) : (
-                            <div style={{ width: '250px', height: '250px', backgroundColor: '#f2f2f2' }}></div>
-                )}</div>
+                {
+                    routeData ? <div className="card-map-view" >{cardMap()}</div> : 
+                    <div style={{ width: '250px', height: '250px', backgroundColor: '#f2f2f2' }}></div>
+                }
             </div>
             {routeData ? (
                 <div className="ride-feed-card-values" >
@@ -225,7 +222,7 @@ const RideFeedCard = ({
                     <p><b>{difficulty}</b> difficulty</p>
                     <p>{formatDistance(routeData.getRoute.distance)} km</p>
                     <div className="rsvp-button" >
-                        <RsvpButton 
+                        <RsvpButton
                             eventID={_id}
                             isJoined={isJoined}
                             setJoinedStatus={toggleJoinedStatus}
