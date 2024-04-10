@@ -37,11 +37,11 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
 
         var ftpDifference = 0;
 
-        if (difficulty === "Above 4.5" || difficulty === "Below 2.0"){
-            const rideFTP = parseFloat(difficulty.slice(-3))
+        if (event.difficulty === "Above 4.5" || event.difficulty === "Below 2.0"){
+            const rideFTP = parseFloat(event.difficulty.slice(-3))
             ftpDifference = Math.abs(rideFTP - FTP);
         } else {
-            const [minFTPStr, maxFTPStr] = difficulty.split(' to ');
+            const [minFTPStr, maxFTPStr] = event.difficulty.split(' to ');
             const minFTP = parseFloat(minFTPStr);
             const maxFTP = parseFloat(maxFTPStr);
 
