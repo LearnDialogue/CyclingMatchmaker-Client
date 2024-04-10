@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { InMemoryCache, gql, useMutation, useQuery } from "@apollo/client";
 import { RideFeedCardProps } from "../../components/RideFeedCard";
 import { AuthContext } from "../../context/auth";
 
@@ -8,6 +8,7 @@ import Navbar from "../../components/Navbar";
 import Button from "../../components/Button";
 
 import "../../styles/rides-feed.css";
+import EventModal from "../../components/EventModal";
 
 const RidesFeed = () => {
     const { user } = useContext(AuthContext);
@@ -21,9 +22,15 @@ const RidesFeed = () => {
     const [sortingOrder, setSortingOrder] = useState<string>("date_asc");
     const [sortedRideData, setSortedRideData] = useState<any>([]);
 
+    const [event, setEvent] = useState<any | null>(null);
     const [eventParams, setEventParams] = useState({
         startDate: new Date().toISOString(),
     });
+
+
+    const handleModalClose = (nullEvent: any | null) => {
+        setEvent(nullEvent);
+    }
 
     const { data: userData } = useQuery(FETCH_USER_QUERY, {
         onCompleted() {
@@ -68,40 +75,6 @@ const RidesFeed = () => {
         setRadius(parseInt(newRadius));
     };  
 
-    const [setRegionUser, { loading: regionLoading, error, data }] = useMutation(SET_REGION_MUTATION);
-
-    const setRegion = async () => {
-        const searchStr = searchName.trim().toLowerCase();
-        const cachedQuery = await sessionStorage.getItem(searchStr);
-        var locName: string | null = null;
-        var locCoords: number[] | null = null;
-
-        if(cachedQuery) {
-            const cachedObj = JSON.parse(cachedQuery);
-            locName = cachedObj.locName;
-            locCoords = cachedObj.locCoords;
-        } else {
-            locName = searchStr;
-        }
-
-        const regionUser = await setRegionUser({
-            variables: {
-                username: user?.username,
-                locationName: locName,
-                locationCoords: locCoords,
-                radius: radius,
-            },
-        });
-
-        if (!cachedQuery) {
-            const storedObj = {
-                locName: regionUser.data.setRegion.locationName,
-                locCoords: regionUser.data.setRegion.locationCoords,
-            }
-            sessionStorage.setItem(searchStr, JSON.stringify(storedObj));
-        }
-    } 
-
     const token: string | null = localStorage.getItem("jwtToken");
 
     const { data: rideData, loading: rideLoading, refetch: ridesRefetch } = useQuery(FETCH_RIDES, {
@@ -114,7 +87,6 @@ const RidesFeed = () => {
     });
 
     const handleSubmit = async () => {
-        // await setRegion();
         setEventParams((prevVals) => ({
             ...prevVals,
             location: searchName.trim().toLowerCase(),
@@ -137,7 +109,6 @@ const RidesFeed = () => {
     
         if (rideData && rideData.getEvents) {
             sortedRides = [...rideData.getEvents]; // Create a copy to avoid mutating the original state
-            console.log("SORTING!")
             if (sortingOrder === "date_asc") {
                 sortedRides.sort((a, b) => Number(new Date(a.startTime)) - Number(new Date(b.startTime)));
             } else if (sortingOrder === "date_desc") {
@@ -157,6 +128,16 @@ const RidesFeed = () => {
         
         <>
             <Navbar />
+
+            {event ? (
+                <EventModal
+                event={event}
+                setEvent={handleModalClose}
+                />
+            ) : (
+                <></>
+            )}
+
             <div className="rides-feed-main-container" >
                 <div className="rides-feed-grid" >
                     <div className="rides-feed-filters" >
@@ -292,13 +273,17 @@ const RidesFeed = () => {
                         </div>
 
                         <div className="rides-feed-rides" >
-                            {regionLoading || rideLoading ? (
+                            {rideLoading ? (
                                 <p>Loading...</p>
                             ) : (
                                 rideData && sortedRideData ? (
                                     sortedRideData.map((event: RideFeedCardProps, index: number) => {
                                         return (
-                                            <RideFeedCard key={index} {...event} ></RideFeedCard>
+                                            <RideFeedCard
+                                                key={index}
+                                                event={event}
+                                                setEvent={handleModalClose}
+                                            />
                                         );
                                     })
                                 ) : (
@@ -316,6 +301,7 @@ const RidesFeed = () => {
 const FETCH_USER_QUERY = gql`
   query getUser($username: String!) {
     getUser(username: $username) {
+        id
         locationName
         locationCoords
         radius
@@ -323,28 +309,7 @@ const FETCH_USER_QUERY = gql`
   }
 `;
 
-const SET_REGION_MUTATION = gql`
-    mutation Mutation(
-        $username: String!
-        $locationName: String
-        $locationCoords: [Float]
-        $radius: Float
-    ) {
-        setRegion(
-            setRegionInput: {
-                username: $username
-                locationName: $locationName
-                locationCoords: $locationCoords
-                radius: $radius
-            }
-        ) {
-            locationName
-            locationCoords
-            radius
-        }
-    }
-`
-const FETCH_RIDES = gql`
+export const FETCH_RIDES = gql`
     query getEvents(
         $page: Int
         $pageSize: Int
@@ -372,6 +337,7 @@ const FETCH_RIDES = gql`
             _id
             host
             name
+            locationName
             locationCoords
             startTime
             description
