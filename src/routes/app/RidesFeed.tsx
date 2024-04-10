@@ -9,6 +9,7 @@ import Button from "../../components/Button";
 
 import "../../styles/rides-feed.css";
 import EventModal from "../../components/EventModal";
+import { formatDistance } from "../../util/Formatters";
 
 const RidesFeed = () => {
     const { user } = useContext(AuthContext);

@@ -75,7 +75,7 @@
 }
 .ride-feed-card-main-container > .ride-feed-card-values > .rsvp-button span {
     padding-bottom: 12px;
-    margin-right: 8px;
+    margin-right: 12px;
     opacity: 0.7;
     display: flex;
     align-items: center;
@@ -195,17 +195,15 @@
     }
 
     .ride-feed-card-main-container > .ride-feed-card-values > .rsvp-button {
-        flex-direction: column;
-        flex-direction: column-reverse;
         width: 100%;
     }
+
 
     .ride-feed-card-main-container > .ride-feed-card-route-map > img {
         padding: 12px;
         width: 100%;
         min-height: none;
         max-height: none;
-        
     }
 
     .ride-feed-card-main-container > .ride-feed-card-matching-score {
