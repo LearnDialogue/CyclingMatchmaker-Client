@@ -26,20 +26,12 @@ const getUserAge = (dateStr: string): string => {
 }
 
 const ProfilePage = () => {
-
-  const [showPopOver, setShowPopOver] = useState(null);
-  // const [refetchRides, setRefetchRides] = useState(false);
+  const { user } = useContext(AuthContext);
   const [event, setEvent] = useState<any | null>(null);
 
   const handleModalClose = (nullEvent: any | null) => {
     setEvent(nullEvent);
   }
-
-  const handleRSVPEvent = async (rsvpEvent: any | null) => {
-    return;
-  }
-
-  const { user } = useContext(AuthContext);
 
   let username: string | null = null;
   if (user) {
@@ -153,7 +145,6 @@ const ProfilePage = () => {
                   <div>
                     {console.log(hostedEvents)}
                     {hostedEvents ? hostedEvents.getHostedEvents.map((event: any, index: number) => (
-                      // <div onClick={() => setShowPopOver(event)} className="profile-page-user-rides-list-item" key={index} >
                       <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
                         <div className="ride-title" >
                           <span><b>{event.name}</b></span>
@@ -194,7 +185,7 @@ const ProfilePage = () => {
                   <h5>Rides you hosted &nbsp; (0)</h5>
                   <div>
                     {hostedEvents == 1 ? hostedEvents.getHostedEvents.map((event: any, index: number) => (
-                      <div onClick={() => setShowPopOver(event)} className="profile-page-user-rides-list-item" key={index} >
+                      <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
                         <div className="ride-title" >
                           <span><b>{event.name}</b></span>
                           <span className="ride-date" >{formatDate(event.startTime)}</span>
@@ -209,7 +200,7 @@ const ProfilePage = () => {
                   <h5>Rides you joined &nbsp; (0)</h5>
                   <div>
                     {joinedEvents == 1 ? joinedEvents.getJoinedEvents.map((event: any, index: number) => (
-                        <div onClick={() => setShowPopOver(event)} className="profile-page-user-rides-list-item" key={index} >
+                        <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
                           <div className="ride-title" >
                             <span><b>{event.name}</b></span>
                             <span className="ride-date" >{formatDate(event.startTime)}</span>

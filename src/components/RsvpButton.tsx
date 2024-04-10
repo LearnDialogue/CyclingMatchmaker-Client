@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import "../styles/components/button.css"
 import { gql, useMutation } from '@apollo/client';
 import { GET_JOINED_EVENTS } from '../routes/app/ProfilePage';
+import { FETCH_RIDES } from '../routes/app/RidesFeed';
 
 interface RsvpButtonProps {
     isJoined: boolean | "" | undefined;
@@ -23,17 +24,18 @@ const RsvpButton: React.FC<RsvpButtonProps> = ({ isJoined, eventID, type, width,
             },
         },
         update(cache, { data: { joinEvent } }) {
-            console.log(joinEvent);
             const joinedEvents : any = cache.readQuery({query: GET_JOINED_EVENTS});
-            cache.writeQuery({
-                query: GET_JOINED_EVENTS,
-                data: {
-                    getJoinedEvents: {
-                        ...joinedEvents,
-                        joinEvent
+            if (joinedEvents) {
+                cache.writeQuery({
+                    query: GET_JOINED_EVENTS,
+                    data: {
+                        getJoinedEvents: {
+                            ...joinedEvents,
+                            joinEvent
+                        }
                     }
-                }
-            })
+                });
+            }
         },
         variables: { eventID: eventID }
     });
@@ -45,16 +47,17 @@ const RsvpButton: React.FC<RsvpButtonProps> = ({ isJoined, eventID, type, width,
             },
         },
         update(cache, { data: { leaveEvent } }) {
-            console.log(leaveEvent);
             const joinedEvents : any = cache.readQuery({query: GET_JOINED_EVENTS});
-            const updatedEvents = joinedEvents.getJoinedEvents.filter((event: { _id: any; }) => event._id !== leaveEvent._id);
+            if (joinedEvents) {
+                const updatedEvents = joinedEvents.getJoinedEvents.filter((event: { _id: any; }) => event._id !== leaveEvent._id);
+                cache.writeQuery({
+                    query: GET_JOINED_EVENTS,
+                    data: {
+                        getJoinedEvents: updatedEvents
+                    }
+                });
+            }
 
-            cache.writeQuery({
-                query: GET_JOINED_EVENTS,
-                data: {
-                    getJoinedEvents: updatedEvents
-                }
-            })
         },
         variables: { eventID: eventID }
     });
