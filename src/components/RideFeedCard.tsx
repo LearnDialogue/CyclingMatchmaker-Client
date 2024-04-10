@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
 import Button from "./Button";
 import "../styles/components/ride-feed-card.css";
@@ -30,9 +30,9 @@ const formatDistance = (meters: number): number => {
 const formatDate = (dateStr: string): string => {
     const date = new Date(dateStr);
     const formatter = new Intl.DateTimeFormat('en-US', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'long',
+        weekday: 'short',
+        day: 'numeric',
+        month: 'long',
     });
     return formatter.format(date);
 }
@@ -57,14 +57,6 @@ const RideFeedCard = ({
     const { user } = useContext(AuthContext);
     const [modalWithDetails, showModalWithDetails] = useState<boolean>(false);
     const [isJoined, setIsJoined] = useState(user?.username && participants.includes(user?.username));
-
-    const { data: routeData } = useQuery(FETCH_ROUTE, {
-        variables: {
-            routeID: route,
-        },
-    })
-//
-const getMatchIcon = () => {
     var [FTP, setFTP] = useState<number | null>(null);
 
     const { data: userData } = useQuery(FETCH_USER_QUERY, {
@@ -79,38 +71,41 @@ const getMatchIcon = () => {
         }
     }, [userData]);
 
-    //Hopefully this shouldn't happen
-    if (!FTP){
-        FTP = 0;
+    const getMatchIcon = () => {
+        if (!FTP){
+            FTP = 0;
+        }
+
+        var ftpDifference = 0;
+
+        if (difficulty === "Above 4.5" || difficulty === "Below 2.0"){
+            const rideFTP = parseFloat(difficulty.slice(-3))
+            ftpDifference = Math.abs(rideFTP - FTP);
+        } else {
+            const [minFTPStr, maxFTPStr] = difficulty.split(' to ');
+            const minFTP = parseFloat(minFTPStr);
+            const maxFTP = parseFloat(maxFTPStr);
+
+            const diffFromMinFTP = Math.abs(FTP - minFTP);
+            const diffFromMaxFTP = Math.abs(FTP - maxFTP);
+
+            ftpDifference = Math.min(diffFromMinFTP, diffFromMaxFTP);
+        }
+
+        if (ftpDifference <= 0.3) {
+            return <i className="fa-solid fa-circle-check"></i>;
+        } else if (ftpDifference <= 0.6) {
+            return <i className="fa-solid fa-circle-minus"></i>;
+        } else {
+            return <i className="fa-solid fa-circle-xmark"></i>;
+        }
     }
 
-    
-    var ftpDifference = 0;
-    
-
-    if (difficulty === "Above 4.5" || difficulty === "Below 2.0"){
-        const rideFTP = parseFloat(difficulty.slice(-3))
-        ftpDifference = Math.abs(rideFTP - FTP);
-    }
-    else{
-    const [minFTPStr, maxFTPStr] = difficulty.split(' to ');
-    const minFTP = parseFloat(minFTPStr);
-    const maxFTP = parseFloat(maxFTPStr);
-
-    
-    const diffFromMinFTP = Math.abs(FTP - minFTP);
-    const diffFromMaxFTP = Math.abs(FTP - maxFTP);
-
-    ftpDifference = Math.min(diffFromMinFTP, diffFromMaxFTP);
-    }
-    if (ftpDifference <= .3) {
-        return <i className="fa-solid fa-circle-check"></i>;
-    } else if (ftpDifference <= .6) {
-        return <i className="fa-solid fa-circle-minus"></i>;
-    } else {
-        return <i className="fa-solid fa-circle-xmark"></i>;
-    }
-}
+    const { data: routeData } = useQuery(FETCH_ROUTE, {
+        variables: {
+            routeID: route,
+        },
+    });
 
     const modalMap = () => {
         return(
