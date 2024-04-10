@@ -107,12 +107,15 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
                     <p><b>{event.difficulty}</b> difficulty</p>
                     <p>{formatDistance(routeData.getRoute.distance)} km</p>
                     <div className="rsvp-button" >
+                        <div className="rsvp-icons" >
+                            <span>34 <i className="fa-solid fa-user-check"></i></span>
+                            <span>Share <i className="fa-regular fa-paper-plane"></i></span>
+                        </div>
                         <RsvpButton 
                             eventID={event._id}
                             isJoined={isJoined}
                             setJoinedStatus={setIsJoined}
                             type="secondary"/>
-                        <span>Share <i className="fa-regular fa-paper-plane"></i></span>
                     </div>
                 </div>
             ) : (
