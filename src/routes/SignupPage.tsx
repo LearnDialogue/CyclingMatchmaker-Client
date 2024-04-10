@@ -191,17 +191,15 @@ const SignupPage = () => {
     const handleFTPChange = (e: any) => {
         let updatedFTP = 0.0;
         updatedFTP = parseFloat(e.target.value); 
-        if(!isNaN(updatedFTP)) {
+        if(!isNaN(updatedFTP) && updatedFTP >= 0) {
             setValues((prevValues) => ({
             ...prevValues,
             FTP: updatedFTP,
             }));
+            setFTP(e.target.value);
         }
         if(ftpToggle) {
             setFTP("0");
-        }
-        else {
-            setFTP(e.target.value);
         }
     }
 
