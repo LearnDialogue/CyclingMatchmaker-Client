@@ -149,6 +149,7 @@
         min-width: 100%;
         position: inherit;
         max-height: none;
+        padding: 0px;
     }
     .rides-feed-filters > h4 {
         grid-column: span 2;

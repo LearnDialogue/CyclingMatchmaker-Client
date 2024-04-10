@@ -7,6 +7,7 @@ import { AuthContext } from "../../context/auth";
 import { useSearchParams, Link } from "react-router-dom";
 import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import Button from '../../components/Button';
+import EventModal from '../../components/EventModal';
 
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr);
@@ -25,10 +26,12 @@ const getUserAge = (dateStr: string): string => {
 }
 
 const ProfilePage = () => {
-
-  const [showPopOver, setShowPopOver] = useState(null);
-
   const { user } = useContext(AuthContext);
+  const [event, setEvent] = useState<any | null>(null);
+
+  const handleModalClose = (nullEvent: any | null) => {
+    setEvent(nullEvent);
+  }
 
   let username: string | null = null;
   if (user) {
@@ -64,31 +67,19 @@ const ProfilePage = () => {
     joinRefetch();
   }, []);
 
-  const displayPopOverEventDetails = (event: any) => {
-
-    return (
-      <div className="profile-page-popover-ride-details-container" >
-        <div className="popover-ride-details" >
-          <div onClick={() => setShowPopOver(null)} className="close-btn" >x</div>
-          <span>Hosted by <b>{username == event.host ? "you" : event.host}</b></span>
-          <br></br>
-          <br></br>
-          <h2>{event.name}</h2>
-          <p>{formatDate(event.startTime)}</p>
-          <span className="ride-location" ><i className="fa-solid fa-location-dot"></i>&nbsp;&nbsp;{event.locationName}</span>
-          <br></br>
-          <br></br>
-          <Button type="secondary" >{username == event.host ? "Edit ride" : "Leave ride"}</Button>
-        </div>
-      </div>
-    )
-  }
   console.log(userData)
   return (
     <div className="profile-page-main-container">
       <Navbar />
 
-      {showPopOver ? displayPopOverEventDetails(showPopOver) : null}
+      {event ? (
+        <EventModal
+          event={event}
+          setEvent={handleModalClose}
+        />
+      ) : (
+        <></>
+      )}
 
       <div className="profile-page-grid">
 
@@ -154,7 +145,7 @@ const ProfilePage = () => {
                   <div>
                     {console.log(hostedEvents)}
                     {hostedEvents ? hostedEvents.getHostedEvents.map((event: any, index: number) => (
-                      <div onClick={() => setShowPopOver(event)} className="profile-page-user-rides-list-item" key={index} >
+                      <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
                         <div className="ride-title" >
                           <span><b>{event.name}</b></span>
                           <span className="ride-date" >{formatDate(event.startTime)}</span>
@@ -169,7 +160,7 @@ const ProfilePage = () => {
                   <h5>Rides you are joining &nbsp; ({joinedEvents?.getJoinedEvents.length ?? 0})</h5>
                   <div>
                     {joinedEvents ? joinedEvents.getJoinedEvents.map((event: any, index: number) => (
-                        <div onClick={() => setShowPopOver(event)} className="profile-page-user-rides-list-item" key={index} >
+                        <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
                           <div className="ride-title" >
                             <span><b>{event.name}</b></span>
                             <span className="ride-date" >{formatDate(event.startTime)}</span>
@@ -194,7 +185,7 @@ const ProfilePage = () => {
                   <h5>Rides you hosted &nbsp; (0)</h5>
                   <div>
                     {hostedEvents == 1 ? hostedEvents.getHostedEvents.map((event: any, index: number) => (
-                      <div onClick={() => setShowPopOver(event)} className="profile-page-user-rides-list-item" key={index} >
+                      <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
                         <div className="ride-title" >
                           <span><b>{event.name}</b></span>
                           <span className="ride-date" >{formatDate(event.startTime)}</span>
@@ -209,7 +200,7 @@ const ProfilePage = () => {
                   <h5>Rides you joined &nbsp; (0)</h5>
                   <div>
                     {joinedEvents == 1 ? joinedEvents.getJoinedEvents.map((event: any, index: number) => (
-                        <div onClick={() => setShowPopOver(event)} className="profile-page-user-rides-list-item" key={index} >
+                        <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
                           <div className="ride-title" >
                             <span><b>{event.name}</b></span>
                             <span className="ride-date" >{formatDate(event.startTime)}</span>
@@ -245,21 +236,39 @@ const FETCH_USER_QUERY = gql`
 const GET_HOSTED_EVENTS = gql`
   query getHostedEvents {
     getHostedEvents {
+        _id
+        host
         name
         locationName
-        host
+        locationCoords
         startTime
+        description
+        bikeType
+        difficulty
+        wattsPerKilo
+        intensity
+        route
+        participants
     }
   }
 `;
 
-const GET_JOINED_EVENTS = gql`
+export const GET_JOINED_EVENTS = gql`
   query getJoinedEvents {
     getJoinedEvents {
+        _id
+        host
         name
         locationName
-        host
+        locationCoords
         startTime
+        description
+        bikeType
+        difficulty
+        wattsPerKilo
+        intensity
+        route
+        participants
     }
   }
 `;

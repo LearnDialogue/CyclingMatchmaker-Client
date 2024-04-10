@@ -119,6 +119,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .ride-card-modal-container {
@@ -128,8 +129,10 @@
     border: 0.5px solid rgba(0, 0, 0, 0.185);
     border-radius: 12px;
     position: relative;
-    max-width: 80vw;
-    max-height: 90vh;
+    min-width: 600px;
+    width: 800px;
+    max-width: 95vw;
+    max-height: 95vh;
     overflow: auto;
 }
 
@@ -215,6 +218,15 @@
         padding-bottom: 12px;
         background-color: white;
         border-bottom-left-radius: 12px;
+    }
+
+
+    .ride-card-modal-container {
+        min-width: 100px;
+    }
+    .ride-card-modal-container > .ride-card-modal-values {
+        padding: 0px;
+        padding-top: 24px;
     }
     
 }
