@@ -108,7 +108,7 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
                     <p>{formatDistance(routeData.getRoute.distance)} km</p>
                     <div className="rsvp-button" >
                         <div className="rsvp-icons" >
-                            <span>34 <i className="fa-solid fa-user-check"></i></span>
+                            <span>{event.participants.length}<i className="fa-solid fa-user-check"></i></span>
                             <span>Share <i className="fa-regular fa-paper-plane"></i></span>
                         </div>
                         <RsvpButton 
