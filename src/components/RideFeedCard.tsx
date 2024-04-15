@@ -66,13 +66,27 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
         },
     });
     
-    const cardMap = () => {
+    const calculateBounds = () => {
+        if (!routeData) return null;
+        
+        const points = routeData.getRoute.points;
+        const latitudes = points.map((point: any[]) => point[0]);
+        const longitudes = points.map((point: any[]) => point[1]);
+
+        const southWest = [Math.min(...latitudes), Math.min(...longitudes)];
+        const northEast = [Math.max(...latitudes), Math.max(...longitudes)];
+
+        return [southWest, northEast];
+    };
+
+    const bounds = calculateBounds();
+    
+const cardMap = () => {
         return(
             <MapContainer
                 key={`cardMap`}
-                style={{ height: '250px', width: '100%', minWidth: '250px' , maxWidth: '80vw', zIndex: -1}}
-                center={routeData.getRoute.startCoordinates}
-                zoom={9}
+                style={{ height: '250px', width: '100%', minWidth: '250px', maxWidth: '80vw', zIndex: -1 }}
+                bounds={bounds as L.LatLngBoundsExpression}
                 dragging={false}
                 zoomControl={false}
                 doubleClickZoom={false}
@@ -83,8 +97,8 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
             >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <Polyline
-                pathOptions={{ fillColor: 'red', color: 'blue' }}
-                positions={routeData.getRoute.points}
+                    pathOptions={{ fillColor: 'red', color: 'blue' }}
+                    positions={routeData.getRoute.points}
                 />
             </MapContainer>
         );
