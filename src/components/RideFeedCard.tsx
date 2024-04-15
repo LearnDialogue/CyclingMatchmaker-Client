@@ -30,7 +30,7 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
         }
     }, [userData]);
 
-    const getMatchIcon = () => {
+    const getMatchScore = () => {
         if (!FTP){
             FTP = 0;
         }
@@ -52,11 +52,11 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
         }
 
         if (ftpDifference <= 0.3) {
-            return <i className="fa-solid fa-circle-check"></i>;
+            return <span>Great match <i className="fa-solid fa-circle-check"></i></span>;
         } else if (ftpDifference <= 0.6) {
-            return <i className="fa-solid fa-circle-minus"></i>;
+            return <span>Good match <i className="fa-solid fa-circle-minus"></i></span>;
         } else {
-            return <i className="fa-solid fa-circle-xmark"></i>;
+            return <span>Poor match <i className="fa-solid fa-circle-xmark"></i></span>;
         }
     }
 
@@ -65,38 +65,28 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
             routeID: event.route,
         },
     });
-
-    const modalMap = () => {
-        return(
-            <MapContainer
-                key={`modalMap`}
-                style={{ height: '400px', width: '400px', zIndex: 1}}
-                center={routeData.getRoute.startCoordinates}
-                zoom={9}
-                dragging={true}
-                zoomControl={true}
-                doubleClickZoom={true}
-                scrollWheelZoom={true}
-                touchZoom={true}
-                boxZoom={true}
-                tap={true}
-            >
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <Polyline
-                pathOptions={{ fillColor: 'red', color: 'blue' }}
-                positions={routeData.getRoute.points}
-                />
-            </MapContainer>
-        );
-    };
     
-    const cardMap = () => {
+    const calculateBounds = () => {
+        if (!routeData) return null;
+        
+        const points = routeData.getRoute.points;
+        const latitudes = points.map((point: any[]) => point[0]);
+        const longitudes = points.map((point: any[]) => point[1]);
+
+        const southWest = [Math.min(...latitudes), Math.min(...longitudes)];
+        const northEast = [Math.max(...latitudes), Math.max(...longitudes)];
+
+        return [southWest, northEast];
+    };
+
+    const bounds = calculateBounds();
+    
+const cardMap = () => {
         return(
             <MapContainer
                 key={`cardMap`}
-                style={{ height: '250px', width: '250px', zIndex: -1}}
-                center={routeData.getRoute.startCoordinates}
-                zoom={9}
+                style={{ height: '250px', width: '100%', minWidth: '250px', maxWidth: '80vw', zIndex: -1 }}
+                bounds={bounds as L.LatLngBoundsExpression}
                 dragging={false}
                 zoomControl={false}
                 doubleClickZoom={false}
@@ -107,8 +97,8 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
             >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <Polyline
-                pathOptions={{ fillColor: 'red', color: 'blue' }}
-                positions={routeData.getRoute.points}
+                    pathOptions={{ fillColor: 'red', color: 'blue' }}
+                    positions={routeData.getRoute.points}
                 />
             </MapContainer>
         );
@@ -117,13 +107,10 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
     return (
         <div className="ride-feed-card-main-container" >
             <div onClick={() => setEvent(event)} className="ride-feed-card-route-map" >
-                <span>View details <i className="fa-solid fa-eye"></i></span>
-                <div style={{ textAlign: 'center' }}>{
-                    routeData ? (
-                            <div>{cardMap()}</div>
-                        ) : (
-                            <div style={{ width: '250px', height: '250px', backgroundColor: '#f2f2f2' }}></div>
-                )}</div>
+                {
+                    routeData ? <div className="card-map-view" >{cardMap()}</div> : 
+                    <div style={{ width: '250px', height: '250px', backgroundColor: '#f2f2f2' }}></div>
+                }
             </div>
             {routeData ? (
                 <div className="ride-feed-card-values" >
@@ -134,12 +121,15 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
                     <p><b>{event.difficulty}</b> difficulty</p>
                     <p>{formatDistance(routeData.getRoute.distance)} km</p>
                     <div className="rsvp-button" >
+                        <div className="rsvp-icons" >
+                            <span>{event.participants.length}<i className="fa-solid fa-user-check"></i></span>
+                            <span>Share <i className="fa-regular fa-paper-plane"></i></span>
+                        </div>
                         <RsvpButton 
                             eventID={event._id}
                             isJoined={isJoined}
                             setJoinedStatus={setIsJoined}
                             type="secondary"/>
-                        <span>Share <i className="fa-regular fa-paper-plane"></i></span>
                     </div>
                 </div>
             ) : (
@@ -147,8 +137,7 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
             )}
             <div className="ride-feed-card-matching-score" >
                 <div className={event.match} >
-                    <span>{event.match} match</span>
-                    <span>{getMatchIcon()}</span>
+                    <span>{getMatchScore()}</span>
                 </div>
             </div>
         </div>

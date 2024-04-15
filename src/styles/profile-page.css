@@ -197,7 +197,7 @@
     top: 0;
     left: 0;
     background-color: rgba(0, 0, 0, 0.167);
-    height: 100vh;
+    height: 103vh;
     width: 100vw;
     z-index: 10;
     display: flex;
@@ -212,7 +212,7 @@
     border: 0.5px solid rgba(14, 30, 37, 0.12);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
     min-width: 450px;
-    max-width: 450px;
+    max-width: 90vw;
     position: relative;
 }
 .profile-page-popover-ride-details-container > .popover-ride-details > span {
@@ -233,6 +233,11 @@
 
 
 @media only screen and (max-width: 800px) {
+
+    .profile-page-grid {
+        padding: 24px;
+    }
+
     .profile-page-user-events {
         flex-direction: column;
     }
@@ -245,7 +250,6 @@
     .profile-page-user-stats-data {
         flex-direction: column;
     }
-
 
 
     .profile-page-user-upcoming-rides-data, .profile-page-user-past-rides-data  {

@@ -22,13 +22,28 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
         },
     })
 
+    const calculateBounds = () => {
+        if (!routeData) return null;
+        
+        const points = routeData.getRoute.points;
+        const latitudes = points.map((point: any[]) => point[0]);
+        const longitudes = points.map((point: any[]) => point[1]);
+
+        const southWest = [Math.min(...latitudes), Math.min(...longitudes)];
+        const northEast = [Math.max(...latitudes), Math.max(...longitudes)];
+
+        return [southWest, northEast];
+    };
+
+    const bounds = calculateBounds();
+
     const modalMap = () => {
         return(
             <MapContainer
                 key={`modalMap`}
-                style={{ height: '400px', width: '400px', zIndex: 1}}
+                style={{ height: '400px', width: '100%', minWidth: '250px', zIndex: 1}}
+                bounds={bounds as L.LatLngBoundsExpression}
                 center={routeData.getRoute.startCoordinates}
-                zoom={9}
                 dragging={true}
                 zoomControl={true}
                 doubleClickZoom={true}
@@ -117,14 +132,15 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
                             <p>{formatDistance(routeData.getRoute.distance)} km</p>
                             <p>{event.description}</p>
                             <div className="rsvp-button" >
+                                <br />
                                 <RsvpButton
                                     eventID={event._id}
                                     isJoined={isJoined}
                                     setJoinedStatus={toggleJoinedStatus}
                                     type="secondary"/>
-                                <Button type="secondary" onClick={generateGPXFile}>Download</Button>
+                                <Button marginTop={12} type="secondary" onClick={generateGPXFile}>Download</Button>
                                 {event.host === user?.username ? (
-                                    <Button type="secondary">Edit</Button>
+                                    <Button marginTop={12} type="secondary">Edit</Button>
                                 ) : (
                                     <></>
                                 )}

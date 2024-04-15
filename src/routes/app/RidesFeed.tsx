@@ -9,6 +9,7 @@ import Button from "../../components/Button";
 
 import "../../styles/rides-feed.css";
 import EventModal from "../../components/EventModal";
+import { formatDistance } from "../../util/Formatters";
 
 const RidesFeed = () => {
     const { user } = useContext(AuthContext);
@@ -256,7 +257,7 @@ const RidesFeed = () => {
                                     <h4>Showing {rideData.getEvents.length} rides:</h4>
                                 ) : (
                                     <></>
-                        )}<div>
+                        )}<div className="sort-rides" >
                                 <span>Sort by: </span>
                                 <select value={sortingOrder} onChange={e => setSortingOrder(e.target.value)} >
                                     <option value="" >-- Select option --</option>

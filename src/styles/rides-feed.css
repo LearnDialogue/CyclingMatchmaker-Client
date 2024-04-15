@@ -149,9 +149,7 @@
         min-width: 100%;
         position: inherit;
         max-height: none;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        row-gap: 24px;
+        padding: 0px;
     }
     .rides-feed-filters > h4 {
         grid-column: span 2;
@@ -161,6 +159,18 @@
     }
 
     .rides-feed-header {
+        align-items: flex-start;
+        flex-direction: column;
+        flex-flow: column-reverse;
+        margin: 0px;
+    }
+    .rides-feed-header > h4 {
+        margin-top: 12px;
+    }
+    .rides-feed-header > .sort-rides {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
         align-items: center;
     }
 
