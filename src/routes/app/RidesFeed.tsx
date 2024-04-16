@@ -348,6 +348,7 @@ export const FETCH_RIDES = gql`
             intensity
             route
             participants
+            match
         }
     }
 `
