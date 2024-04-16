@@ -9,7 +9,7 @@ import "../../styles/edit-profile.css";
 
  const EditProfile = () => {
 
-    const { user } = useContext(AuthContext);
+    const { user, logout } = useContext(AuthContext);
     const context = useContext(AuthContext);
     const { data: userData, refetch} = useQuery(FETCH_USER_QUERY, {
         variables: {
@@ -215,6 +215,27 @@ import "../../styles/edit-profile.css";
         }
     }, [userData]);
 
+    const [deleteUser] = useMutation(DELETE_USER, {
+        onError(err) {
+            setErrors(err.graphQLErrors);
+            const errorObject = (err.graphQLErrors[0] as any)?.extensions?.exception?.errors
+            const errorMessage = Object.values(errorObject).flat().join(', ');
+            setErrors(errorMessage);
+        },
+        onCompleted() {
+            logout();
+        },
+        context: {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    });
+
+    const handleDeleteButtonClick = () => {
+        deleteUser();
+    }
+
     return (
         
         <>
@@ -291,11 +312,27 @@ import "../../styles/edit-profile.css";
                     >
                         Submit
                     </ Button>
+                    <Button
+                        onClick={handleDeleteButtonClick}
+                        type="primary"
+                        color="rgb(200,0,0)"
+                        marginTop={10}
+                    >
+                        Delete Profile
+                    </ Button>
                 </div>
             </div>
         </>
     )
  };
+
+ const DELETE_USER = gql`
+ mutation deleteUser {
+    deleteUser {
+        id
+    }
+ }
+ `
 
  const EDIT_USER = gql`
  mutation editProfile(
