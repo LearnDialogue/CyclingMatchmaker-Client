@@ -141,6 +141,18 @@
     width: 100%;
 }
 
+.ride-card-modal-values-container {
+    display: grid;
+    align-items: center; 
+    grid-template-columns: 1fr 1fr;
+    column-gap: 5px;
+}
+
+.ride-card-modal-values-container h5 {
+    padding: 12px;
+    border: 0.5px solid rgba(209, 215, 221, 1);
+}
+
 .ride-card-modal-values {
     padding: 12px;
 }

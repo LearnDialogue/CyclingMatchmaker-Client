@@ -123,15 +123,37 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
                                 <div style={{ width: '400px', height: '400px', backgroundColor: '#f2f2f2' }}></div>
                     )}</div>
                     {routeData ? (
-                        <div className="ride-card-modal-values" >
-                            <h2>{event.name}</h2>
-                            <p>Created by <b>{event.host}</b></p>
-                            <p>Riders: <b>{event.participants.length}</b></p>
-                            <p>Starts at <b>{formatTime(event.startTime)}</b> on <b>{formatDate(event.startTime)}</b></p>
-                            <p>Bike Type: <b>{event.bikeType.join(', ')}</b></p>
-                            <p><b>{event.difficulty}</b> difficulty</p>
-                            <p>{formatDistance(routeData.getRoute.distance)} km</p>
-                            <p>{event.description}</p>
+                        <div>
+                            <div className="ride-card-modal-values-container">
+                                <div className="ride-card-modal-values" >
+                                    <h2>{event.name}</h2>
+                                    <p>Created by <b>{event.host}</b></p>
+                                    <p>Riders: <b>{event.participants.length}</b></p>
+                                    <p>Starts at <b>{formatTime(event.startTime)}</b> on <b>{formatDate(event.startTime)}</b></p>
+                                    <p>Bike Type: <b>{event.bikeType.join(', ')}</b></p>
+                                    <p><b>{event.difficulty}</b> difficulty</p>
+                                    <p>{formatDistance(routeData.getRoute.distance)} km</p>
+                                    <p>{event.description}</p>
+                                </div>
+                                <div>
+                                    {event.host === user?.username ? (
+                                        <div>
+                                            <h5>Riders &nbsp; ({event.participants.length ?? 0})</h5>
+                                            <div>
+                                                {event.participants ? event.participants.map((username: any, index: number) => (
+                                                    <div>
+                                                        <span>{username}</span>
+                                                    </div>
+                                                )) : (
+                                                    <></>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </div>
+                            </div>
                             <div className="rsvp-button" >
                                 <br />
                                 <RsvpButton
