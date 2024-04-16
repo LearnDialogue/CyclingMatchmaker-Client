@@ -2,17 +2,33 @@ import { useContext, useEffect, useState } from "react";
 import Button from "../../components/Button";
 import Navbar from "../../components/Navbar";
 import "../../styles/create-ride.css";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { extractRouteInfo } from "../../util/GpxHandler";
 import { AuthContext } from "../../context/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+export interface RideFeedCardProps {
+    _id: string;
+    host: string;
+    name: string;
+    startTime: string;
+    description: string;
+    bikeType: string[];
+    difficulty: string;
+    wattsPerKilo: number;
+    intensity: string;
+    route: string
+    match: string;
+    participants: string[];
+}
 
+const EditRide = () => {
 
-const CreateRide = () => {
-    const navigate = useNavigate();
+    const location = useLocation();
+    const { event } = location.state;
+
     const context = useContext(AuthContext);
     const [errors, setErrors] = useState({});
 
@@ -20,7 +36,7 @@ const CreateRide = () => {
     const [rideDate, setRideDate] = useState<string>("");
     const [rideTime, setRideTime] = useState<string>("");
     const [desc, setDesc] = useState<string>("");
-    const [bikeType, setBikeType] = useState<string[] | never[]>([]);
+    const [bikeType, setBikeType] = useState<string[]>([]);
     const [difficulty, setDifficulty] = useState<string>("");
     const [rideAverageSpeed, setRideAverageSpeed] = useState<string>("");
 
@@ -35,6 +51,7 @@ const CreateRide = () => {
         difficulty: "",
         wattsPerKilo: 0,
         intensity: "n/a",
+        eventID: "",
 
         // Route
         points: [[0,0]],
@@ -42,12 +59,60 @@ const CreateRide = () => {
         grade: [0],
         terrain: [""],
         distance: 0,
-        maxElevation: 0,
-        minElevation: 0,
-        totalElevationGain: 0,
+        maxElevation: 0.0,
+        minElevation: 0.0,
+        totalElevationGain: 0.0,
         startCoordinates: [0,0],
         endCoordinates: [0,0],
     })
+
+    const { data: routeData } = useQuery(FETCH_ROUTE, {
+        variables: {
+            routeID: event.route,
+        },
+    })
+
+    useEffect(() => {
+        const startDate = new Date(event.startTime);
+        const date = startDate.toISOString().split('T')[0]; 
+        const hours = startDate.getHours();
+        const minutes = startDate.getMinutes();
+        const formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+
+        setRideName(event.name);
+        setRideTime(formattedTime);
+        setDesc(event.description);
+        setBikeType(event.bikeType);
+        setDifficulty(event.difficulty);
+        setRideDate(date);
+
+        setValues((prevValues) => ({
+            ...prevValues,
+            name: event.name,
+            startTime: event.startTime,
+            description: event.description,
+            difficulty: event.difficulty,
+            bikeType: event.bikeType,
+            eventID: event._id,
+            }));
+      }, []);
+
+      useEffect(() => {
+        if(routeData) {
+            setValues((prevValues) => ({
+                ...prevValues,
+                points: routeData.getRoute.points,
+                elevation: routeData.getRoute.elevation,
+                distance: routeData.getRoute.distance,
+                maxElevation: routeData.getRoute.maxElevation,
+                minElevation: routeData.getRoute.minElevation,
+                totalElevationGain:routeData.getRoute.totalElevationGain,
+                startCoordinates: routeData.getRoute.startCoordinates,
+                endCoordinates: routeData.getRoute.endCoordinates,
+            }));
+
+        }
+        }, [routeData]);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setValues((prevValues) => ({
@@ -67,21 +132,20 @@ const CreateRide = () => {
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked, id } = event.target;
-        var newBikes = [...bikeType];
-        if (id == "bike") {
-            if (checked) {
-                newBikes.push(name);
-                setBikeType(newBikes);
-            } else {
-                newBikes = newBikes.filter(item => item !== name);
-                setBikeType(newBikes);
-            }
+        let newBikes: string[] = [...bikeType];
+        
+        if (checked && !newBikes.includes(name)) {
+            newBikes.push(name);
+            setBikeType(newBikes);
+        } 
+        else if (!checked && newBikes.includes(name)) {
+            newBikes = newBikes.filter(item => item !== name);
+            setBikeType(newBikes);
         }
         setValues((prevValues) => ({
             ...prevValues,
             bikeType: newBikes,
-        }));
-    };
+        }));    };
 
     const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setValues((prevValues) => ({
@@ -109,6 +173,7 @@ const CreateRide = () => {
             ...prevValues,
             startTime: dateString,
             }));
+
         }
     }
 
@@ -139,18 +204,28 @@ const CreateRide = () => {
     };
 
     const handleButtonClick = () => {
-        addEvent();
-        notify(); // Call notify function here
+        editEvent();
+        editNotify(); // Call notify function here
 
         // Adding 2 second delay before redirecting to the profile page
         setTimeout(() => {
-            navigate("/app/profile");
+            window.history.back();
+        }, 1500);
+    };
+
+    const handleDeleteButtonClick = () => {
+        deleteEvent();
+        deleteNotify(); // Call notify function here
+
+        // Adding 2 second delay before redirecting to the profile page
+        setTimeout(() => {
+            window.history.back();
         }, 1500);
     };
 
     const token: string | null = localStorage.getItem("jwtToken");
 
-    const [addEvent, { loading }] = useMutation(CREATE_EVENT_MUTATION, {
+    const [editEvent, { loading, data: editData }] = useMutation(EDIT_EVENT_MUTATION, {
         onError(err) {
             setErrors(err.graphQLErrors);
             const errorObject = (err.graphQLErrors[0] as any)?.extensions?.exception?.errors
@@ -165,13 +240,26 @@ const CreateRide = () => {
         variables: values,
     });
 
+    const [deleteEvent, { loading: deleteLoading}] = useMutation(DELETE_EVENT_MUTATION, {
+        onError(err) {
+            setErrors(err.graphQLErrors);
+            const errorObject = (err.graphQLErrors[0] as any)?.extensions?.exception?.errors
+            const errorMessage = Object.values(errorObject).flat().join(', ');
+            setErrors(errorMessage);
+        },
+        context: {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+        variables: {
+            eventID: event._id,
+        },
+    });
+
     useEffect(() => {
         refreshDate();
     }, [rideDate, rideTime]);
-
-    const enableButton = () => {
-        return rideName != "" && rideDate != "" && rideTime != "" && bikeType.length !== 0 && difficulty != "" && rideAverageSpeed != "";
-    }
 
     const toastStyle = {
         background: 'lightgreen', // Change background color to light green
@@ -183,8 +271,12 @@ const CreateRide = () => {
         width: 'auto', // Adjust width as needed
         textAlign: 'center', // Center the toast
     };
-    const notify = () => toast("Ride Created!");
+    const editNotify = () => toast("Ride Edited!");
+    const deleteNotify = () => toast("Ride Deleted!");
 
+    const enableButton = () => {
+        return rideName != "" && rideDate != "" && rideTime != "" && bikeType.length !== 0 && difficulty != "";
+    }
 
     return (
         
@@ -193,7 +285,12 @@ const CreateRide = () => {
             <div className="create-ride-main-container" >
                 <div className="create-ride-form-container" >
                     
-                    <h2>Create a ride</h2>
+                <div className="edit-ride-back-btn" onClick={() =>  window.history.back()} >
+                        <i className="fa-solid fa-arrow-left"></i>
+                        <span>Back</span>
+                    </div>
+
+                    <h2>Edit Ride</h2>
                     
                     <div className="create-ride-form-input" >
                         <label htmlFor="ride-name" >Ride name</label>
@@ -227,29 +324,24 @@ const CreateRide = () => {
                         </select>
                     </div>
 
-                    <div className="create-ride-form-input" >
-                        <label htmlFor="ride-average-speed" >Average speed (mph)</label>
-                        <input id="ride-average-speed" onChange={e => setRideAverageSpeed(e.target.value)} type="number" />
-                    </div>
-
-                    <div className="rides-feed-filter-options" >
-                            <h5>Bike type</h5>
-                            <label htmlFor="mountain-bike" >
-                                <input name="Mountain" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Mountain
-                            </label>
-                            <label htmlFor="road-bike" >
-                                <input name="Road" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Road
-                            </label>
-                            <label htmlFor="hybrid-bike" >
-                                <input name="Hybrid" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Hybrid
-                            </label>
-                            <label htmlFor="touring-bike" >
-                                <input name="Touring" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Touring
-                            </label>
-                            <label htmlFor="gravel-bike" >
-                                <input name="Gravel" onChange={handleCheckboxChange} id="bike" type="checkbox" /> Gravel
-                            </label>
-                    </div>
+                    <div className="rides-feed-filter-options">
+                    <h5>Bike type</h5>
+                    <label htmlFor="mountain-bike">
+                        <input name="Mountain" checked={bikeType.includes("Mountain")} onChange={handleCheckboxChange} type="checkbox" /> Mountain
+                    </label>
+                    <label htmlFor="road-bike">
+                        <input name="Road" checked={bikeType.includes("Road")} onChange={handleCheckboxChange} type="checkbox" /> Road
+                    </label>
+                    <label htmlFor="hybrid-bike">
+                        <input name="Hybrid" checked={bikeType.includes("Hybrid")} onChange={handleCheckboxChange} type="checkbox" /> Hybrid
+                    </label>
+                    <label htmlFor="touring-bike">
+                        <input name="Touring" checked={bikeType.includes("Touring")} onChange={handleCheckboxChange} type="checkbox" /> Touring
+                    </label>
+                    <label htmlFor="gravel-bike">
+                        <input name="Gravel" checked={bikeType.includes("Gravel")} onChange={handleCheckboxChange} type="checkbox" /> Gravel
+                    </label>
+                </div>
 
                     <div className="create-ride-form-input" >
                         <label htmlFor="ride-description" >Description</label>
@@ -271,7 +363,15 @@ const CreateRide = () => {
                         onClick={handleButtonClick}
                         type="primary"
                     >
-                        Create ride
+                        Edit ride
+                    </ Button>
+                    <Button
+                        onClick={handleDeleteButtonClick}
+                        type="primary"
+                        color="rgb(200,0,0)"
+                        marginTop={10}
+                    >
+                        Delete ride
                     </ Button>
                     <ToastContainer
                     
@@ -286,9 +386,8 @@ const CreateRide = () => {
     )
 };
 
-const CREATE_EVENT_MUTATION = gql`
-  mutation createEvent(
-    $host: String!
+const EDIT_EVENT_MUTATION = gql`
+  mutation editEvent(
     $name: String!
     $startTime: Date!
     $description: String!
@@ -306,10 +405,10 @@ const CREATE_EVENT_MUTATION = gql`
     $totalElevationGain: Float!
     $startCoordinates: [Float]!
     $endCoordinates: [Float]!
+    $eventID: String!
   ) {
-    createEvent(
-      createEventInput: {
-        host: $host
+    editEvent(
+      editEventInput: {
         name: $name
         startTime: $startTime
         description: $description
@@ -327,11 +426,40 @@ const CREATE_EVENT_MUTATION = gql`
         totalElevationGain: $totalElevationGain
         startCoordinates: $startCoordinates
         endCoordinates: $endCoordinates
+        eventID: $eventID
       }
     ) {
       _id
+      name
+      bikeType
     }
   }
 `;
 
-export default CreateRide;
+const FETCH_ROUTE = gql`
+  query getRoute($routeID: String!) {
+    getRoute(routeID: $routeID) {
+        points
+        elevation
+        grade
+        terrain
+        distance
+        maxElevation
+        minElevation
+        totalElevationGain
+        startCoordinates
+        endCoordinates
+    }
+  }
+`
+
+const DELETE_EVENT_MUTATION = gql`
+  mutation deleteEvent($eventID: String!) {
+    deleteEvent(eventID: $eventID) {
+      username
+    }
+  }
+`;
+
+
+export default EditRide;

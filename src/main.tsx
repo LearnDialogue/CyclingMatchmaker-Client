@@ -15,6 +15,7 @@ import { AuthProvider } from "./context/auth";
 import AuthRoute from "./util/AuthRoute";
 import UserRoute from "./util/UserRoute";
 import EditProfile from './routes/app/EditProfilePage';
+import EditRide from './routes/app/EditRidePage';
 
 function App() {
 
@@ -57,6 +58,13 @@ return (
               element={
                 <UserRoute>
                   <EditProfile />
+                </UserRoute>
+              }
+            />
+      <Route path="/app/profile/edit/ride"
+              element={
+                <UserRoute>
+                  <EditRide />
                 </UserRoute>
               }
             />
