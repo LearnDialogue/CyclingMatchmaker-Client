@@ -8,14 +8,15 @@ interface ButtonProps {
     children: React.ReactNode;
     onClick?: () => void;
     marginTop?: number;
+    color?: string;
 }
 
-const Button: React.FC<ButtonProps> = ({ type, width, disabled, children, onClick, marginTop }) => {
+const Button: React.FC<ButtonProps> = ({ type, width, disabled, children, onClick, marginTop, color }) => {
 
     let disabledStyle = (disabled ? " button-disabled" : "");
 
     return (
-        <button disabled={disabled} onClick={onClick} className={"button button-" + type + disabledStyle} style={{width: `${width ?? 100}%`, marginTop: `${marginTop ?? 0}px`}} >
+        <button disabled={disabled} onClick={onClick} className={"button button-" + type + disabledStyle} style={{width: `${width ?? 100}%`, marginTop: `${marginTop ?? 0}px`, backgroundColor: color}} >
             {children}
         </button>
     );

@@ -6,6 +6,7 @@ import { AuthContext } from '../context/auth';
 import RsvpButton from './RsvpButton';
 import Button from './Button';
 import { formatDate, formatDistance, formatTime } from '../util/Formatters';
+import { Link } from 'react-router-dom';
 
 interface EventModalProps {
     event: any | null;
@@ -140,7 +141,11 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
                                     type="secondary"/>
                                 <Button marginTop={12} type="secondary" onClick={generateGPXFile}>Download</Button>
                                 {event.host === user?.username ? (
-                                    <Button marginTop={12} type="secondary">Edit</Button>
+                                    <Button marginTop={12} type="secondary">
+                                    <Link to={"/app/profile/edit/ride"} state={{event}} >
+                                        Edit
+                                    </Link>
+                                    </Button>
                                 ) : (
                                     <></>
                                 )}

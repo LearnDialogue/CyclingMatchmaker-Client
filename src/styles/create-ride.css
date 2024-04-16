@@ -49,3 +49,19 @@
 .create-ride-form-input > textarea {
     margin-bottom: 24px;
 }
+
+.edit-ride-back-btn {
+    top: 0;
+    left: 0;
+    padding: 8px;
+    display: flex;
+    width: 100px;
+    gap: 6px;
+    align-items: center;
+    cursor: pointer;
+    transform: translate(-24px, -12px);
+    font-size: 0.9em;
+}
+.edit-ride-back-btn:hover {
+    opacity: 0.8;
+}
