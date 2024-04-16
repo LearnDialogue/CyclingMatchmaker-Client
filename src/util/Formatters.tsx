@@ -16,8 +16,8 @@ export const formatDate = (dateStr: string): string => {
 
 export function formatTime(isoString: string): string {
     const date: Date = new Date(isoString);
-    const hours: number = date.getUTCHours();
-    const minutes: number | string = date.getUTCMinutes();
+    const hours: number = date.getHours();
+    const minutes: number | string = date.getMinutes();
     const ampm: string = hours >= 12 ? 'pm' : 'am';
     const formattedHours: number = hours % 12 || 12;
     const formattedMinutes: string = minutes < 10 ? '0' + minutes : minutes.toString();

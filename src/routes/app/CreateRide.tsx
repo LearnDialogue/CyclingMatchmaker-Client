@@ -102,15 +102,13 @@ const CreateRide = () => {
 
     function refreshDate() {
         if(rideDate && rideTime) {
-            const mergedDate: string = `${rideDate}T${rideTime}:00.000Z`;
+            const mergedDate: string = `${rideDate}T${rideTime}:00.000`;
             const dateString: string = new Date(mergedDate).toISOString();
 
             setValues((prevValues) => ({
             ...prevValues,
             startTime: dateString,
             }));
-
-            console.log(dateString);
         }
     }
 
@@ -166,10 +164,6 @@ const CreateRide = () => {
         },
         variables: values,
     });
-
-    useEffect(() => {
-        console.log(values);
-    }, [values]);
 
     useEffect(() => {
         refreshDate();

@@ -5,11 +5,9 @@ import "../../styles/create-ride.css";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { extractRouteInfo } from "../../util/GpxHandler";
 import { AuthContext } from "../../context/auth";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { formatTime, formatDate } from "../../util/Formatters";
-import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
 
 export interface RideFeedCardProps {
     _id: string;
@@ -31,7 +29,6 @@ const EditRide = () => {
     const location = useLocation();
     const { event } = location.state;
 
-    const navigate = useNavigate();
     const context = useContext(AuthContext);
     const [errors, setErrors] = useState({});
 
@@ -78,8 +75,8 @@ const EditRide = () => {
     useEffect(() => {
         const startDate = new Date(event.startTime);
         const date = startDate.toISOString().split('T')[0]; 
-        const hours = startDate.getUTCHours();
-        const minutes = startDate.getUTCMinutes();
+        const hours = startDate.getHours();
+        const minutes = startDate.getMinutes();
         const formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
 
         setRideName(event.name);
@@ -169,7 +166,7 @@ const EditRide = () => {
 
     function refreshDate() {
         if(rideDate && rideTime) {
-            const mergedDate: string = `${rideDate}T${rideTime}:00.000Z`;
+            const mergedDate: string = `${rideDate}T${rideTime}:00.000`;
             const dateString: string = new Date(mergedDate).toISOString();
 
             setValues((prevValues) => ({
@@ -212,7 +209,7 @@ const EditRide = () => {
 
         // Adding 2 second delay before redirecting to the profile page
         setTimeout(() => {
-            navigate("/app/profile");
+            window.history.back();
         }, 1500);
     };
 
@@ -222,7 +219,7 @@ const EditRide = () => {
 
         // Adding 2 second delay before redirecting to the profile page
         setTimeout(() => {
-            navigate("/app/profile");
+            window.history.back();
         }, 1500);
     };
 
@@ -245,7 +242,6 @@ const EditRide = () => {
 
     const [deleteEvent, { loading: deleteLoading}] = useMutation(DELETE_EVENT_MUTATION, {
         onError(err) {
-            console.log(typeof event._id)
             setErrors(err.graphQLErrors);
             const errorObject = (err.graphQLErrors[0] as any)?.extensions?.exception?.errors
             const errorMessage = Object.values(errorObject).flat().join(', ');
@@ -260,10 +256,6 @@ const EditRide = () => {
             eventID: event._id,
         },
     });
-
-    useEffect(() => {
-        console.log(values);
-    }, [values]);
 
     useEffect(() => {
         refreshDate();
@@ -282,6 +274,9 @@ const EditRide = () => {
     const editNotify = () => toast("Ride Edited!");
     const deleteNotify = () => toast("Ride Deleted!");
 
+    const enableButton = () => {
+        return rideName != "" && rideDate != "" && rideTime != "" && bikeType.length !== 0 && difficulty != "";
+    }
 
     return (
         
@@ -290,7 +285,7 @@ const EditRide = () => {
             <div className="create-ride-main-container" >
                 <div className="create-ride-form-container" >
                     
-                <div className="edit-ride-back-btn" onClick={() =>  navigate("/app/profile")} >
+                <div className="edit-ride-back-btn" onClick={() =>  window.history.back()} >
                         <i className="fa-solid fa-arrow-left"></i>
                         <span>Back</span>
                     </div>
@@ -364,6 +359,7 @@ const EditRide = () => {
                         </div>
                     </div>
                     <Button
+                        disabled={!enableButton()}
                         onClick={handleButtonClick}
                         type="primary"
                     >
@@ -458,8 +454,8 @@ const FETCH_ROUTE = gql`
 `
 
 const DELETE_EVENT_MUTATION = gql`
-  mutation deleteEvent($eventId: String!) {
-    deleteEvent(eventID: $eventId) {
+  mutation deleteEvent($eventID: String!) {
+    deleteEvent(eventID: $eventID) {
       username
     }
   }
