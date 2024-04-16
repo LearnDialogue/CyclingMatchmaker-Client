@@ -164,7 +164,6 @@ const CreateRide = () => {
             setErrors(errorMessage);
         },
         onCompleted(data) {
-            console.log(data);
             if (rsvp) {
                 setEventID(data.createEvent._id);
             }
@@ -240,8 +239,6 @@ const CreateRide = () => {
 
     const rideMap = () => {
         const bounds = calculateBounds();
-        console.log("bounds" + bounds);
-        console.log(values.startCoordinates)
         const mapKey = JSON.stringify({ bounds, center: values.startCoordinates });
 
         return(

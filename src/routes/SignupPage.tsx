@@ -256,8 +256,6 @@ const SignupPage = () => {
             validateEmail({ variables: { email } }),
           ]);
 
-        console.log("here: " + usernameResult.data.validUsername);
-
         if (!usernameResult.error && usernameResult.data.validUsername === false) {
             setIsUsernameValid(false);
             setShowErrorsList((prevErrorsList) => [...prevErrorsList, "Username already exists."]);

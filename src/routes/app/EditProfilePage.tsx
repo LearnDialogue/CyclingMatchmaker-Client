@@ -81,7 +81,6 @@ import "../../styles/edit-profile.css";
     }
     const handleBirthdayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const updatedBirthday = e.target.value;
-        console.log(updatedBirthday)
         setValues((prevValues) => ({
         ...prevValues,
         birthday: updatedBirthday,
