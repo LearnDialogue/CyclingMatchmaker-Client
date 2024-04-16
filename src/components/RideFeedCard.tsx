@@ -16,46 +16,13 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
 
     const { user } = useContext(AuthContext);
     const [isJoined, setIsJoined] = useState(user?.username && event.participants.includes(user?.username));
-    var [FTP, setFTP] = useState<number | null>(null);
 
-    const { data: userData } = useQuery(FETCH_USER_QUERY, {
-        variables: {
-            username: user?.username,
-        },
-    });
-
-    useEffect(() => {
-        if (userData && userData.getUser) {
-            setFTP(userData.getUser.FTP);
-        }
-    }, [userData]);
-
-    const getMatchScore = () => {
-        if (!FTP){
-            FTP = 0;
-        }
-
-        var ftpDifference = 0;
-
-        if (event.difficulty === "Above 4.5" || event.difficulty === "Below 2.0"){
-            const rideFTP = parseFloat(event.difficulty.slice(-3))
-            ftpDifference = Math.abs(rideFTP - FTP);
-        } else {
-            const [minFTPStr, maxFTPStr] = event.difficulty.split(' to ');
-            const minFTP = parseFloat(minFTPStr);
-            const maxFTP = parseFloat(maxFTPStr);
-
-            const diffFromMinFTP = Math.abs(FTP - minFTP);
-            const diffFromMaxFTP = Math.abs(FTP - maxFTP);
-
-            ftpDifference = Math.min(diffFromMinFTP, diffFromMaxFTP);
-        }
-
-        if (ftpDifference <= 0.3) {
+    const matchIcon = () => {
+        if (event.match == 1) {
             return <span>Great match <i className="fa-solid fa-circle-check"></i></span>;
-        } else if (ftpDifference <= 0.6) {
+        } else if (event.match == 2) {
             return <span>Good match <i className="fa-solid fa-circle-minus"></i></span>;
-        } else {
+        } else if (event.match == 3) {
             return <span>Poor match <i className="fa-solid fa-circle-xmark"></i></span>;
         }
     }
@@ -137,21 +104,12 @@ const cardMap = () => {
             )}
             <div className="ride-feed-card-matching-score" >
                 <div className={event.match} >
-                    <span>{getMatchScore()}</span>
+                    <span>{matchIcon()}</span>
                 </div>
             </div>
         </div>
     )
 };
-
-const FETCH_USER_QUERY = gql`
-  query getUser($username: String!) {
-    getUser(username: $username) {
-        FTP
-    }
-  }
-`;
-
 
 const FETCH_ROUTE = gql`
   query getRoute($routeID: String!) {
