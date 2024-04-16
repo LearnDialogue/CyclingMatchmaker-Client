@@ -15,6 +15,7 @@ const CreateRide = () => {
     const navigate = useNavigate();
     const context = useContext(AuthContext);
     const [errors, setErrors] = useState({});
+    const [rsvp, setRSVP] = useState(false);
 
     const [rideName, setRideName] = useState<string>("");
     const [rideDate, setRideDate] = useState<string>("");
@@ -23,6 +24,8 @@ const CreateRide = () => {
     const [bikeType, setBikeType] = useState<string[] | never[]>([]);
     const [difficulty, setDifficulty] = useState<string>("");
     const [rideAverageSpeed, setRideAverageSpeed] = useState<string>("");
+    const [fileUploaded, setFileUploaded] = useState<boolean>(false);
+    const [eventID, setEventID] = useState<string>("");
 
     const [values, setValues] = useState({
 
@@ -83,6 +86,11 @@ const CreateRide = () => {
         }));
     };
 
+    const handleRSVP = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { checked } = event.target;
+        setRSVP(checked);
+    }
+
     const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setValues((prevValues) => ({
         ...prevValues,
@@ -129,6 +137,7 @@ const CreateRide = () => {
                         startCoordinates: routeInfo.startCoordinates,
                         endCoordinates: routeInfo.endCoordinates,
                     }));
+                    setFileUploaded(true);
                 } catch (error) {
                     console.error('Error parsing GPX:', error);
                 }
@@ -141,11 +150,6 @@ const CreateRide = () => {
     const handleButtonClick = () => {
         addEvent();
         notify(); // Call notify function here
-
-        // Adding 2 second delay before redirecting to the profile page
-        setTimeout(() => {
-            navigate("/app/profile");
-        }, 1500);
     };
 
     const token: string | null = localStorage.getItem("jwtToken");
@@ -157,6 +161,15 @@ const CreateRide = () => {
             const errorMessage = Object.values(errorObject).flat().join(', ');
             setErrors(errorMessage);
         },
+        onCompleted(data) {
+            console.log(data);
+            if (rsvp) {
+                setEventID(data.createEvent._id);
+            }
+            setTimeout(() => {
+                navigate("/app/profile");
+            }, 1500);
+        },
         context: {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -165,12 +178,36 @@ const CreateRide = () => {
         variables: values,
     });
 
+    const [joinRide] = useMutation(JOIN_RIDE, {
+        onError(err) {
+            setErrors(err.graphQLErrors);
+            const errorObject = (err.graphQLErrors[0] as any)?.extensions?.exception?.errors
+            const errorMessage = Object.values(errorObject).flat().join(', ');
+            setErrors(errorMessage);
+        },
+        context: {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+        variables: {
+            eventID: eventID,
+        }
+    })
+
+    useEffect(() => {
+        if (rsvp) joinRide();
+    }, [eventID]);
+
     useEffect(() => {
         refreshDate();
     }, [rideDate, rideTime]);
 
     const enableButton = () => {
-        return rideName != "" && rideDate != "" && rideTime != "" && bikeType.length !== 0 && difficulty != "" && rideAverageSpeed != "";
+        return rideName != "" && rideDate != "" && 
+        rideTime != "" && bikeType.length !== 0 && 
+        difficulty != "" && rideAverageSpeed != "" &&
+        fileUploaded;
     }
 
     const toastStyle = {
@@ -266,6 +303,13 @@ const CreateRide = () => {
                         <input type="file" onChange={handleFileSelect} accept=".gpx" />
                         </div>
                     </div>
+
+                    <div className="create-ride-form-input">
+                        <label htmlFor="rsvp" >
+                            <input name="rsvp" onChange={handleRSVP} id="rsvp" type="checkbox" /> RSVP me for this ride
+                        </label>
+                    </div>
+                    
                     <Button
                         disabled={!enableButton()}
                         onClick={handleButtonClick}
@@ -285,6 +329,14 @@ const CreateRide = () => {
         </>
     )
 };
+
+const JOIN_RIDE = gql`
+    mutation joinEvent($eventID: String!) {
+        joinEvent(eventID: $eventID) {
+            _id
+        }
+    }
+`
 
 const CREATE_EVENT_MUTATION = gql`
   mutation createEvent(
