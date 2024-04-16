@@ -196,10 +196,12 @@ const SignupPage = () => {
             ...prevValues,
             FTP: updatedFTP,
             }));
-            setFTP(e.target.value);
         }
         if(ftpToggle) {
             setFTP("0");
+        }
+        else {
+            setFTP(e.target.value);
         }
     }
 
