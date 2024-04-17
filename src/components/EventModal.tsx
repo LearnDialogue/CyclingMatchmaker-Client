@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect} from 'react';
+import React, { useContext, useState } from 'react';
 import "../styles/profile-page.css";
 import { gql, useQuery } from '@apollo/client';
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
@@ -17,16 +17,11 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
     const { user } = useContext(AuthContext);
     const [isJoined, setIsJoined] = useState(user?.username && event.participants.includes(user?.username));
     
-    const { data: routeData, refetch: refetchRoute } = useQuery(FETCH_ROUTE, {
+    const { data: routeData } = useQuery(FETCH_ROUTE, {
         variables: {
             routeID: event.route,
         },
     })
-
-    useEffect(() => {
-        refetchRoute();
-      }, []);
-
 
     const calculateBounds = () => {
         if (!routeData) return null;
@@ -44,11 +39,9 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
     const bounds = calculateBounds();
 
     const modalMap = () => {
-        const mapKey = JSON.stringify({ bounds, center: routeData.getRoute.startCoordinates });
-
         return(
             <MapContainer
-                key={mapKey}
+                key={`modalMap`}
                 style={{ height: '400px', width: '100%', minWidth: '250px', zIndex: 1}}
                 bounds={bounds as L.LatLngBoundsExpression}
                 center={routeData.getRoute.startCoordinates}

@@ -8,8 +8,6 @@ import { AuthContext } from "../../context/auth";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
-import { LatLngExpression } from "leaflet";
 
 export interface RideFeedCardProps {
     _id: string;
@@ -68,16 +66,11 @@ const EditRide = () => {
         endCoordinates: [0,0],
     })
 
-    const { data: routeData,  refetch: refetchRoute} = useQuery(FETCH_ROUTE, {
+    const { data: routeData } = useQuery(FETCH_ROUTE, {
         variables: {
             routeID: event.route,
         },
-        
     })
-
-    useEffect(() => {
-        refetchRoute();
-      }, []);
 
     useEffect(() => {
         const startDate = new Date(event.startTime);
@@ -209,50 +202,6 @@ const EditRide = () => {
             console.error('Error loading GPX file:', error);
         }
     };
-
-    const calculateBounds = () => {
-        if (values.points.length <= 0) return null;
-        
-        const points = values.points;
-        const latitudes = points.map((point: any[]) => point[0]);
-        const longitudes = points.map((point: any[]) => point[1]);
-
-        const southWest = [Math.min(...latitudes), Math.min(...longitudes)];
-        const northEast = [Math.max(...latitudes), Math.max(...longitudes)];
-
-        return [southWest, northEast];
-    };
-
-
-    const rideMap = () => {
-        const bounds = calculateBounds();
-        const mapKey = JSON.stringify({ bounds, center: values.startCoordinates });
-
-        return(
-            <MapContainer
-                key={mapKey}
-                style={{ height: '400px', width: '100%', minWidth: '250px', zIndex: 1}}
-                bounds={bounds as L.LatLngBoundsExpression}
-                center={values.startCoordinates as LatLngExpression}
-                dragging={true}
-                zoomControl={true}
-                doubleClickZoom={true}
-                scrollWheelZoom={true}
-                touchZoom={true}
-                boxZoom={true}
-                tap={true}
-            >
-                
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {values.points.length > 1 && 
-                <Polyline
-                pathOptions={{ fillColor: 'red', color: 'blue' }}
-                positions={values.points as LatLngExpression[]}
-                />}
-            </MapContainer>
-        );
-    };
-
 
     const handleButtonClick = () => {
         editEvent();
@@ -409,17 +358,6 @@ const EditRide = () => {
                         <input type="file" onChange={handleFileSelect} accept=".gpx" />
                         </div>
                     </div>
-                    
-                    {values.points.length > 1 && 
-                    <div className="create-ride-form-input" >
-                        <label htmlFor="ride-map" >Map</label>
-
-                            <div>
-                                {rideMap()}
-                            </div>
-                    
-                    </div>
-                    }
                     <Button
                         disabled={!enableButton()}
                         onClick={handleButtonClick}
@@ -494,7 +432,6 @@ const EDIT_EVENT_MUTATION = gql`
       _id
       name
       bikeType
-      route
     }
   }
 `;

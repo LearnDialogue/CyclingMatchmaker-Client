@@ -29,7 +29,7 @@ import "../../styles/edit-profile.css";
     const [weight, setWeight] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [radius, setRadius] = useState<string>("");
-    const [FTP, setFTP] = useState<string>("");
+    const [FTP, setFTP] = useState<number>(0);
     const [experience, setExperience] = useState<string>("");
 
     const [values, setValues] = useState({
@@ -81,6 +81,7 @@ import "../../styles/edit-profile.css";
     }
     const handleBirthdayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const updatedBirthday = e.target.value;
+        console.log(updatedBirthday)
         setValues((prevValues) => ({
         ...prevValues,
         birthday: updatedBirthday,
@@ -112,12 +113,10 @@ import "../../styles/edit-profile.css";
             ...prevValues,
             FTP: updatedFTP,
             }));
+            setFTP(e.target.value);
         }
         if(ftpToggle) {
-            setFTP("0");
-        }
-        else {
-            setFTP(e.target.value);
+            setFTP(0);
         }
     }
 
@@ -134,7 +133,7 @@ import "../../styles/edit-profile.css";
                     ...prevValues,
                     FTP: 0,
                     }));
-                setFTP("0");
+                setFTP(0);
             }
         }
     }
