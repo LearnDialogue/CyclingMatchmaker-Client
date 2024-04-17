@@ -118,8 +118,12 @@ const RidesFeed = () => {
                 sortedRides.sort((a, b) => Number(b.difficulty.slice(0, 3)) - Number(a.difficulty.slice(0, 3)));
             } else if(sortingOrder == "wpkg_desc"){
                 sortedRides.sort((a, b) => Number(a.difficulty.slice(0, 3)) - Number(b.difficulty.slice(0, 3)));
+            } else if (sortingOrder === "match-asc") {
+                sortedRides.sort((a, b) => a.match - b.match);
+            } else if (sortingOrder === "match-desc") {
+                sortedRides.sort((a, b) => b.match - a.match);
             }
-    
+
             setSortedRideData(sortedRides);
         }
     
@@ -267,8 +271,8 @@ const RidesFeed = () => {
                                     <option value="wpkg_desc">Watts per kilo: Low to High</option>
                                     <option disabled value="distance-asc" >Distance: Long to short</option>
                                     <option disabled value="distance-desc" >Distance: Short to long</option>
-                                    <option disabled value="match-asc" >Match: best to worst</option>
-                                    <option disabled value="match-desc" >Match: worst to best</option>
+                                    <option value="match-asc" >Match: best to worst</option>
+                                    <option value="match-desc" >Match: worst to best</option>
                                 </select>
                             </div>
                         </div>
