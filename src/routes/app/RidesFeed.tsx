@@ -282,10 +282,11 @@ const RidesFeed = () => {
                                 <p>Loading...</p>
                             ) : (
                                 rideData && sortedRideData ? (
-                                    sortedRideData.map((event: RideFeedCardProps, index: number) => {
+                                    sortedRideData.map((event: RideFeedCardProps) => {
                                         return (
                                             <RideFeedCard
-                                                key={index}
+                                                key={event._id}
+                                                _id={event._id}
                                                 event={event}
                                                 setEvent={handleModalClose}
                                             />

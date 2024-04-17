@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { Key, useContext, useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
 import Button from "./Button";
@@ -8,6 +8,7 @@ import { AuthContext } from "../context/auth";
 import { formatDate, formatDistance, formatTime } from "../util/Formatters";
 
 export interface RideFeedCardProps {
+    _id: Key | null | undefined;
     event: any | null;
     setEvent: (nullEvent: string | null) => void;
 }
