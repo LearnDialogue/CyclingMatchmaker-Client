@@ -277,8 +277,7 @@ import "../../styles/edit-profile.css";
                     </div>
 
                     <div className="editprofile-form-input" >
-                        <label htmlFor="editprofile-ftp" >FTP
-                            <span className="tooltip">
+                        <label htmlFor="editprofile-ftp" >FTP<span className="tooltip">
                                 <i className="fa-solid fa-circle-info"></i>
                                 <span className="tooltiptext">FTP stands for Functional Threshold Power. It is a measure of the power you can hold for an hour and is measured in Watts.</span>
                             </span>
