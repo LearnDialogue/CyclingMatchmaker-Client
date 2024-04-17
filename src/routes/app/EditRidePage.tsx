@@ -31,6 +31,7 @@ const EditRide = () => {
 
     const context = useContext(AuthContext);
     const [errors, setErrors] = useState({});
+    const [deleteWarningModal, setShowDeleteWarningModal] = useState<boolean>(false);
 
     const [rideName, setRideName] = useState<string>("");
     const [rideDate, setRideDate] = useState<string>("");
@@ -214,14 +215,21 @@ const EditRide = () => {
     };
 
     const handleDeleteButtonClick = () => {
+        // showDeleteWarningModal
+        setShowDeleteWarningModal(true);
+    };
+
+    const deleteRideConfirm = () => {
         deleteEvent();
         deleteNotify(); // Call notify function here
+
+        setShowDeleteWarningModal(false);
 
         // Adding 2 second delay before redirecting to the profile page
         setTimeout(() => {
             window.history.back();
         }, 1500);
-    };
+    }
 
     const token: string | null = localStorage.getItem("jwtToken");
 
@@ -278,9 +286,27 @@ const EditRide = () => {
         return rideName != "" && rideDate != "" && rideTime != "" && bikeType.length !== 0 && difficulty != "";
     }
 
+    if(deleteWarningModal){
+        
+    }
+
     return (
         
         <>
+            {deleteWarningModal ?
+            
+            <div className="delete-ride-modal" >
+                <div className="delete-ride-modal-container" >
+                    <h2 style={{ textAlign: 'center' }} >Are you sure you want to delete this ride?</h2>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 24 }} >
+                        <Button color="red" onClick={() => deleteRideConfirm()} width={40} type="primary" >Delete ride</Button>
+                        <Button onClick={() => setShowDeleteWarningModal(false)} width={40} type="secondary" >Cancel</Button>
+                    </div>
+                </div>
+            </div>
+            : null    
+        }
+            
             <Navbar />
             <div className="create-ride-main-container" >
                 <div className="create-ride-form-container" >
