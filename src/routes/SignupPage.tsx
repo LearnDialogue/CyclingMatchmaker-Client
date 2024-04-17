@@ -324,6 +324,13 @@ const SignupPage = () => {
                 <h1 className="signup-form-brand" >
                     <Link to="/" >Cycling matchmaker</Link>
                 </h1>
+                <span className="signup-strava-account-warning" >
+                    * A Strava account is required.
+                </span>
+                <span className="signup-strava-account-warning" >
+                    Don't have one? &nbsp; <Link target="_blank" to="https://www.strava.com/register/free" >Create one here.</Link>
+                </span>
+                
                 <div className="signup-form-input" >
                     <label>Username</label>
                     <input onChange={handleUsernameChange} type="text" value={username} />
