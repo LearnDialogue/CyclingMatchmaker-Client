@@ -196,10 +196,12 @@ const SignupPage = () => {
             ...prevValues,
             FTP: updatedFTP,
             }));
-            setFTP(e.target.value);
         }
         if(ftpToggle) {
             setFTP("0");
+        }
+        else {
+            setFTP(e.target.value);
         }
     }
 
@@ -253,8 +255,6 @@ const SignupPage = () => {
             validateUsername({ variables: { username } }),
             validateEmail({ variables: { email } }),
           ]);
-
-        console.log("here: " + usernameResult.data.validUsername);
 
         if (!usernameResult.error && usernameResult.data.validUsername === false) {
             setIsUsernameValid(false);

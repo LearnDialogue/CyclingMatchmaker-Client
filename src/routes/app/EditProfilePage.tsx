@@ -20,6 +20,7 @@ import "../../styles/edit-profile.css";
 
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
+    const [deleteWarningModal, setShowDeleteWarningModal] = useState<boolean>(false);
 
 
     const [firstName, setFirstName] = useState<string>("");
@@ -29,7 +30,7 @@ import "../../styles/edit-profile.css";
     const [weight, setWeight] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [radius, setRadius] = useState<string>("");
-    const [FTP, setFTP] = useState<number>(0);
+    const [FTP, setFTP] = useState<string>("");
     const [experience, setExperience] = useState<string>("");
 
     const [values, setValues] = useState({
@@ -81,7 +82,6 @@ import "../../styles/edit-profile.css";
     }
     const handleBirthdayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const updatedBirthday = e.target.value;
-        console.log(updatedBirthday)
         setValues((prevValues) => ({
         ...prevValues,
         birthday: updatedBirthday,
@@ -113,10 +113,12 @@ import "../../styles/edit-profile.css";
             ...prevValues,
             FTP: updatedFTP,
             }));
-            setFTP(e.target.value);
         }
         if(ftpToggle) {
-            setFTP(0);
+            setFTP("0");
+        }
+        else {
+            setFTP(e.target.value);
         }
     }
 
@@ -133,7 +135,7 @@ import "../../styles/edit-profile.css";
                     ...prevValues,
                     FTP: 0,
                     }));
-                setFTP(0);
+                setFTP("0");
             }
         }
     }
@@ -233,12 +235,31 @@ import "../../styles/edit-profile.css";
     });
 
     const handleDeleteButtonClick = () => {
+        setShowDeleteWarningModal(true);
+    }
+
+    const confirmDeleteUser = () => {
         deleteUser();
+        setShowDeleteWarningModal(false);
     }
 
     return (
         
         <>
+            {deleteWarningModal ?
+            
+            <div className="delete-user-modal" >
+                <div className="delete-user-modal-container" >
+                    <h2 style={{ textAlign: 'center' }} >Are you sure you want to delete your account?</h2>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 24 }} >
+                        <Button color="red" onClick={() => confirmDeleteUser()} width={40} type="primary" >Delete account</Button>
+                        <Button onClick={() => setShowDeleteWarningModal(false)} width={40} type="secondary" >Cancel</Button>
+                    </div>
+                </div>
+            </div>
+            : null    
+            }
+
             <Navbar />
             <div className="editprofile-main-container" >
                 <div className="editprofile-form-container" >
