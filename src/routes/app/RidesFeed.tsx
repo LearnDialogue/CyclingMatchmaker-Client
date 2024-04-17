@@ -147,9 +147,9 @@ const RidesFeed = () => {
             } else if (sortingOrder === "date_desc") {
                 sortedRides.sort((a, b) => Number(new Date(b.startTime)) - Number(new Date(a.startTime)));
             } else if(sortingOrder == "wpkg_asc"){
-                sortedRides.sort((a, b) => Number(b.difficulty.slice(0, 3)) - Number(a.difficulty.slice(0, 3)));
+                sortedRides.sort((a, b) => Number(b.difficulty.slice(-3)) - Number(a.difficulty.slice(-3)));
             } else if(sortingOrder == "wpkg_desc"){
-                sortedRides.sort((a, b) => Number(a.difficulty.slice(0, 3)) - Number(b.difficulty.slice(0, 3)));
+                sortedRides.sort((a, b) => Number(a.difficulty.slice(-3)) - Number(b.difficulty.slice(-3)));
             } else if (sortingOrder === "match-asc") {
                 sortedRides.sort((a, b) => a.match - b.match);
             } else if (sortingOrder === "match-desc") {
