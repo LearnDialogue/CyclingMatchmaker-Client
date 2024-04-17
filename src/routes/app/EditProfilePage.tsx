@@ -267,6 +267,16 @@ import "../../styles/edit-profile.css";
                     <h2>Edit Profile</h2>
 
                     <div className="editprofile-form-input" >
+                        <span className="editprofile-form-input" ><b>Add a profile picture</b></span>
+                        <input
+                            type="file"
+                            id="file-upload"
+                            onChange={() => null}
+                            accept="image/*"
+                        />
+                    </div>
+
+                    <div className="editprofile-form-input" >
                         <label htmlFor="editprofile-firstname" >First Name</label>
                         <input id="editprofile-firstname" onChange={handleFirstNameChange} type="text" value={firstName} />
                     </div>
