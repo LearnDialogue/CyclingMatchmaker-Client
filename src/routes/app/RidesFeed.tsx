@@ -20,7 +20,7 @@ const RidesFeed = () => {
     const [wkg, setWkg] = useState<string[] | never[]>([]);
     const [match, setMatch] = useState([""]);
 
-    const [sortingOrder, setSortingOrder] = useState<string>("date_asc");
+    const [sortingOrder, setSortingOrder] = useState<string>("match-asc");
     const [sortedRideData, setSortedRideData] = useState<any>([]);
 
     const [event, setEvent] = useState<any | null>(null);
@@ -309,8 +309,8 @@ const RidesFeed = () => {
                                 <span>Sort by: </span>
                                 <select value={sortingOrder} onChange={e => setSortingOrder(e.target.value)} >
                                     <option value="" >-- Select option --</option>
-                                    <option value="date_asc">Date: Newest to Oldest</option>
-                                    <option value="date_desc">Date: Oldest to Newest</option>
+                                    <option value="date_asc">Date: Soonest to Furthest</option>
+                                    <option value="date_desc">Date: Furthest to Soonest</option>
                                     <option value="wpkg_asc">Watts per kilo: High to Low</option>
                                     <option value="wpkg_desc">Watts per kilo: Low to High</option>
                                     <option value="distance-asc" >Distance from Me: Far to Near</option>
