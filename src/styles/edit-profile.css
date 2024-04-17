@@ -30,12 +30,7 @@
     font-size: 0.9em;
     font-weight: 600;
     margin: 8px 0px;
-}
-.editprofile-form-input > label > span {
-    font-weight: 500;
-    font-size: 0.8em;
-    opacity: 0.6;
-    margin-left: 4px;
+    font-weight: bold;
 }
 
 .editprofile-form-input > input, .editprofile-form-input > select {
@@ -48,3 +43,29 @@
 .editprofile-form-input > textarea {
     margin-bottom: 24px;
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 4px;
+}
+  
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color:black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    bottom: 100%;
+    left: 100%; 
+    z-index: 1;
+}
+  
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+  

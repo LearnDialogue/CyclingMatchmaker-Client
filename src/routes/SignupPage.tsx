@@ -424,8 +424,8 @@ const SignupPage = () => {
                         
                         <label htmlFor="signup-form-ftp">FTP 
                             <span className="tooltip">
-                                <i className="fa-solid fa-circle-info"></i>
-                                <span className="tooltiptext">FTP means Functional Threshold Power and is a measure of the power you can hold for an hour, measured in Watts.</span>
+                                <i className="fa-solid fa-circle-info" style={{marginLeft: "0px"}}></i>
+                                <span className="tooltiptext">FTP stands for Functional Threshold Power. It is a measure of the power you can hold for an hour and is measured in Watts.</span>
                             </span>
                         </label>  
                         <input id="signup-ftp" onChange={handleFTPChange} type="number" value={FTP} readOnly={ftpToggle}/>
