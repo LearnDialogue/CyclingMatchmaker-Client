@@ -89,6 +89,17 @@ const ProfilePage = () => {
             
             <div className="user-image" >
               {user?.username.slice(0, 1).toLocaleUpperCase()}
+              <input
+                type="file"
+                id="file-upload"
+                style={{ display: 'none' }}
+                onChange={() => null}
+                accept="image/*"
+            />
+            <label htmlFor="file-upload" className="upload-label">
+                <i className="fa-solid fa-image-portrait"></i>
+                <span>Upload a picture</span>
+            </label>
             </div>
             
             <div className="user-name"><b>{userData ? userData?.getUser.firstName + ", " + getUserAge(userData.getUser.birthday) : null}</b></div>
