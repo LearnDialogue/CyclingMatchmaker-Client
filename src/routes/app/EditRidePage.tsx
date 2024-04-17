@@ -42,6 +42,7 @@ const EditRide = () => {
     const [bikeType, setBikeType] = useState<string[]>([]);
     const [difficulty, setDifficulty] = useState<string>("");
     const [rideAverageSpeed, setRideAverageSpeed] = useState<string>("");
+    const [fileName, setFileName] = useState("");
 
     const [values, setValues] = useState({
 
@@ -184,6 +185,7 @@ const EditRide = () => {
         try {
             const file = e.target.files?.[0];
             if (file) {
+                setFileName(file.name);
                 try {
                     const routeInfo = await extractRouteInfo(file);
                     setValues((prevValues) => ({
@@ -425,8 +427,16 @@ const EditRide = () => {
                     </div>
 
                     <div className="create-ride-form-input" >
-                        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                        <input type="file" onChange={handleFileSelect} accept=".gpx" />
+                        <div className="input-file-container" >
+                            <label htmlFor="input-gpx-file" >
+                                {fileName ? fileName :
+                                <>
+                                    <i className="fa-solid fa-arrow-up-from-bracket"></i>
+                                    <span>Press to upload a GPX file</span>
+                                </>
+                                }
+                            </label>
+                            <input id="input-gpx-file" type="file" onChange={handleFileSelect} accept=".gpx" />
                         </div>
                     </div>
                     
@@ -441,6 +451,7 @@ const EditRide = () => {
                     </div>
                     }
                     <Button
+                        marginTop={24}
                         disabled={!enableButton()}
                         onClick={handleButtonClick}
                         type="primary"
@@ -449,8 +460,7 @@ const EditRide = () => {
                     </ Button>
                     <Button
                         onClick={handleDeleteButtonClick}
-                        type="primary"
-                        color="rgb(200,0,0)"
+                        type="warning"
                         marginTop={10}
                     >
                         Delete ride

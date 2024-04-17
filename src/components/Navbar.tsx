@@ -22,6 +22,8 @@ const Navbar: React.FC = () => {
     }, [])
 
     return (
+        <>
+        <div className="navbar-placeholder" ></div>
         <div className="navbar-main-container">
             <div className="navbar-brand">
                 <Link to="/app/rides" >
@@ -63,6 +65,8 @@ const Navbar: React.FC = () => {
             </div>
             <SideMenu isOpen={menuOpen} onClose={toggleMenu} />
         </div>
+        
+        </>
     );
 };
 
