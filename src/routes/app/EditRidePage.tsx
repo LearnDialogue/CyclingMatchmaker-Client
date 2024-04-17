@@ -68,11 +68,16 @@ const EditRide = () => {
         endCoordinates: [0,0],
     })
 
-    const { data: routeData } = useQuery(FETCH_ROUTE, {
+    const { data: routeData,  refetch: refetchRoute} = useQuery(FETCH_ROUTE, {
         variables: {
             routeID: event.route,
         },
+        
     })
+
+    useEffect(() => {
+        refetchRoute();
+      }, []);
 
     useEffect(() => {
         const startDate = new Date(event.startTime);
@@ -489,6 +494,7 @@ const EDIT_EVENT_MUTATION = gql`
       _id
       name
       bikeType
+      route
     }
   }
 `;
