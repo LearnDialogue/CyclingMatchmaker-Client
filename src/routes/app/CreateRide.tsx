@@ -28,6 +28,7 @@ const CreateRide = () => {
     const [rideAverageSpeed, setRideAverageSpeed] = useState<string>("");
     const [fileUploaded, setFileUploaded] = useState<boolean>(false);
     const [eventID, setEventID] = useState<string>("");
+    const [fileName, setFileName] = useState("");
 
     const [values, setValues] = useState({
 
@@ -126,6 +127,7 @@ const CreateRide = () => {
         try {
             const file = e.target.files?.[0];
             if (file) {
+                setFileName(file.name);
                 try {
                     const routeInfo = await extractRouteInfo(file);
                     setValues((prevValues) => ({
@@ -343,8 +345,23 @@ const CreateRide = () => {
                     </div>
 
                     <div className="create-ride-form-input" >
-                        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                        <input type="file" onChange={handleFileSelect} accept=".gpx" />
+                        <div className="input-file-container" >
+                            <label htmlFor="input-gpx-file" >
+                                {fileName ? 
+                                
+                                <>
+                                    <i className="fa-solid fa-file-circle-check"></i>
+                                    <span>{fileName}</span>
+                                </>
+                                
+                                :
+                                <>
+                                    <i className="fa-solid fa-arrow-up-from-bracket"></i>
+                                    <span>Press to upload a GPX file</span>
+                                </>
+                                }
+                            </label>
+                            <input id="input-gpx-file" type="file" onChange={handleFileSelect} accept=".gpx" />
                         </div>
                     </div>
 

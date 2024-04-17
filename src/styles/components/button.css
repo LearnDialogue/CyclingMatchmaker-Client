@@ -18,7 +18,6 @@
 .button-primary {
     background-color: var(--primary-color);
     color: var(--secondary-color);
-    font-size: 1em;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
@@ -31,6 +30,18 @@
 .button-secondary:hover {
     background-color: var(--primary-color);
     color: var(--secondary-color);
+}
+
+
+.button-warning {
+    color: #EA4335;
+    border: #EA4335;
+    background-color: white;
+}
+.button-warning:hover {
+    cursor: pointer;
+    background-color: #EA4335;
+    color: white;
 }
 
 

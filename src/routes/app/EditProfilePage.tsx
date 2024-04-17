@@ -339,8 +339,7 @@ import "../../styles/edit-profile.css";
                     </ Button>
                     <Button
                         onClick={handleDeleteButtonClick}
-                        type="primary"
-                        color="rgb(200,0,0)"
+                        type="warning"
                         marginTop={10}
                     >
                         Delete Profile
