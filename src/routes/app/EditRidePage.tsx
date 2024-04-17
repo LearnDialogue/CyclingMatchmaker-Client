@@ -304,8 +304,8 @@ const EditRide = () => {
                     </div>
                 </div>
             </div>
-            : null    
-        }
+            : null
+            }
             
             <Navbar />
             <div className="create-ride-main-container" >

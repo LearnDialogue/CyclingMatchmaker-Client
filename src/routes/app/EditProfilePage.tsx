@@ -20,6 +20,7 @@ import "../../styles/edit-profile.css";
 
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
+    const [deleteWarningModal, setShowDeleteWarningModal] = useState<boolean>(false);
 
 
     const [firstName, setFirstName] = useState<string>("");
@@ -233,12 +234,31 @@ import "../../styles/edit-profile.css";
     });
 
     const handleDeleteButtonClick = () => {
+        setShowDeleteWarningModal(true);
+    }
+
+    const confirmDeleteUser = () => {
         deleteUser();
+        setShowDeleteWarningModal(false);
     }
 
     return (
         
         <>
+            {deleteWarningModal ?
+            
+            <div className="delete-user-modal" >
+                <div className="delete-user-modal-container" >
+                    <h2 style={{ textAlign: 'center' }} >Are you sure you want to delete your account?</h2>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 24 }} >
+                        <Button color="red" onClick={() => confirmDeleteUser()} width={40} type="primary" >Delete account</Button>
+                        <Button onClick={() => setShowDeleteWarningModal(false)} width={40} type="secondary" >Cancel</Button>
+                    </div>
+                </div>
+            </div>
+            : null    
+            }
+
             <Navbar />
             <div className="editprofile-main-container" >
                 <div className="editprofile-form-container" >
