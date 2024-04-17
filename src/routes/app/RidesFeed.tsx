@@ -103,6 +103,38 @@ const RidesFeed = () => {
         if (reload !== null){ridesRefetch()}
     }, [reload]);
 
+    function calculateDistance(
+        coord1: [number, number],
+        coord2: [number, number]
+      ): number {
+        const toRadians = (degrees: number): number => {
+          return degrees * (Math.PI / 180);
+        };
+      
+        const [lat1, lon1] = coord1;
+        const [lat2, lon2] = coord2;
+      
+        const lat1Rad = toRadians(lat1);
+        const lon1Rad = toRadians(lon1);
+        const lat2Rad = toRadians(lat2);
+        const lon2Rad = toRadians(lon2);
+
+         // Haversine formula
+        const dLat = lat2Rad - lat1Rad;
+        const dLon = lon2Rad - lon1Rad;
+        const a =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.sin(dLon / 2) ** 2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      
+        const radiusOfEarthKm = 6371;
+      
+        const distance = radiusOfEarthKm * c;
+        return distance;
+      }
+      
+    
+
 
     useEffect(() => {
         // Logic to sort rides based on sortingOrder
@@ -122,6 +154,18 @@ const RidesFeed = () => {
                 sortedRides.sort((a, b) => a.match - b.match);
             } else if (sortingOrder === "match-desc") {
                 sortedRides.sort((a, b) => b.match - a.match);
+            } else if (sortingOrder === "distance-desc") {
+                sortedRides.sort((a, b) => {
+                    const distanceA = calculateDistance(userData.getUser.locationCoords, a.locationCoords);
+                    const distanceB = calculateDistance(userData.getUser.locationCoords, b.locationCoords);
+                    return distanceA - distanceB;
+                });
+            } else if (sortingOrder === "distance-asc") {
+                sortedRides.sort((a, b) => {
+                    const distanceA = calculateDistance(userData.getUser.locationCoords, a.locationCoords);
+                    const distanceB = calculateDistance(userData.getUser.locationCoords, b.locationCoords);
+                    return distanceB - distanceA;
+                });
             }
 
             setSortedRideData(sortedRides);
@@ -269,10 +313,10 @@ const RidesFeed = () => {
                                     <option value="date_desc">Date: Oldest to Newest</option>
                                     <option value="wpkg_asc">Watts per kilo: High to Low</option>
                                     <option value="wpkg_desc">Watts per kilo: Low to High</option>
-                                    <option disabled value="distance-asc" >Distance: Long to short</option>
-                                    <option disabled value="distance-desc" >Distance: Short to long</option>
-                                    <option value="match-asc" >Match: best to worst</option>
-                                    <option value="match-desc" >Match: worst to best</option>
+                                    <option value="distance-asc" >Distance from Me: Far to Near</option>
+                                    <option value="distance-desc" >Distance from Me: Near to Far</option>
+                                    <option value="match-asc" >Match: Best to Worst</option>
+                                    <option value="match-desc" >Match: Worst to Best</option>
                                 </select>
                             </div>
                         </div>

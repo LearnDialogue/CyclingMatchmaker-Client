@@ -8,6 +8,8 @@ import { AuthContext } from "../../context/auth";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
+import { LatLngExpression } from "leaflet";
 
 export interface RideFeedCardProps {
     _id: string;
@@ -31,6 +33,7 @@ const EditRide = () => {
 
     const context = useContext(AuthContext);
     const [errors, setErrors] = useState({});
+    const [deleteWarningModal, setShowDeleteWarningModal] = useState<boolean>(false);
 
     const [rideName, setRideName] = useState<string>("");
     const [rideDate, setRideDate] = useState<string>("");
@@ -66,7 +69,7 @@ const EditRide = () => {
         endCoordinates: [0,0],
     })
 
-    const { data: routeData } = useQuery(FETCH_ROUTE, {
+    const { data: routeData,  refetch: refetchRoute} = useQuery(FETCH_ROUTE, {
         variables: {
             routeID: event.route,
         },
@@ -203,6 +206,50 @@ const EditRide = () => {
         }
     };
 
+    const calculateBounds = () => {
+        if (values.points.length <= 0) return null;
+        
+        const points = values.points;
+        const latitudes = points.map((point: any[]) => point[0]);
+        const longitudes = points.map((point: any[]) => point[1]);
+
+        const southWest = [Math.min(...latitudes), Math.min(...longitudes)];
+        const northEast = [Math.max(...latitudes), Math.max(...longitudes)];
+
+        return [southWest, northEast];
+    };
+
+
+    const rideMap = () => {
+        const bounds = calculateBounds();
+        const mapKey = JSON.stringify({ bounds, center: values.startCoordinates });
+
+        return(
+            <MapContainer
+                key={mapKey}
+                style={{ height: '400px', width: '100%', minWidth: '250px', zIndex: 1}}
+                bounds={bounds as L.LatLngBoundsExpression}
+                center={values.startCoordinates as LatLngExpression}
+                dragging={true}
+                zoomControl={true}
+                doubleClickZoom={true}
+                scrollWheelZoom={true}
+                touchZoom={true}
+                boxZoom={true}
+                tap={true}
+            >
+                
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                {values.points.length > 1 && 
+                <Polyline
+                pathOptions={{ fillColor: 'red', color: 'blue' }}
+                positions={values.points as LatLngExpression[]}
+                />}
+            </MapContainer>
+        );
+    };
+
+
     const handleButtonClick = () => {
         editEvent();
         editNotify(); // Call notify function here
@@ -214,14 +261,21 @@ const EditRide = () => {
     };
 
     const handleDeleteButtonClick = () => {
+        // showDeleteWarningModal
+        setShowDeleteWarningModal(true);
+    };
+
+    const deleteRideConfirm = () => {
         deleteEvent();
         deleteNotify(); // Call notify function here
+
+        setShowDeleteWarningModal(false);
 
         // Adding 2 second delay before redirecting to the profile page
         setTimeout(() => {
             window.history.back();
         }, 1500);
-    };
+    }
 
     const token: string | null = localStorage.getItem("jwtToken");
 
@@ -231,6 +285,9 @@ const EditRide = () => {
             const errorObject = (err.graphQLErrors[0] as any)?.extensions?.exception?.errors
             const errorMessage = Object.values(errorObject).flat().join(', ');
             setErrors(errorMessage);
+        },
+        onCompleted() {
+            refetchRoute();
         },
         context: {
             headers: {
@@ -281,6 +338,20 @@ const EditRide = () => {
     return (
         
         <>
+            {deleteWarningModal ?
+            
+            <div className="delete-ride-modal" >
+                <div className="delete-ride-modal-container" >
+                    <h2 style={{ textAlign: 'center' }} >Are you sure you want to delete this ride?</h2>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 24 }} >
+                        <Button color="red" onClick={() => deleteRideConfirm()} width={40} type="primary" >Delete ride</Button>
+                        <Button onClick={() => setShowDeleteWarningModal(false)} width={40} type="secondary" >Cancel</Button>
+                    </div>
+                </div>
+            </div>
+            : null
+            }
+            
             <Navbar />
             <div className="create-ride-main-container" >
                 <div className="create-ride-form-container" >
@@ -358,6 +429,17 @@ const EditRide = () => {
                         <input type="file" onChange={handleFileSelect} accept=".gpx" />
                         </div>
                     </div>
+                    
+                    {values.points.length > 1 && 
+                    <div className="create-ride-form-input" >
+                        <label htmlFor="ride-map" >Map</label>
+
+                            <div>
+                                {rideMap()}
+                            </div>
+                    
+                    </div>
+                    }
                     <Button
                         disabled={!enableButton()}
                         onClick={handleButtonClick}
@@ -432,6 +514,7 @@ const EDIT_EVENT_MUTATION = gql`
       _id
       name
       bikeType
+      route
     }
   }
 `;
