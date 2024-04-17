@@ -28,15 +28,11 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
         }
     }
 
-    const { data: routeData, refetch: refetchRoute} = useQuery(FETCH_ROUTE, {
+    const { data: routeData } = useQuery(FETCH_ROUTE, {
         variables: {
             routeID: event.route,
         },
     });
-
-    useEffect(() => {
-        refetchRoute();
-      }, []);
     
     const calculateBounds = () => {
         if (!routeData) return null;
@@ -54,10 +50,9 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
     const bounds = calculateBounds();
     
 const cardMap = () => {
-    const mapKey = JSON.stringify({bounds,  center: routeData.getRoute.startCoordinates});
         return(
             <MapContainer
-                key={mapKey}
+                key={`cardMap`}
                 style={{ height: '250px', width: '100%', minWidth: '250px', maxWidth: '80vw', zIndex: -1 }}
                 bounds={bounds as L.LatLngBoundsExpression}
                 dragging={false}
