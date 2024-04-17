@@ -1,12 +1,13 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect} from 'react';
 import "../styles/profile-page.css";
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
 import { AuthContext } from '../context/auth';
 import RsvpButton from './RsvpButton';
 import Button from './Button';
 import { formatDate, formatDistance, formatTime } from '../util/Formatters';
 import { Link } from 'react-router-dom';
+import { FETCH_ROUTE } from './RideFeedCard';
 
 interface EventModalProps {
     event: any | null;
@@ -39,9 +40,11 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
     const bounds = calculateBounds();
 
     const modalMap = () => {
+        const mapKey = JSON.stringify({ bounds, center: routeData.getRoute.startCoordinates });
+
         return(
             <MapContainer
-                key={`modalMap`}
+                key={mapKey}
                 style={{ height: '400px', width: '100%', minWidth: '250px', zIndex: 1}}
                 bounds={bounds as L.LatLngBoundsExpression}
                 center={routeData.getRoute.startCoordinates}
@@ -141,7 +144,7 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
                                             <h5>Riders &nbsp; ({event.participants.length ?? 0})</h5>
                                             <div>
                                                 {event.participants ? event.participants.map((username: any, index: number) => (
-                                                    <div>
+                                                    <div key={index}>
                                                         <span>{username}</span>
                                                     </div>
                                                 )) : (
@@ -184,16 +187,5 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
         </div>
     )
 }
-
-const FETCH_ROUTE = gql`
-  query getRoute($routeID: String!) {
-    getRoute(routeID: $routeID) {
-        points
-        distance
-        elevation
-        startCoordinates
-    }
-  }
-`
 
 export default EventModal;
