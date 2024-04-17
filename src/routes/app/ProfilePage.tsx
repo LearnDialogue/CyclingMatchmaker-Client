@@ -28,6 +28,7 @@ const getUserAge = (dateStr: string): string => {
 const ProfilePage = () => {
   const { user } = useContext(AuthContext);
   const [event, setEvent] = useState<any | null>(null);
+  const [currDate, setCurrDate] = useState<Date>(new Date());
 
   const handleModalClose = (nullEvent: any | null) => {
     setEvent(nullEvent);
@@ -67,7 +68,6 @@ const ProfilePage = () => {
     joinRefetch();
   }, []);
 
-  console.log(userData)
   return (
     <div className="profile-page-main-container">
       <Navbar />
@@ -143,15 +143,21 @@ const ProfilePage = () => {
                 <div className="profile-page-user-rides-hosted" >
                   <h5>Rides you are hosting &nbsp; ({hostedEvents?.getHostedEvents.length ?? 0})</h5>
                   <div>
-                    {console.log(hostedEvents)}
-                    {hostedEvents ? hostedEvents.getHostedEvents.map((event: any, index: number) => (
-                      <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
-                        <div className="ride-title" >
-                          <span><b>{event.name}</b></span>
-                          <span className="ride-date" >{formatDate(event.startTime)}</span>
-                        </div>
-                        <p className="ride-location" ><i className="fa-solid fa-location-dot"></i>{event.locationName}</p>
-                      </div>
+                    {hostedEvents && hostedEvents.getHostedEvents
+                    ? hostedEvents.getHostedEvents
+                        .filter((event: any) => new Date(event.startTime) > currDate)
+                        .map((event: any, index: number) => (
+                          <div
+                            onClick={() => setEvent(event)}
+                            className="profile-page-user-rides-list-item"
+                            key={index}
+                          >
+                            <div className="ride-title" >
+                              <span><b>{event.name}</b></span>
+                              <span className="ride-date" >{formatDate(event.startTime)}</span>
+                            </div>
+                            <p className="ride-location" ><i className="fa-solid fa-location-dot"></i>{event.locationName}</p>
+                          </div>
                     )) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
                   </div>
                 </div>
@@ -159,15 +165,22 @@ const ProfilePage = () => {
                 <div className="profile-page-user-rides-joined" >
                   <h5>Rides you are joining &nbsp; ({joinedEvents?.getJoinedEvents.length ?? 0})</h5>
                   <div>
-                    {joinedEvents ? joinedEvents.getJoinedEvents.map((event: any, index: number) => (
-                        <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
-                          <div className="ride-title" >
-                            <span><b>{event.name}</b></span>
-                            <span className="ride-date" >{formatDate(event.startTime)}</span>
+                  {joinedEvents && joinedEvents.getJoinedEvents
+                    ? joinedEvents.getJoinedEvents
+                        .filter((event: any) => new Date(event.startTime) > currDate)
+                        .map((event: any, index: number) => (
+                          <div
+                            onClick={() => setEvent(event)}
+                            className="profile-page-user-rides-list-item"
+                            key={index}
+                          >
+                            <div className="ride-title" >
+                              <span><b>{event.name}</b></span>
+                              <span className="ride-date" >{formatDate(event.startTime)}</span>
+                            </div>
+                            <p className="ride-location" ><i className="fa-solid fa-location-dot"></i>{event.locationName}</p>
                           </div>
-                          <p className="ride-location" ><i className="fa-solid fa-location-dot"></i>{event.locationName}</p>
-                        </div>
-                      )) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
+                    )) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
                   </div>
                 </div>
 
@@ -184,30 +197,44 @@ const ProfilePage = () => {
                 <div className="profile-page-user-rides-hosted" >
                   <h5>Rides you hosted &nbsp; (0)</h5>
                   <div>
-                    {hostedEvents == 1 ? hostedEvents.getHostedEvents.map((event: any, index: number) => (
-                      <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
-                        <div className="ride-title" >
-                          <span><b>{event.name}</b></span>
-                          <span className="ride-date" >{formatDate(event.startTime)}</span>
-                        </div>
-                        <p className="ride-location" ><i className="fa-solid fa-location-dot"></i>{event.locationName}</p>
-                      </div>
-                    )) : <div className="profile-page-user-event-no-rides-text">No past rides hosted by you</div>}
+                  {hostedEvents && hostedEvents.getHostedEvents
+                    ? hostedEvents.getHostedEvents
+                        .filter((event: any) => new Date(event.startTime) < currDate)
+                        .map((event: any, index: number) => (
+                          <div
+                            onClick={() => setEvent(event)}
+                            className="profile-page-user-rides-list-item"
+                            key={index}
+                          >
+                            <div className="ride-title" >
+                              <span><b>{event.name}</b></span>
+                              <span className="ride-date" >{formatDate(event.startTime)}</span>
+                            </div>
+                            <p className="ride-location" ><i className="fa-solid fa-location-dot"></i>{event.locationName}</p>
+                          </div>
+                    )) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
                   </div>
                 </div>
 
                 <div className="profile-page-user-rides-joined" >
                   <h5>Rides you joined &nbsp; (0)</h5>
                   <div>
-                    {joinedEvents == 1 ? joinedEvents.getJoinedEvents.map((event: any, index: number) => (
-                        <div onClick={() => setEvent(event)} className="profile-page-user-rides-list-item" key={index} >
-                          <div className="ride-title" >
-                            <span><b>{event.name}</b></span>
-                            <span className="ride-date" >{formatDate(event.startTime)}</span>
+                  {joinedEvents && joinedEvents.getJoinedEvents
+                    ? joinedEvents.getJoinedEvents
+                        .filter((event: any) => new Date(event.startTime) < currDate)
+                        .map((event: any, index: number) => (
+                          <div
+                            onClick={() => setEvent(event)}
+                            className="profile-page-user-rides-list-item"
+                            key={index}
+                          >
+                            <div className="ride-title" >
+                              <span><b>{event.name}</b></span>
+                              <span className="ride-date" >{formatDate(event.startTime)}</span>
+                            </div>
+                            <p className="ride-location" ><i className="fa-solid fa-location-dot"></i>{event.locationName}</p>
                           </div>
-                          <p className="ride-location" ><i className="fa-solid fa-location-dot"></i>{event.locationName}</p>
-                        </div>
-                      )) : <div className="profile-page-user-event-no-rides-text">No past rides you joined</div>}
+                    )) : <div className="profile-page-user-event-no-rides-text">No rides to show</div>}
                   </div>
                 </div>
 
