@@ -1,4 +1,4 @@
-import { Key, useContext, useEffect, useState } from "react";
+import { Key, useContext, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
 import Button from "./Button";
@@ -50,9 +50,10 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
     const bounds = calculateBounds();
     
 const cardMap = () => {
+    const mapKey = JSON.stringify({bounds,  center: routeData.getRoute.startCoordinates});
         return(
             <MapContainer
-                key={`cardMap`}
+                key={mapKey}
                 style={{ height: '250px', width: '100%', minWidth: '250px', maxWidth: '80vw', zIndex: -1 }}
                 bounds={bounds as L.LatLngBoundsExpression}
                 dragging={false}
@@ -112,7 +113,7 @@ const cardMap = () => {
     )
 };
 
-const FETCH_ROUTE = gql`
+export const FETCH_ROUTE = gql`
   query getRoute($routeID: String!) {
     getRoute(routeID: $routeID) {
         points
