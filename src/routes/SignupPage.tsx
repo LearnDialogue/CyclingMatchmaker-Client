@@ -421,7 +421,13 @@ const SignupPage = () => {
 
                     
                     <div className="signup-form-input signup-form-input-checkbox" >
-                        <label htmlFor="signup-form-ftp" >FTP</label>
+                        
+                        <label htmlFor="signup-form-ftp">FTP 
+                            <span className="tooltip">
+                                <i className="fa-solid fa-circle-info"></i>
+                                <span className="tooltiptext">FTP means Functional Threshold Power and is a measure of the power you can hold for an hour, measured in Watts.</span>
+                            </span>
+                        </label>  
                         <input id="signup-ftp" onChange={handleFTPChange} type="number" value={FTP} readOnly={ftpToggle}/>
                         <label htmlFor="ftp-not-sure" >
                             <input name="ftp-toggle" onChange={handleFTPToggle} id="ftp-toggle" type="checkbox" checked={ftpToggle}/> I'm not sure
