@@ -104,7 +104,7 @@ const cardMap = () => {
             ) : (
                 <></>
             )}
-            <div className="ride-feed-card-matching-score" >
+            <div style={{ display: 'none' }} className="ride-feed-card-matching-score" > {/* Hiding match for now */}
                 <div className={event.match} >
                     <span>{matchIcon()}</span>
                 </div>
