@@ -5,6 +5,7 @@ import "../styles/signup.css";
 import LoaderWheel from "../components/LoaderWheel";
 import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client';
 import { AuthContext } from "../context/auth";
+import Footer from "../components/Footer";
 
 const SignupPage = () => {
     const context = useContext(AuthContext);
@@ -452,6 +453,7 @@ const SignupPage = () => {
                 </div>
             </div>
             )}
+            <Footer absolute />
         </div>
     )
 };

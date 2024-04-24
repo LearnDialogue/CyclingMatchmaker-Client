@@ -4,6 +4,7 @@ import { useContext } from "react";
 import Button from "../components/Button";
 import "../styles/landing-page.css"
 import "../assets/Khyay-Regular.ttf"
+import Footer from "../components/Footer";
 
 
 const LandingPage = () => {
@@ -54,6 +55,7 @@ const LandingPage = () => {
                     </div>
                 </div>
             </div>
+            <Footer absolute />
         </div>
     )
 };

@@ -6,6 +6,7 @@ import { AuthContext } from "../../context/auth";
 import { useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import "../../styles/edit-profile.css";
+import Footer from "../../components/Footer";
 
  const EditProfile = () => {
 
@@ -355,6 +356,7 @@ import "../../styles/edit-profile.css";
                         Delete Profile
                     </ Button>
                 </div>
+                <Footer />
             </div>
         </>
     )
