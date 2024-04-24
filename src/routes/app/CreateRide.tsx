@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
 import { LatLngExpression } from "leaflet";
+import Footer from "../../components/Footer";
 
 
 
@@ -397,6 +398,7 @@ const CreateRide = () => {
             />
                
                 </div>
+                <Footer />
             </div>
         </>
     )

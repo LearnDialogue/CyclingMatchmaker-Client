@@ -8,6 +8,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import Button from '../../components/Button';
 import EventModal from '../../components/EventModal';
+import Footer from '../../components/Footer';
 
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr);
@@ -253,6 +254,9 @@ const ProfilePage = () => {
           </div>
 
       </div>
+
+      <Footer />
+
     </div>
   );
 };

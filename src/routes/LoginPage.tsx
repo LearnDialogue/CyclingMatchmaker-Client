@@ -5,6 +5,7 @@ import { useState, useContext } from "react";
 import LoaderWheel from "../components/LoaderWheel";
 import { gql, useMutation } from '@apollo/client';
 import { AuthContext } from "../context/auth";
+import Footer from "../components/Footer";
 
 const LoginPage = () => {
     const context = useContext(AuthContext);
@@ -126,6 +127,7 @@ const LoginPage = () => {
                 </div>
                 <span className="login-form-to-signup" >Don't have an account?<span><Link to="/signup" >Sign up</Link></span></span>
             </form>
+            <Footer absolute />
         </div>
     )
 };

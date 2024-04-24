@@ -10,6 +10,7 @@ import Button from "../../components/Button";
 import "../../styles/rides-feed.css";
 import EventModal from "../../components/EventModal";
 import { formatDistance } from "../../util/Formatters";
+import Footer from "../../components/Footer";
 
 const RidesFeed = () => {
     const { user } = useContext(AuthContext);
@@ -343,6 +344,7 @@ const RidesFeed = () => {
                         </div>
                     </div>
                 </div>
+                <Footer />
             </div>
         </>
     )
