@@ -21,7 +21,7 @@ const RidesFeed = () => {
     const [wkg, setWkg] = useState<string[] | never[]>([]);
     const [match, setMatch] = useState([""]);
 
-    const [sortingOrder, setSortingOrder] = useState<string>("match-asc");
+    const [sortingOrder, setSortingOrder] = useState<string>("date_asc");
     const [sortedRideData, setSortedRideData] = useState<any>([]);
 
     const [event, setEvent] = useState<any | null>(null);
@@ -151,11 +151,11 @@ const RidesFeed = () => {
                 sortedRides.sort((a, b) => Number(b.difficulty.slice(-3)) - Number(a.difficulty.slice(-3)));
             } else if(sortingOrder == "wpkg_desc"){
                 sortedRides.sort((a, b) => Number(a.difficulty.slice(-3)) - Number(b.difficulty.slice(-3)));
-            } else if (sortingOrder === "match-asc") {
+            }/* else if (sortingOrder === "match-asc") {
                 sortedRides.sort((a, b) => a.match - b.match);
             } else if (sortingOrder === "match-desc") {
                 sortedRides.sort((a, b) => b.match - a.match);
-            } else if (sortingOrder === "distance-desc") {
+            }*/ else if (sortingOrder === "distance-desc") {
                 sortedRides.sort((a, b) => {
                     const distanceA = calculateDistance(userData.getUser.locationCoords, a.locationCoords);
                     const distanceB = calculateDistance(userData.getUser.locationCoords, b.locationCoords);
@@ -194,24 +194,24 @@ const RidesFeed = () => {
 
                         <h4>Apply filters</h4>
 
-                        <div className="rides-feed-filter-options" >
+                        <div className="rides-feed-filter-options disable-filter-options" >
                             <h5>Match</h5>
                             <label htmlFor="great-match" >
-                                <input name="great match" onChange={handleCheckboxChange} id="great-match" type="checkbox" />
+                                <input disabled name="great match" onChange={handleCheckboxChange} id="great-match" type="checkbox" />
                                 <div>
                                     <span>Great match</span>
                                     <i className="fa-solid fa-circle-check"></i>
                                 </div>
                             </label>
                             <label htmlFor="good-match" >
-                                <input name="good match" onChange={handleCheckboxChange} id="good-match" type="checkbox" /> 
+                                <input disabled name="good match" onChange={handleCheckboxChange} id="good-match" type="checkbox" /> 
                                 <div>
                                     <span>Good match</span>
                                     <i className="fa-solid fa-circle-minus"></i>
                                 </div>
                             </label>
                             <label htmlFor="poor-match" >
-                                <input name="poor match" onChange={handleCheckboxChange} id="poor-match" type="checkbox" />
+                                <input disabled name="poor match" onChange={handleCheckboxChange} id="poor-match" type="checkbox" />
                                 <div>
                                     <span>Poor match</span>
                                     <i className="fa-solid fa-circle-xmark"></i>
@@ -316,8 +316,8 @@ const RidesFeed = () => {
                                     <option value="wpkg_desc">Watts per kilo: Low to High</option>
                                     <option value="distance-asc" >Distance from Me: Far to Near</option>
                                     <option value="distance-desc" >Distance from Me: Near to Far</option>
-                                    <option value="match-asc" >Match: Best to Worst</option>
-                                    <option value="match-desc" >Match: Worst to Best</option>
+                                    <option disabled value="match-asc" >Match: Best to Worst</option>
+                                    <option disabled value="match-desc" >Match: Worst to Best</option>
                                 </select>
                             </div>
                         </div>
