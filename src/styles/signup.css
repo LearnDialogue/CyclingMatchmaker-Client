@@ -20,6 +20,7 @@
     animation-fill-mode: forwards; /* Ensures the form stays visible after animation */
     overflow-y: auto;
     max-height: 100vh;
+    z-index: 10;
 }
 @keyframes fadeInAnimation {
     from { opacity: 0; }
