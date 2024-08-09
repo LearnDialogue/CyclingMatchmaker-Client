@@ -1,6 +1,12 @@
 import 'leaflet/dist/leaflet.css';
 import React, { useState, ChangeEvent } from 'react';
-import { MapContainer, Polyline, TileLayer } from 'react-leaflet';
+import {
+  MapContainer,
+  Marker,
+  Polyline,
+  Popup,
+  TileLayer,
+} from 'react-leaflet';
 import gpxParser from 'gpxparser';
 
 export interface RouteInfo {
@@ -36,15 +42,19 @@ export const extractRouteInfo = async (file: File): Promise<RouteInfo> => {
     parser.parse(gpxContent);
 
     const routeInfo: RouteInfo = {
-
-      points: parser.tracks[0].points.map((point: any) => [point.lat, point.lon]),
+      points: parser.tracks[0].points.map((point: any) => [
+        point.lat,
+        point.lon,
+      ]),
       elevation: parser.tracks[0].points.map((point: any) => point.ele),
       distance: parser.tracks[0].distance.total,
       max_elevation: parser.tracks[0].elevation.max,
       min_elevation: parser.tracks[0].elevation.min,
-      total_elevation_gain: parser.tracks[0].elevation.max - parser.tracks[0].elevation.min,
+      total_elevation_gain:
+        parser.tracks[0].elevation.max - parser.tracks[0].elevation.min,
       startCoordinates: [
-        parser.tracks[0].points[0].lat, parser.tracks[0].points[0].lon
+        parser.tracks[0].points[0].lat,
+        parser.tracks[0].points[0].lon,
       ],
       endCoordinates: [
         parser.tracks[0].points[parser.tracks[0].points.length - 1].lat,
@@ -86,7 +96,7 @@ const GpxMap: React.FC = () => {
   if (!routeData) {
     return (
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <input type="file" onChange={handleFileSelect} accept=".gpx" />
+        <input type='file' onChange={handleFileSelect} accept='.gpx' />
       </div>
     );
   }
@@ -99,11 +109,17 @@ const GpxMap: React.FC = () => {
         scrollWheelZoom={false}
         style={{ height: '300px', width: '250px', margin: '20px auto' }}
       >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
         <Polyline
           pathOptions={{ fillColor: 'red', color: 'blue' }}
           positions={routeData.points}
         />
+        <Marker position={routeData.startCoordinates}>
+          <Popup>Start Point</Popup>
+        </Marker>
+        <Marker position={routeData.endCoordinates}>
+          <Popup>End Point</Popup>
+        </Marker>
       </MapContainer>
     </div>
   );
