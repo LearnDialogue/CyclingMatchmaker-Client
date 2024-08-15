@@ -7,6 +7,13 @@
   justify-content: center;
 }
 
+.strava {
+  color: #fc4c02;
+  font-weight: bold;
+  margin-left: 0.2rem;
+  margin-right: 0.2rem;
+}
+
 .signup-form-container {
   background-color: white;
   padding: 48px;
