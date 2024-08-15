@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/auth';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Button from '../components/Button';
 import '../styles/landing-page.css';
 import '../assets/Khyay-Regular.ttf';
@@ -8,6 +8,12 @@ import Footer from '../components/Footer';
 
 const LandingPage = () => {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user) {
+      navigate('/app/profile');
+    }
+  }, [navigate, user]);
   return (
     <div className='landing-page-main-container'>
       <div className='landing-page-first-view'>

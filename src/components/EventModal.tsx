@@ -217,11 +217,11 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
                     Download
                   </Button>
                   {event.host === user?.username ? (
-                    <Button marginTop={12} type='secondary'>
-                      <Link to={'/app/profile/edit/ride'} state={{ event }}>
+                    <Link to={'/app/profile/edit/ride'} state={{ event }}>
+                      <Button marginTop={12} type='secondary'>
                         Edit
-                      </Link>
-                    </Button>
+                      </Button>
+                    </Link>
                   ) : (
                     <></>
                   )}
