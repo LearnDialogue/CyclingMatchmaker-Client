@@ -16,6 +16,7 @@ import UserRoute from './util/UserRoute';
 import EditProfile from './routes/app/EditProfilePage';
 import EditRide from './routes/app/EditRidePage';
 import ConnectToStravaPage from './routes/ConnectToStravaPage';
+import SupportPage from './routes/SupportPage';
 
 function App() {
   return (
@@ -95,6 +96,7 @@ function App() {
               </UserRoute>
             }
           />
+          <Route path='/support' element={<SupportPage />} />
         </Routes>
       </AuthProvider>
     </Router>
