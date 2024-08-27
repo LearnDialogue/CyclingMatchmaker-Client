@@ -62,8 +62,6 @@ export const extractRouteInfo = async (file: File): Promise<RouteInfo> => {
       ],
     };
 
-    console.log('Route Information:', routeInfo);
-
     return routeInfo;
   } catch (error) {
     console.error('Error extracting route information from GPX:', error);

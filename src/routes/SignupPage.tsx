@@ -57,7 +57,7 @@ const SignupPage = () => {
   const [addUser, { loading }] = useMutation(REGISTER_USER, {
     update(_, { data: { register: userData } }) {
       context.login(userData);
-      navigate('/connect-with-strava');
+      navigate('/app/connect-with-strava');
     },
     onCompleted() {
       setErrors({});
@@ -278,8 +278,6 @@ const SignupPage = () => {
       validateEmail({ variables: { email } }),
     ]);
 
-    console.log(usernameResult);
-
     if (!usernameResult.error && usernameResult.data.validUsername === false) {
       setIsUsernameValid(false);
       setShowErrorsList((prevErrorsList) => [
@@ -377,7 +375,7 @@ const SignupPage = () => {
         <div className='signup-main-container'>
           <div className='signup-form-container'>
             <h1 className='signup-form-brand'>
-              <Link to='/'>Cycling matchmaker</Link>
+              <Link to='/'>Connexx ChainLink</Link>
             </h1>
             <span className='signup-strava-account-warning'>
               * A Strava account is required.
@@ -478,7 +476,7 @@ const SignupPage = () => {
             </div>
 
             <h1 className='signup-form-brand'>
-              <Link to='/'>Cycling matchmaker</Link>
+              <Link to='/'>Connexx ChainLink</Link>
             </h1>
 
             {registerErrorMessage !== '' && (

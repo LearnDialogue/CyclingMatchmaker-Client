@@ -250,12 +250,16 @@ const EditRide = () => {
             positions={values.points as LatLngExpression[]}
           />
         )}
-        <Marker position={values.startCoordinates as LatLngExpression}>
-          <Popup>Start Point</Popup>
-        </Marker>
-        {/* <Marker position={values.endCoordinates as LatLngExpression}>
-          <Popup>End Point</Popup>
-        </Marker> */}
+        {values.startCoordinates?.length > 0 && (
+          <Marker position={values.startCoordinates as LatLngExpression}>
+            <Popup>Start Point</Popup>
+          </Marker>
+        )}
+        {values.endCoordinates?.length > 0 && (
+          <Marker position={values.endCoordinates as LatLngExpression}>
+            <Popup>End Point</Popup>
+          </Marker>
+        )}
       </MapContainer>
     );
   };

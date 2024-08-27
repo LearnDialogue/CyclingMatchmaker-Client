@@ -97,12 +97,16 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
           pathOptions={{ fillColor: 'red', color: 'blue' }}
           positions={routeData.getRoute.points}
         />
-        {/* <Marker position={routeData.startCoordinates}>
-          <Popup>Start Point</Popup>
-        </Marker>
-        <Marker position={routeData.endCoordinates}>
-          <Popup>End Point</Popup>
-        </Marker> */}
+        {routeData.getRoute.startCoordinates?.length > 0 && (
+          <Marker position={routeData.getRoute.startCoordinates}>
+            <Popup>Start Point</Popup>
+          </Marker>
+        )}
+        {routeData.getRoute.endCoordinates?.length > 0 && (
+          <Marker position={routeData.getRoute.endCoordinates}>
+            <Popup>End Point</Popup>
+          </Marker>
+        )}
       </MapContainer>
     );
   };
@@ -181,6 +185,7 @@ export const FETCH_ROUTE = gql`
       distance
       elevation
       startCoordinates
+      endCoordinates
     }
   }
 `;

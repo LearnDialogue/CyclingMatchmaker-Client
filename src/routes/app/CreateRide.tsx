@@ -52,9 +52,9 @@ const CreateRide = () => {
     grade: [0],
     terrain: [''],
     distance: 0,
-    maxElevation: 0,
-    minElevation: 0,
-    totalElevationGain: 0,
+    maxElevation: 0.0,
+    minElevation: 0.0,
+    totalElevationGain: 0.0,
     startCoordinates: [0, 0],
     endCoordinates: [0, 0],
   });
@@ -133,6 +133,7 @@ const CreateRide = () => {
         setFileName(file.name);
         try {
           const routeInfo = await extractRouteInfo(file);
+          console.log(routeInfo);
           setValues((prevValues) => ({
             ...prevValues,
             points: routeInfo.points,
@@ -273,12 +274,16 @@ const CreateRide = () => {
             positions={values.points as LatLngExpression[]}
           />
         )}
-        <Marker position={values.startCoordinates as LatLngExpression}>
-          <Popup>Start Point</Popup>
-        </Marker>
-        <Marker position={values.endCoordinates as LatLngExpression}>
-          <Popup>End Point</Popup>
-        </Marker>
+        {values.startCoordinates?.length > 0 && (
+          <Marker position={values.startCoordinates as LatLngExpression}>
+            <Popup>Start Point</Popup>
+          </Marker>
+        )}
+        {values.endCoordinates?.length > 0 && (
+          <Marker position={values.endCoordinates as LatLngExpression}>
+            <Popup>End Point</Popup>
+          </Marker>
+        )}
       </MapContainer>
     );
   };
@@ -494,9 +499,9 @@ const CREATE_EVENT_MUTATION = gql`
     $grade: [Float]!
     $terrain: [String]!
     $distance: Float!
-    $maxElevation: Float!
-    $minElevation: Float!
-    $totalElevationGain: Float!
+    $maxElevation: Float
+    $minElevation: Float
+    $totalElevationGain: Float
     $startCoordinates: [Float]!
     $endCoordinates: [Float]!
   ) {

@@ -14,6 +14,7 @@ import Button from './Button';
 import { formatDate, formatDistance, formatTime } from '../util/Formatters';
 import { Link } from 'react-router-dom';
 import { FETCH_ROUTE } from './RideFeedCard';
+import { startMarker } from './MarkerIcons';
 
 interface EventModalProps {
   event: any | null;
@@ -52,7 +53,6 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
       bounds,
       center: routeData.getRoute.startCoordinates,
     });
-    console.log(routeData);
 
     return (
       <MapContainer
@@ -73,12 +73,16 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
           pathOptions={{ fillColor: 'red', color: 'blue' }}
           positions={routeData.getRoute.points}
         />
-        <Marker position={routeData.getRoute.startCoordinates}>
-          <Popup>Start Point</Popup>
-        </Marker>
-        {/* <Marker position={routeData.getRoute.endCoordinates}>
-          <Popup>End Point</Popup>
-        </Marker> */}
+        {routeData.getRoute.startCoordinates?.length > 0 && (
+          <Marker position={routeData.getRoute.startCoordinates}>
+            <Popup>Start Point</Popup>
+          </Marker>
+        )}
+        {routeData.getRoute.endCoordinates?.length > 0 && (
+          <Marker position={routeData.getRoute.endCoordinates}>
+            <Popup>End Point</Popup>
+          </Marker>
+        )}
       </MapContainer>
     );
   };

@@ -40,7 +40,7 @@ const ConnectToStravaPage = () => {
       <div className='signup-main-container'>
         <div className='signup-form-container'>
           <h1 className='signup-form-brand'>
-            <Link to='/'>Cycling matchmaker</Link>
+            <Link to='/'>Connexx ChainLink</Link>
           </h1>
           {stravaLoading && (
             <Button type='transparent' disabled>

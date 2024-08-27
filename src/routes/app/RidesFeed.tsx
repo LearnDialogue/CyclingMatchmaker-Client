@@ -421,7 +421,7 @@ const RidesFeed = () => {
                   value={radius}
                   onChange={handleSliderChange}
                 />{' '}
-                {radius == 100 ? radius + '+' : radius} mi
+                {radius} mi
               </label>
             </div>
 

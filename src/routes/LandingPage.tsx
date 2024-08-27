@@ -18,7 +18,7 @@ const LandingPage = () => {
     <div className='landing-page-main-container'>
       <div className='landing-page-first-view'>
         <div className='landing-page-header'>
-          <div className='landing-page-brand'>Cycling matchmaker</div>
+          <div className='landing-page-brand'>Connexx ChainLink</div>
           <div>
             {user ? (
               <div className='landing-page-auth-btns'>
