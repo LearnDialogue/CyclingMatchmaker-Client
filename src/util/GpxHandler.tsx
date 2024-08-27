@@ -8,6 +8,17 @@ import {
   TileLayer,
 } from 'react-leaflet';
 import gpxParser from 'gpxparser';
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// Set up the default icon for markers
+const DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
 
 export interface RouteInfo {
   points: [number, number][];
