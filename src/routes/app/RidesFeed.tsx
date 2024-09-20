@@ -304,6 +304,11 @@ const RidesFeed = () => {
 
             <div className='rides-feed-filter-options'>
               <h5>Watts/kg range</h5>
+            </div>
+
+
+            <div className='rides-feed-filter-options'>
+              <h5>Watts/kg range</h5>
               <label htmlFor='wkg-range-1'>
                 <input
                   name='Above 4.5'
