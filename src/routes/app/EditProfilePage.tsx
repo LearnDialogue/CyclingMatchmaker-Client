@@ -343,17 +343,20 @@ import Footer from "../../components/Footer";
 
                     <div className="editprofile-form-input" >
                         <label htmlFor="editprofile-biketypes" >Bikes Owned</label>
-                        <label htmlFor="biketype-road" > 
-                            <input name="road-option" id="road-option" type="checkbox" /> Road
-                        </label>
                         <label htmlFor="biketype-mountain" > 
                             <input name="mountain-option" id="mountain-option" type="checkbox" /> Mountain
                         </label>
-                        <label htmlFor="biketype-gravel" > 
-                        <input name="gravel-option" id="gravel-option" type="checkbox" /> Gravel
+                        <label htmlFor="biketype-road" > 
+                            <input name="road-option" id="road-option" type="checkbox" /> Road
                         </label>
                         <label htmlFor="biketype-hybrid" > 
                         <input name="hybrid-option" id="hybrid-option" type="checkbox" /> Hybrid
+                        </label>
+                        <label htmlFor="biketype-touring" > 
+                        <input name="touring-option" id="touring-option" type="checkbox" /> Touring
+                        </label>
+                        <label htmlFor="biketype-gravel" > 
+                        <input name="gravel-option" id="gravel-option" type="checkbox" /> Gravel
                         </label>
                     </div>
 
