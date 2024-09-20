@@ -34,6 +34,8 @@ const CreateRide = () => {
   const [fileUploaded, setFileUploaded] = useState<boolean>(false);
   const [eventID, setEventID] = useState<string>('');
   const [fileName, setFileName] = useState('');
+  const [womenOnly, setWomenOnly] = useState(false);
+  const [allowNonBinary, setAllowNonBinary] = useState(false);
 
   const [values, setValues] = useState({
     // Event
@@ -57,6 +59,8 @@ const CreateRide = () => {
     totalElevationGain: 0.0,
     startCoordinates: [0, 0],
     endCoordinates: [0, 0],
+    womenOnly: false,
+    allowNonBinary: false
   });
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +79,7 @@ const CreateRide = () => {
     setDesc(e.target.value);
   };
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBikeCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked, id } = event.target;
     let newBikes = [...bikeType];
     if (id == 'bike') {
@@ -92,6 +96,23 @@ const CreateRide = () => {
       bikeType: newBikes,
     }));
   };
+
+  const handleWomenOnlyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      womenOnly: event.target.checked,
+    }));
+    setWomenOnly(event.target.checked);
+  }
+
+  const handleAllowNonBinaryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      allowNonBinary: event.target.checked,
+    }));
+    setAllowNonBinary(event.target.checked);
+  }
+    
 
   const handleRSVP = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
@@ -363,7 +384,7 @@ const CreateRide = () => {
             <label htmlFor='mountain-bike'>
               <input
                 name='Mountain'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
@@ -372,7 +393,7 @@ const CreateRide = () => {
             <label htmlFor='road-bike'>
               <input
                 name='Road'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
@@ -381,7 +402,7 @@ const CreateRide = () => {
             <label htmlFor='hybrid-bike'>
               <input
                 name='Hybrid'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
@@ -390,7 +411,7 @@ const CreateRide = () => {
             <label htmlFor='touring-bike'>
               <input
                 name='Touring'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
@@ -399,12 +420,38 @@ const CreateRide = () => {
             <label htmlFor='gravel-bike'>
               <input
                 name='Gravel'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
               Gravel
             </label>
+          </div>
+
+          <div className='rides-feed-filter-options'>
+            <h5>Privacy</h5>
+            <label htmlFor='women-only'>
+              <input
+                name='Women Only'
+                onChange={handleWomenOnlyChange}
+                id='women-only'
+                type='checkbox'
+                checked={womenOnly}
+              />{' '}
+              Make this ride visible to women only
+            </label>
+            {womenOnly && (
+              <label htmlFor='include-non-binary'>
+                <input
+                  name='Non-binary'
+                  onChange={handleAllowNonBinaryChange}
+                  id='include-non-binary'
+                  type='checkbox'
+                  checked={allowNonBinary}
+                />{' '}
+                Include non-binary riders
+              </label>
+            )}
           </div>
 
           <div className='create-ride-form-input'>
@@ -504,6 +551,8 @@ const CREATE_EVENT_MUTATION = gql`
     $totalElevationGain: Float
     $startCoordinates: [Float]!
     $endCoordinates: [Float]!
+    $womenOnly: Boolean
+    $allowNonBinary: Boolean
   ) {
     createEvent(
       createEventInput: {
@@ -525,6 +574,8 @@ const CREATE_EVENT_MUTATION = gql`
         totalElevationGain: $totalElevationGain
         startCoordinates: $startCoordinates
         endCoordinates: $endCoordinates
+        womenOnly: $womenOnly
+        allowNonBinary: $allowNonBinary
       }
     ) {
       _id
