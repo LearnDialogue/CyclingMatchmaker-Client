@@ -341,6 +341,23 @@ import Footer from "../../components/Footer";
                         <input id="editprofile-radius" onChange={handleRadiusChange} type="text" value={radius} />
                     </div>
 
+                    <div className="editprofile-form-input" >
+                        <label htmlFor="editprofile-biketypes" >Bikes Owned</label>
+                        <label htmlFor="biketype-road" > 
+                            <input name="road-option" id="road-option" type="checkbox" /> Road
+                        </label>
+                        <label htmlFor="biketype-mountain" > 
+                            <input name="mountain-option" id="mountain-option" type="checkbox" /> Mountain
+                        </label>
+                        <label htmlFor="biketype-gravel" > 
+                        <input name="gravel-option" id="gravel-option" type="checkbox" /> Gravel
+                        </label>
+                        <label htmlFor="biketype-hybrid" > 
+                        <input name="hybrid-option" id="hybrid-option" type="checkbox" /> Hybrid
+                        </label>
+                    </div>
+
+
                     <br></br>
                     <Button
                         onClick={handleButtonClick}
