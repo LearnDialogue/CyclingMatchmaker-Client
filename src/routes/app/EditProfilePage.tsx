@@ -340,7 +340,7 @@ import Footer from "../../components/Footer";
                         <label htmlFor="editprofile-radius" >Radius
                             <span className="tooltip">
                                 <i className="fa-solid fa-circle-info"></i>
-                                <span className="tooltiptext">The default search area for exploring nearby rides. ChainLink will default to this radius when display upcoming rides on your explore page.</span>
+                                <span className="tooltiptext">This defines the default search area for exploring nearby rides. Chainlink will automatically display upcoming rides within this radius on your explore page.</span>
                             </span>
                         </label>
                         <input id="editprofile-radius" onChange={handleRadiusChange} type="text" value={radius} />

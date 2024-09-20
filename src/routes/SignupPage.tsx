@@ -30,6 +30,7 @@ const SignupPage = () => {
   const [weight, setWeight] = useState<string>('');
   const [FTP, setFTP] = useState<string>('');
   const [experience, setExperience] = useState<string>('');
+  const [radius, setRadius] = useState<string>("");
 
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -50,6 +51,7 @@ const SignupPage = () => {
     metric: false,
     weight: 0,
     FTP: 0.0,
+    radius: 0,
     experience: '',
   });
 
@@ -217,6 +219,15 @@ const SignupPage = () => {
       setFTP(e.target.value);
     }
   };
+
+  const handleRadiusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedRadius = parseInt(e.target.value, 10);
+    setValues((prevValues) => ({
+    ...prevValues,
+    radius: updatedRadius,
+    }));
+    setRadius(e.target.value);
+}
 
   const [ftpToggle, setFTPToggle] = useState<boolean>(false);
 
@@ -571,6 +582,18 @@ const SignupPage = () => {
                 I'm not sure
               </label>
             </div>
+
+            <div className="editprofile-form-input" >
+                <label htmlFor="editprofile-radius" >Radius
+                    <span className="tooltip">
+                        <i className="fa-solid fa-circle-info"></i>
+                        <span className="tooltiptext">The default search area for exploring nearby rides. ChainLink will default to this radius when display upcoming rides on your explore page.</span>
+                    </span>
+                </label>
+                <input id="editprofile-radius" onChange={handleRadiusChange} type="text" value={radius} />
+            </div>
+
+
             <div className='signup-form-input'>
               <label>Experience</label>
               <select onChange={handleExperienceChange} value={experience}>

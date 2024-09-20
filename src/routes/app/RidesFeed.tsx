@@ -303,7 +303,7 @@ const RidesFeed = () => {
             </div>
 
             <div className='rides-feed-filter-options'>
-              <h5>Watts/kg range</h5>
+              <h5>Restrictions</h5>
             </div>
 
 
@@ -403,7 +403,6 @@ const RidesFeed = () => {
 
             <div className='rides-feed-filter-options'>
               <h5>Search Region</h5>
-
               <div className='geolocation-radius-filter'>
                 <label>Location:</label>
                 <input
