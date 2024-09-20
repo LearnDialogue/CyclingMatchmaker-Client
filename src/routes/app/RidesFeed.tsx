@@ -548,6 +548,8 @@ export const FETCH_RIDES = gql`
       route
       participants
       match
+      women_only
+      nonbinary_only
     }
   }
 `;

@@ -187,7 +187,19 @@
 }
 
 
+.women-only-tag, .nonbinary-only-tag {
+    border-radius: 10px;
+    padding: 2px 5px 2px 5px;
+    color: #000;
+}
 
+.women-only-tag {
+    background: #ff99dd;
+}
+
+.nonbinary-only-tag {
+    background: #ffff80;
+}
 
 
 
