@@ -583,17 +583,6 @@ const SignupPage = () => {
               </label>
             </div>
 
-            <div className="editprofile-form-input" >
-                <label htmlFor="editprofile-radius" >Radius
-                    <span className="tooltip">
-                        <i className="fa-solid fa-circle-info"></i>
-                        <span className="tooltiptext">The default search area for exploring nearby rides. ChainLink will default to this radius when display upcoming rides on your explore page.</span>
-                    </span>
-                </label>
-                <input id="editprofile-radius" onChange={handleRadiusChange} type="text" value={radius} />
-            </div>
-
-
             <div className='signup-form-input'>
               <label>Experience</label>
               <select onChange={handleExperienceChange} value={experience}>
