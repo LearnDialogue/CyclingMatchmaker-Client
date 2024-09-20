@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import Button from '../../components/Button';
 import Navbar from '../../components/Navbar';
 import '../../styles/create-ride.css';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { extractRouteInfo } from '../../util/GpxHandler';
 import { AuthContext } from '../../context/auth';
 import { Link, useNavigate } from 'react-router-dom';
@@ -36,7 +36,7 @@ const CreateRide = () => {
   const [fileName, setFileName] = useState('');
   const [womenOnly, setWomenOnly] = useState(false);
   const [allowNonBinary, setAllowNonBinary] = useState(false);
-
+  
   const [values, setValues] = useState({
     // Event
     host: context.user?.username,
@@ -309,6 +309,16 @@ const CreateRide = () => {
     );
   };
 
+  const {
+    loading: userLoading,
+    error,
+    data: userData,
+  } = useQuery(FETCH_USER_QUERY, {
+    variables: {
+      username: context?.user?.username,
+    },
+  });
+
   return (
     <>
       <Navbar />
@@ -428,31 +438,34 @@ const CreateRide = () => {
             </label>
           </div>
 
-          <div className='rides-feed-filter-options'>
-            <h5>Privacy</h5>
-            <label htmlFor='women-only'>
-              <input
-                name='Women Only'
-                onChange={handleWomenOnlyChange}
-                id='women-only'
-                type='checkbox'
-                checked={womenOnly}
-              />{' '}
-              Make this ride visible to women only
-            </label>
-            {womenOnly && (
-              <label htmlFor='include-non-binary'>
+          {(userData?.getUser?.sex === 'gender-woman' || userData?.getUser.sex === "gender-non-binary") && (
+              <div className='rides-feed-filter-options'>
+              <h5>Privacy</h5>
+              <label htmlFor='women-only'>
                 <input
-                  name='Non-binary'
-                  onChange={handleAllowNonBinaryChange}
-                  id='include-non-binary'
+                  name='Women Only'
+                  onChange={handleWomenOnlyChange}
+                  id='women-only'
                   type='checkbox'
-                  checked={allowNonBinary}
+                  checked={womenOnly}
                 />{' '}
-                Include non-binary riders
+                Make this ride visible to women only
               </label>
-            )}
-          </div>
+              {womenOnly && (
+                <label htmlFor='include-non-binary'>
+                  <input
+                    name='Non-binary'
+                    onChange={handleAllowNonBinaryChange}
+                    id='include-non-binary'
+                    type='checkbox'
+                    checked={allowNonBinary}
+                  />{' '}
+                  Include non-binary riders
+                </label>
+              )}
+            </div>
+          )}
+        
 
           <div className='create-ride-form-input'>
             <label htmlFor='ride-description'>Description</label>
@@ -579,6 +592,20 @@ const CREATE_EVENT_MUTATION = gql`
       }
     ) {
       _id
+    }
+  }
+`;
+
+const FETCH_USER_QUERY = gql`
+  query getUser($username: String!) {
+    getUser(username: $username) {
+      FTP
+      weight
+      FTPdate
+      birthday
+      firstName
+      experience
+      sex
     }
   }
 `;
