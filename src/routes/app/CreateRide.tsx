@@ -34,8 +34,8 @@ const CreateRide = () => {
   const [fileUploaded, setFileUploaded] = useState<boolean>(false);
   const [eventID, setEventID] = useState<string>('');
   const [fileName, setFileName] = useState('');
-  const [womenOnly, setWomenOnly] = useState(false);
-  const [allowNonBinary, setAllowNonBinary] = useState(false);
+  const [privateWomen, setPrivateWomen] = useState(false);
+  const [privateNonBinary, setPrivateNonBinary] = useState(false);
   
   const [values, setValues] = useState({
     // Event
@@ -59,8 +59,8 @@ const CreateRide = () => {
     totalElevationGain: 0.0,
     startCoordinates: [0, 0],
     endCoordinates: [0, 0],
-    womenOnly: false,
-    allowNonBinary: false
+    privateWomen: false,
+    privateNonBinary: false
   });
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,20 +97,20 @@ const CreateRide = () => {
     }));
   };
 
-  const handleWomenOnlyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePrivateWomenChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues((prevValues) => ({
       ...prevValues,
-      womenOnly: event.target.checked,
+      privateWomen: event.target.checked,
     }));
-    setWomenOnly(event.target.checked);
+    setPrivateWomen(event.target.checked);
   }
 
-  const handleAllowNonBinaryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePrivateNonBinaryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues((prevValues) => ({
       ...prevValues,
-      allowNonBinary: event.target.checked,
+      privateNonBinary: event.target.checked,
     }));
-    setAllowNonBinary(event.target.checked);
+    setPrivateNonBinary(event.target.checked);
   }
     
 
@@ -440,29 +440,27 @@ const CreateRide = () => {
 
           {(userData?.getUser?.sex === 'gender-woman' || userData?.getUser.sex === "gender-non-binary") && (
               <div className='rides-feed-filter-options'>
-              <h5>Privacy</h5>
-              <label htmlFor='women-only'>
+              <h5>Visibile only to:</h5>
+              <label htmlFor='private-women'>
                 <input
-                  name='Women Only'
-                  onChange={handleWomenOnlyChange}
-                  id='women-only'
+                  name='Women'
+                  onChange={handlePrivateWomenChange}
+                  id='private-women'
                   type='checkbox'
-                  checked={womenOnly}
+                  checked={privateWomen}
                 />{' '}
-                Make this ride visible to women only
+                Women
               </label>
-              {womenOnly && (
-                <label htmlFor='include-non-binary'>
+              <label htmlFor='private-non-binary'>
                   <input
                     name='Non-binary'
-                    onChange={handleAllowNonBinaryChange}
-                    id='include-non-binary'
+                    onChange={handlePrivateNonBinaryChange}
+                    id='private-non-binary'
                     type='checkbox'
-                    checked={allowNonBinary}
+                    checked={privateNonBinary}
                   />{' '}
-                  Include non-binary riders
+                 Non-binary
                 </label>
-              )}
             </div>
           )}
         
@@ -564,8 +562,8 @@ const CREATE_EVENT_MUTATION = gql`
     $totalElevationGain: Float
     $startCoordinates: [Float]!
     $endCoordinates: [Float]!
-    $womenOnly: Boolean
-    $allowNonBinary: Boolean
+    $privateWomen: Boolean
+    $privateNonBinary: Boolean
   ) {
     createEvent(
       createEventInput: {
@@ -587,8 +585,8 @@ const CREATE_EVENT_MUTATION = gql`
         totalElevationGain: $totalElevationGain
         startCoordinates: $startCoordinates
         endCoordinates: $endCoordinates
-        womenOnly: $womenOnly
-        allowNonBinary: $allowNonBinary
+        privateWomen: $privateWomen
+        privateNonBinary: $privateNonBinary
       }
     ) {
       _id
