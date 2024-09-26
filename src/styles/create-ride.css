@@ -93,7 +93,10 @@
     opacity: 0.4;
 }
 
-
+.error-text {
+    background: yellow;
+    padding: 2px;
+}
 
 /* Edit ride*/
 
