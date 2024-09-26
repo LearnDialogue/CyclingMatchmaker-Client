@@ -47,22 +47,6 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
     }
   };
 
-  const generateTags = () => {
-    if (event.women_only) 
-    {
-        return (
-            <div className='women-only-tag'>Women Only</div>
-        )
-    } 
-    else if (event.nonbinary_only) 
-    {
-        return (
-            <div className='nonbinary-only-tag'>Nonbinary Only</div>
-        )
-    }
-      
-  }
-
   const { data: routeData } = useQuery(FETCH_ROUTE, {
     variables: {
       routeID: event.route,
@@ -144,6 +128,16 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
       </div>
       {routeData ? (
         <div className='ride-feed-card-values'>
+            
+            <div className='ride-feed-card-tags'>
+              {event.privateWomen ? (
+                <div className='tag'>Private: Women</div>
+              ) : (<div></div>) }
+              {event.privateNonBinary? (
+                <div className='tag'>Private: Non-Binary</div>
+              ) : (<div></div>) }
+            </div>
+
           <h2>{event.name}</h2>
           <p>
             Created by <b>{event.host}</b>
@@ -168,8 +162,6 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
               <span>
                 Share <i className='fa-regular fa-paper-plane'></i>
               </span>
-              <span>{generateTags()}</span>
-              
             </div>
             <RsvpButton
               eventID={event._id}
