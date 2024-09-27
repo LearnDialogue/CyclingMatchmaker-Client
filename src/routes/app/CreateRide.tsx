@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import Button from '../../components/Button';
 import Navbar from '../../components/Navbar';
 import '../../styles/create-ride.css';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { extractRouteInfo } from '../../util/GpxHandler';
 import { AuthContext } from '../../context/auth';
 import { Link, useNavigate } from 'react-router-dom';
@@ -34,7 +34,9 @@ const CreateRide = () => {
   const [fileUploaded, setFileUploaded] = useState<boolean>(false);
   const [eventID, setEventID] = useState<string>('');
   const [fileName, setFileName] = useState('');
-
+  const [privateWomen, setPrivateWomen] = useState(false);
+  const [privateNonBinary, setPrivateNonBinary] = useState(false);
+  
   const [values, setValues] = useState({
     // Event
     host: context.user?.username,
@@ -57,8 +59,9 @@ const CreateRide = () => {
     totalElevationGain: 0.0,
     startCoordinates: [0, 0],
     endCoordinates: [0, 0],
-    
-    error: ""
+    error: "",
+    privateWomen: false,
+    privateNonBinary: false
   });
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +80,7 @@ const CreateRide = () => {
     setDesc(e.target.value);
   };
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBikeCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked, id } = event.target;
     let newBikes = [...bikeType];
     if (id == 'bike') {
@@ -94,6 +97,23 @@ const CreateRide = () => {
       bikeType: newBikes,
     }));
   };
+
+  const handlePrivateWomenChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      privateWomen: event.target.checked,
+    }));
+    setPrivateWomen(event.target.checked);
+  }
+
+  const handlePrivateNonBinaryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      privateNonBinary: event.target.checked,
+    }));
+    setPrivateNonBinary(event.target.checked);
+  }
+    
 
   const handleRSVP = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
@@ -310,6 +330,16 @@ const CreateRide = () => {
  
   };
 
+  const {
+    loading: userLoading,
+    error,
+    data: userData,
+  } = useQuery(FETCH_USER_QUERY, {
+    variables: {
+      username: context?.user?.username,
+    },
+  });
+
   return (
     <>
       <Navbar />
@@ -385,7 +415,7 @@ const CreateRide = () => {
             <label htmlFor='mountain-bike'>
               <input
                 name='Mountain'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
@@ -394,7 +424,7 @@ const CreateRide = () => {
             <label htmlFor='road-bike'>
               <input
                 name='Road'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
@@ -403,7 +433,7 @@ const CreateRide = () => {
             <label htmlFor='hybrid-bike'>
               <input
                 name='Hybrid'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
@@ -412,7 +442,7 @@ const CreateRide = () => {
             <label htmlFor='touring-bike'>
               <input
                 name='Touring'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
@@ -421,13 +451,40 @@ const CreateRide = () => {
             <label htmlFor='gravel-bike'>
               <input
                 name='Gravel'
-                onChange={handleCheckboxChange}
+                onChange={handleBikeCheckboxChange}
                 id='bike'
                 type='checkbox'
               />{' '}
               Gravel
             </label>
           </div>
+
+          {(userData?.getUser?.sex === 'gender-woman' || userData?.getUser.sex === "gender-non-binary") && (
+              <div className='rides-feed-filter-options'>
+              <h5>Visibile only to:</h5>
+              <label htmlFor='private-women'>
+                <input
+                  name='Women'
+                  onChange={handlePrivateWomenChange}
+                  id='private-women'
+                  type='checkbox'
+                  checked={privateWomen}
+                />{' '}
+                Women
+              </label>
+              <label htmlFor='private-non-binary'>
+                  <input
+                    name='Non-binary'
+                    onChange={handlePrivateNonBinaryChange}
+                    id='private-non-binary'
+                    type='checkbox'
+                    checked={privateNonBinary}
+                  />{' '}
+                 Non-binary
+                </label>
+            </div>
+          )}
+        
 
           <div className='create-ride-form-input'>
             <label htmlFor='ride-description'>Description</label>
@@ -530,6 +587,8 @@ const CREATE_EVENT_MUTATION = gql`
     $totalElevationGain: Float
     $startCoordinates: [Float]!
     $endCoordinates: [Float]!
+    $privateWomen: Boolean
+    $privateNonBinary: Boolean
   ) {
     createEvent(
       createEventInput: {
@@ -551,9 +610,25 @@ const CREATE_EVENT_MUTATION = gql`
         totalElevationGain: $totalElevationGain
         startCoordinates: $startCoordinates
         endCoordinates: $endCoordinates
+        privateWomen: $privateWomen
+        privateNonBinary: $privateNonBinary
       }
     ) {
       _id
+    }
+  }
+`;
+
+const FETCH_USER_QUERY = gql`
+  query getUser($username: String!) {
+    getUser(username: $username) {
+      FTP
+      weight
+      FTPdate
+      birthday
+      firstName
+      experience
+      sex
     }
   }
 `;
