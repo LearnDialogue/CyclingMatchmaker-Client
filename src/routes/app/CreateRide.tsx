@@ -59,6 +59,7 @@ const CreateRide = () => {
     totalElevationGain: 0.0,
     startCoordinates: [0, 0],
     endCoordinates: [0, 0],
+    error: "",
     privateWomen: false,
     privateNonBinary: false
   });
@@ -165,10 +166,28 @@ const CreateRide = () => {
             totalElevationGain: routeInfo.total_elevation_gain,
             startCoordinates: routeInfo.startCoordinates,
             endCoordinates: routeInfo.endCoordinates,
+            error: ""
           }));
           setFileUploaded(true);
         } catch (error) {
+          e.target.value = "";
+          setFileName("");
+          setValues((prevValues) => ({
+            ...prevValues,
+            points: [[0, 0]],
+            elevation: [0],
+            grade: [0],
+            terrain: [''],
+            distance: 0,
+            maxElevation: 0.0,
+            minElevation: 0.0,
+            totalElevationGain: 0.0,
+            startCoordinates: [0, 0],
+            endCoordinates: [0, 0],
+            error: error.toString()
+          }))
           console.error('Error parsing GPX:', error);
+          setFileUploaded(false);
         }
       }
     } catch (error) {
@@ -274,8 +293,9 @@ const CreateRide = () => {
     const bounds = calculateBounds();
     const mapKey = JSON.stringify({ bounds, center: values.startCoordinates });
 
+
     return (
-      <MapContainer
+    <MapContainer
         key={mapKey}
         style={{ height: '400px', width: '100%', minWidth: '250px', zIndex: 1 }}
         bounds={bounds as L.LatLngBoundsExpression}
@@ -287,26 +307,27 @@ const CreateRide = () => {
         touchZoom={true}
         boxZoom={true}
         tap={true}
-      >
+    >
         <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
         {values.points.length > 1 && (
-          <Polyline
+        <Polyline
             pathOptions={{ fillColor: 'red', color: 'blue' }}
             positions={values.points as LatLngExpression[]}
-          />
+        />
         )}
         {values.startCoordinates?.length > 0 && (
-          <Marker position={values.startCoordinates as LatLngExpression}>
+        <Marker position={values.startCoordinates as LatLngExpression}>
             <Popup>Start Point</Popup>
-          </Marker>
+        </Marker>
         )}
         {values.endCoordinates?.length > 0 && (
-          <Marker position={values.endCoordinates as LatLngExpression}>
+        <Marker position={values.endCoordinates as LatLngExpression}>
             <Popup>End Point</Popup>
-          </Marker>
+        </Marker>
         )}
-      </MapContainer>
+    </MapContainer>
     );
+ 
   };
 
   const {
@@ -506,6 +527,10 @@ const CreateRide = () => {
               <div>{rideMap()}</div>
             </div>
           )}
+
+          { values.error != "" ? (
+            <p className="error-text">{values.error}</p>
+          ) : (<></>)}
 
           <div className='create-ride-form-input'>
             <label htmlFor='rsvp'>

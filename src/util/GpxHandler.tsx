@@ -53,6 +53,11 @@ export const extractRouteInfo = async (file: File): Promise<RouteInfo> => {
     const parser = new gpxParser();
     parser.parse(gpxContent);
 
+    if (parser.tracks.length == 0 || parser.tracks[0].points.length == 0)
+    {
+        throw new Error("Incorrect GPX File Type, use 'Tracks' version")
+    }
+
     const routeInfo: RouteInfo = {
       points: parser.tracks[0].points.map((point: any) => [
         point.lat,
