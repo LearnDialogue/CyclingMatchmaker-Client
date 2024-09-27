@@ -547,6 +547,8 @@ export const FETCH_RIDES = gql`
       intensity
       route
       participants
+      privateWomen
+      privateNonBinary
       match
     }
   }

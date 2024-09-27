@@ -128,6 +128,16 @@ const RideFeedCard: React.FC<RideFeedCardProps> = ({ event, setEvent }) => {
       </div>
       {routeData ? (
         <div className='ride-feed-card-values'>
+            
+            <div className='ride-feed-card-tags'>
+              {event.privateWomen ? (
+                <div className='tag'>Private: Women</div>
+              ) : (<div></div>) }
+              {event.privateNonBinary? (
+                <div className='tag'>Private: Non-Binary</div>
+              ) : (<div></div>) }
+            </div>
+
           <h2>{event.name}</h2>
           <p>
             Created by <b>{event.host}</b>
