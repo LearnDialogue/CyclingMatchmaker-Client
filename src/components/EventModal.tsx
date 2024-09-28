@@ -181,28 +181,20 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
                     <p>{event.description}</p>
                   </div>
                   <div>
-                    {event.host === user?.username ? (
-                      <div>
-                        <h5>
-                          Riders &nbsp; ({event.participants.length ?? 0})
-                        </h5>
-                        <div>
-                          {event.participants ? (
-                            event.participants.map(
-                              (username: any, index: number) => (
-                                <div key={index}>
-                                  <span>{username}</span>
-                                </div>
-                              )
-                            )
-                          ) : (
-                            <></>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <></>
-                    )}
+                    <h5>
+                      Riders &nbsp; ({event.participants.length ?? 0})
+                    </h5>
+                    <div>
+                      {event.participants ? (
+                        event.participants.map((username: any, index: number) => (
+                          <div key={index}>
+                            <span>{username}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <></>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className='rsvp-button'>
