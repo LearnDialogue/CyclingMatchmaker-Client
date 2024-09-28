@@ -51,6 +51,7 @@ const SignupPage = () => {
     weight: 0,
     FTP: 0.0,
     experience: '',
+    radius: 30,
   });
 
   // Register mutation
@@ -584,6 +585,21 @@ const SignupPage = () => {
               </select>
             </div>
 
+            <div className='signup-form-input'>
+              <label>Default Ride Search Radius (in miles)</label>
+              <input
+                onChange={(e) =>
+                  setValues((prevValues) => ({
+                    ...prevValues,
+                    radius: parseInt(e.target.value, 10),
+                  }))
+                }
+                type='number'
+                value={values.radius}
+                min={0}
+              />
+            </div>
+
             <div className='signup-form-signup-btn'>
               <div onClick={handleSignUp}>
                 <Button disabled={!enableSignupButton()} type='primary'>
@@ -618,6 +634,7 @@ const REGISTER_USER = gql`
     $birthday: String!
     $FTP: Float!
     $experience: String!
+    $radius: Int!
   ) {
     register(
       registerInput: {
@@ -633,6 +650,7 @@ const REGISTER_USER = gql`
         weight: $weight
         FTP: $FTP
         experience: $experience
+        radius: $radius
       }
     ) {
       username
