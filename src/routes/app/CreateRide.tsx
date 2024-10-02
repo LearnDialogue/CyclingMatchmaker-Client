@@ -461,7 +461,7 @@ const CreateRide = () => {
 
           {(userData?.getUser?.sex === 'gender-woman' || userData?.getUser.sex === "gender-non-binary") && (
               <div className='rides-feed-filter-options'>
-              <h5>Visibile only to:</h5>
+              <h5>Visible only to:</h5>
               <label htmlFor='private-women'>
                 <input
                   name='Women'

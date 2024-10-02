@@ -140,11 +140,10 @@ const RidesFeed = () => {
   }
 
   useEffect(() => {
-    // Logic to sort rides based on sortingOrder
-    let sortedRides = [];
+    if (rideData && rideData.getEvents && userData && userData.getUser) {
+      let sortedRides = [...rideData.getEvents]; // Create a copy to avoid mutating the original state
 
-    if (rideData && rideData.getEvents) {
-      sortedRides = [...rideData.getEvents]; // Create a copy to avoid mutating the original state
+      // Sort Order
       if (sortingOrder === 'date_asc') {
         sortedRides.sort(
           (a, b) =>
@@ -505,6 +504,7 @@ const FETCH_USER_QUERY = gql`
       locationName
       locationCoords
       radius
+      sex
     }
   }
 `;
