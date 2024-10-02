@@ -144,25 +144,25 @@ const RidesFeed = () => {
       let sortedRides = [...rideData.getEvents]; // Create a copy to avoid mutating the original state
 
       // Gender Restrictions
-      sortedRides = sortedRides.filter(ride => {
-        const userGender = userData.getUser.sex;
-        const privateWomen = ride.privateWomen ?? false; // can this be abused, don't need default if we remove old events
-        const privateNonBinary = ride.privateNonBinary ?? false;
-        const isGenderRestricted = privateWomen || privateNonBinary;
+      // sortedRides = sortedRides.filter(ride => {
+      //   const userGender = userData.getUser.sex;
+      //   const privateWomen = ride.privateWomen ?? false; // can this be abused, don't need default if we remove old events
+      //   const privateNonBinary = ride.privateNonBinary ?? false;
+      //   const isGenderRestricted = privateWomen || privateNonBinary;
 
-        // men and prefer-not-to-say don't see gender restricted rides
-        if ((userGender === "gender-man" || userGender === "gender-prefer-not-to-say") && isGenderRestricted) {
-          return false;
-        }
+      //   // men and prefer-not-to-say don't see gender restricted rides
+      //   if ((userGender === "gender-man" || userGender === "gender-prefer-not-to-say") && isGenderRestricted) {
+      //     return false;
+      //   }
 
-        // non-binary users don't see women only rides
-        if (userGender === "gender-non-binary" && (privateWomen && !privateNonBinary)) {
-          return false;
-        }
+      //   // non-binary users don't see women only rides
+      //   if (userGender === "gender-non-binary" && (privateWomen && !privateNonBinary)) {
+      //     return false;
+      //   }
 
-        // women see all rides
-        return true;
-      });
+      //   // women see all rides
+      //   return true;
+      // });
 
       // Sort Order
       if (sortingOrder === 'date_asc') {
