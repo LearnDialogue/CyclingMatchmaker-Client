@@ -105,15 +105,20 @@ const ProfilePage = () => {
             </div>
 
             <div className='user-name'>
-              <b style={{textAlign: 'center'}}>
-                {userData
-                  ? 
-                    userData?.getUser.firstName +
-                    ', ' +
-                    getUserAge(userData.getUser.birthday)
-                    + "\n" + user?.username
-                  : null}
-              </b>
+                <div style={{textAlign: 'center'}}>
+                    <span>
+                        {userData ? 
+                            userData?.getUser.firstName +
+                            ', ' +
+                            getUserAge(userData.getUser.birthday)
+                        : null}
+                    </span> <br/>
+                    <b>
+                        {userData ? 
+                            user?.username
+                        : null}
+                    </b>
+                </div>
             </div>
 
             <div className='profile-page-edit-profile-btn'>
