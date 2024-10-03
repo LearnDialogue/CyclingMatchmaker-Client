@@ -105,11 +105,13 @@ const ProfilePage = () => {
             </div>
 
             <div className='user-name'>
-              <b>
+              <b style={{textAlign: 'center'}}>
                 {userData
-                  ? userData?.getUser.firstName +
+                  ? 
+                    userData?.getUser.firstName +
                     ', ' +
                     getUserAge(userData.getUser.birthday)
+                    + "\n" + user?.username
                   : null}
               </b>
             </div>
