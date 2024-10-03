@@ -185,9 +185,10 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
                     <div>
                       <div className='ride-card-users-container'>
                         {event.participants ? (
-                          event.participants.map((username: any, index: number) => (
+                          [...event.participants]
+                          .sort((a: string, b: string) => a.localeCompare(b))
+                          .map((username: any, index: number) => (
                             <div key={index}>
-                              <h5>
                                 <div className='ride-card-users'>
                                   <span className='image'>
                                     {username.slice(0,1).toLocaleUpperCase()}
@@ -196,7 +197,6 @@ const EventModal: React.FC<EventModalProps> = ({ event, setEvent }) => {
                                     <b>{username}</b>
                                   </span>
                                 </div>
-                              </h5>
                             </div>
                           ))
                         ) : (
