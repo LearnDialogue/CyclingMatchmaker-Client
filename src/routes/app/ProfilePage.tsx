@@ -40,12 +40,14 @@ const s3 = new AWS.S3({
 
 const ProfilePage = () => {
   const { user } = useContext(AuthContext);
+  console.log("user: ", user);
   const [event, setEvent] = useState<any | null>(null);
   const [currDate, setCurrDate] = useState<Date>(new Date());
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [updateProfileImage] = useMutation(UPDATE_PROFILE_IMAGE);
 
   const handleModalClose = (nullEvent: any | null) => {
     setEvent(nullEvent);
@@ -84,8 +86,7 @@ const ProfilePage = () => {
       console.log("bucket name: ", import.meta.env.VITE_AWS_BUCKET_NAME);
       const params = {
         Bucket: import.meta.env.VITE_AWS_BUCKET_NAME,
-        //TODO: this should probably be a unique key! consider username or userid
-        Key: `profile-pictures/${file.name}`,
+        Key: `profile-pictures/${user?.username}`,
         Body: file
       };
   
@@ -94,7 +95,16 @@ const ProfilePage = () => {
         console.log("File uploaded successfully: ", data.Location);
         setMessage(`File uploaded successfully: ${data.Location}`);
         const presignedUrl = await generatePresignedUrl(params.Key);
-        setImageUrl(presignedUrl); // Set the image URL in the state
+        setImageUrl(presignedUrl); 
+        await updateProfileImage({
+          variables: {
+            updateProfileImageInput: {
+              username: user?.username,
+              hasProfileImage: true
+            },
+          },
+        });
+       
       } catch (error) {
         console.log("Error uploading file: ", error);
         setMessage("Error uploading file");
@@ -150,6 +160,26 @@ const ProfilePage = () => {
       username: user?.username,
     },
   });
+
+
+  useEffect(() => {
+      const fetchImageUrl = async () => {
+        console.log("userData: ", userData);
+        if (userData && userData.getUser.hasProfileImage) {
+          const presignedUrl = await generatePresignedUrl(`profile-pictures/${user?.username}`);
+          console.log("presignedUrl: ", presignedUrl);
+          setImageUrl(presignedUrl);
+        }
+      };
+
+
+      if (userData) {
+        fetchImageUrl();
+      }
+    
+    }, [userData]
+  );
+
 
   useEffect(() => {
     hostRefetch();
@@ -416,6 +446,7 @@ const FETCH_USER_QUERY = gql`
       birthday
       firstName
       experience
+      hasProfileImage
     }
   }
 `;
@@ -459,4 +490,13 @@ export const GET_JOINED_EVENTS = gql`
     }
   }
 `;
+
+const UPDATE_PROFILE_IMAGE = gql`
+  mutation UpdateProfileImage($updateProfileImageInput: UpdateProfileImageInput!) {
+    updateProfileImage(updateProfileImageInput: $updateProfileImageInput) {
+      hasProfileImage
+    }
+  }
+`;
+
 export default ProfilePage;
