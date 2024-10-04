@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, ChangeEvent } from 'react';
 import Navbar from '../../components/Navbar';
 import GpxMap from '../../util/GpxHandler';
 import '../../styles/profile-page.css';
@@ -9,6 +9,7 @@ import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import Button from '../../components/Button';
 import EventModal from '../../components/EventModal';
 import Footer from '../../components/Footer';
+import AWS from 'aws-sdk';
 
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr);
@@ -26,14 +27,89 @@ const getUserAge = (dateStr: string): string => {
   return (new Date().getUTCFullYear() - date.getUTCFullYear()).toString();
 };
 
+AWS.config.update({
+  region: import.meta.env.VITE_AWS_REGION,
+  accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY_ID,
+  secretAccessKey: import.meta.env.VITE_AWS_SECRET,
+})
+
+const s3 = new AWS.S3({
+  apiVersion: '2006-03-01',
+  params: { Bucket: import.meta.env.VITE_AWS_BUCKET_NAME },
+})
+
 const ProfilePage = () => {
   const { user } = useContext(AuthContext);
   const [event, setEvent] = useState<any | null>(null);
   const [currDate, setCurrDate] = useState<Date>(new Date());
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const handleModalClose = (nullEvent: any | null) => {
     setEvent(nullEvent);
   };
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => { 
+    console.log("hit change func");
+    if (event.target.files) {
+      //console.log("hit branch");
+      console.log("event.target.files[0]: ", event.target.files[0]);
+      setFile(event.target.files[0]);
+    }
+  }
+
+  const generatePresignedUrl = async (key: string) => {
+    const params = {
+      Bucket: import.meta.env.VITE_S3_BUCKET_NAME,
+      Key: key,
+      Expires: 60 * 60, // URL expires in 1 hour
+    };
+    return s3.getSignedUrlPromise('getObject', params);
+  };
+
+  useEffect(() => {
+    const handleUpload = async() => {
+      console.log("file", file);  
+      if (!file) {
+        console.log("Please select a file to upload.");
+        setMessage('Please select a file to upload.');
+        return;
+      }
+  
+      setUploading(true);
+      setMessage('');
+      
+      console.log("bucket name: ", import.meta.env.VITE_AWS_BUCKET_NAME);
+      const params = {
+        Bucket: import.meta.env.VITE_AWS_BUCKET_NAME,
+        //TODO: this should probably be a unique key! consider username or userid
+        Key: `profile-pictures/${file.name}`,
+        Body: file
+      };
+  
+      try {
+        const data = await s3.upload(params).promise();
+        console.log("File uploaded successfully: ", data.Location);
+        setMessage(`File uploaded successfully: ${data.Location}`);
+        const presignedUrl = await generatePresignedUrl(params.Key);
+        setImageUrl(presignedUrl); // Set the image URL in the state
+      } catch (error) {
+        console.log("Error uploading file: ", error);
+        setMessage("Error uploading file");
+        //setMessage(`Error uploading file: ${error.message}`);
+      } finally {
+        console.log("finally");
+        setUploading(false);
+      }
+    }
+
+    if (file) {
+      handleUpload();
+    }
+  
+  }, [file]);
 
   let username: string | null = null;
   if (user) {
@@ -90,12 +166,21 @@ const ProfilePage = () => {
         <div className='profile-page-user-info'>
           <div className='user-name-and-image-container'>
             <div className='user-image'>
-              {user?.username.slice(0, 1).toLocaleUpperCase()}
+              { 
+                imageUrl
+                ? <img src={imageUrl} /> 
+                : user?.username.slice(0, 1).toLocaleUpperCase()
+              }
+            {/* Snapchat-120955009.jpg */}
+              {/* <img src="http://192.168.40.132:8080/104338756_10222096191409938_5462095096492147096_o%20(2).jpg"></img> */}
+              {/* <img src="http://192.168.40.132:8080/236118870_10225395339486578_5612198330392755872_n.jpg"></img> */}
+              {/* <img src="http://192.168.40.132:8080/Snapchat-120955009.jpg"></img> */}
+              {/* {user?.username.slice(0, 1).toLocaleUpperCase()} */}
               <input
                 type='file'
                 id='file-upload'
                 style={{ display: 'none' }}
-                onChange={() => null}
+                onChange={handleFileChange}
                 accept='image/*'
               />
               <label htmlFor='file-upload' className='upload-label'>
@@ -154,6 +239,7 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
+        
 
         <h3>Your upcoming rides</h3>
         <div className='profile-page-user-upcoming-rides'>
