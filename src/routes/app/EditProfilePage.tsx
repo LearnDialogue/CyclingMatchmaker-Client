@@ -426,6 +426,7 @@ const FETCH_USER_QUERY = gql`
         locationName
         radius
         experience
+        hasProfileImage
     }
   }
 `;
